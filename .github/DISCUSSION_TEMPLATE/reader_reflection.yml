@@ -1,0 +1,45 @@
+title: "Reader Reflection: "
+labels: ["reader-reflection"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this space for longer reflections, questions, room reports, or responses to INTERVENTION.
+
+        Keep it safe. Keep it consent-based. Do not post private details about real people.
+
+  - type: textarea
+    id: room
+    attributes:
+      label: What room did the book make you notice?
+      placeholder: "A room, relationship, loop, memory, signal, or choice..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: reflection
+    attributes:
+      label: Reflection
+      description: What stayed with you after reading?
+      placeholder: "Write as much or as little as you need."
+    validations:
+      required: true
+
+  - type: textarea
+    id: ripple
+    attributes:
+      label: Ripple / Intervention Point
+      description: Did anything shift after you noticed it?
+      placeholder: "What changed in perception, behavior, or feedback?"
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: boundary
+    attributes:
+      label: Boundary Check
+      options:
+        - label: I removed private or identifying information.
+          required: true
+        - label: I understand this discussion is not crisis support, therapy, or proof that fiction is secretly real.
+          required: true

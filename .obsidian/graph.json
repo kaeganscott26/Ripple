@@ -1,0 +1,128 @@
+{
+  "collapse-filter": false,
+  "search": "",
+  "showTags": true,
+  "showAttachments": true,
+  "hideUnresolved": true,
+  "showOrphans": true,
+  "collapse-color-groups": false,
+  "colorGroups": [
+    {
+      "query": "path:\"INTERVENTION ARG\" file:",
+      "color": {
+        "a": 1,
+        "rgb": 1714410
+      }
+    },
+    {
+      "query": "path:NOTES  ",
+      "color": {
+        "a": 1,
+        "rgb": 1104400
+      }
+    },
+    {
+      "query": "file:CHAPTER_",
+      "color": {
+        "a": 1,
+        "rgb": 15251985
+      }
+    },
+    {
+      "query": "file:MENTAL_HEALTH_DISCLAIMER",
+      "color": {
+        "a": 1,
+        "rgb": 15400960
+      }
+    },
+    {
+      "query": "file:README",
+      "color": {
+        "a": 1,
+        "rgb": 5431473
+      }
+    },
+    {
+      "query": "file:chapter",
+      "color": {
+        "a": 1,
+        "rgb": 8915696
+      }
+    },
+    {
+      "query": "file:BOUNDARIES",
+      "color": {
+        "a": 1,
+        "rgb": 11800078
+      }
+    },
+    {
+      "query": "file:ORDER",
+      "color": {
+        "a": 1,
+        "rgb": 1681367
+      }
+    },
+    {
+      "query": "file:CHANGELOG",
+      "color": {
+        "a": 1,
+        "rgb": 14701233
+      }
+    },
+    {
+      "query": "PROLOGUE",
+      "color": {
+        "a": 1,
+        "rgb": 14701138
+      }
+    },
+    {
+      "query": "EPILOGUE",
+      "color": {
+        "a": 1,
+        "rgb": 5431428
+      }
+    },
+    {
+      "query": "file:ar",
+      "color": {
+        "a": 1,
+        "rgb": 19711
+      }
+    },
+    {
+      "query": "file:map",
+      "color": {
+        "a": 1,
+        "rgb": 16734081
+      }
+    },
+    {
+      "query": "file:ripples",
+      "color": {
+        "a": 1,
+        "rgb": 16056532
+      }
+    },
+    {
+      "query": "file:D",
+      "color": {
+        "a": 1,
+        "rgb": 16056320
+      }
+    }
+  ],
+  "collapse-display": false,
+  "showArrow": true,
+  "textFadeMultiplier": -3,
+  "nodeSizeMultiplier": 2.12975694444444,
+  "lineSizeMultiplier": 0.227816840277778,
+  "collapse-forces": false,
+  "centerStrength": 0,
+  "repelStrength": 20,
+  "linkStrength": 0,
+  "linkDistance": 500,
+  "scale": 0.0078125,
+  "close": false
+}
