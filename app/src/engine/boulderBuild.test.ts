@@ -5,6 +5,7 @@ import { buildActiveAgents } from "./memorySystem";
 import { advanceTurn } from "./ruleEngine";
 import { createRunState } from "./runState";
 import { buildMarkdownRunLog } from "./runLog";
+import { pressureBuildMessages } from "./lawProgress";
 import type { AgentData, RulesData, SeedKey } from "./types";
 
 const agents = agentsJson as AgentData[];
@@ -22,7 +23,7 @@ function newRun(seed: SeedKey = "A") {
   return createRunState(agents, { mode: "experimental", selectedSeeds: selectedSeeds(seed) });
 }
 
-describe("Boulder Build v0.2", () => {
+describe("Boulder Build v0.3", () => {
   it("Mystery mode assigns valid A/B/C seeds", () => {
     vi.spyOn(Math, "random").mockReturnValue(0.99);
 
@@ -56,6 +57,16 @@ describe("Boulder Build v0.2", () => {
     expect(next.pressures.witness).toBeGreaterThan(state.pressures.witness);
   });
 
+  it("records clear turn feedback after advancing a ripple", () => {
+    const state = newRun();
+    const next = advanceTurn(state, "observe", rules);
+
+    expect(next.lastTurnFeedback?.processedAction).toBe("Observe the Boulder");
+    expect(next.lastTurnFeedback?.pressureChanges.some((change) => change.key === "witness")).toBe(true);
+    expect(next.lastTurnFeedback?.agentReactionCount).toBe(agents.length);
+    expect(next.lastTurnFeedback?.lawProgress.length).toBeGreaterThan(0);
+  });
+
   it("Naming the Boulder increases named weight pressure", () => {
     const state = newRun();
     const next = advanceTurn(state, "name", rules, { boulderName: "Burden" });
@@ -86,13 +97,30 @@ describe("Boulder Build v0.2", () => {
     expect(next.laws.some((law) => law.id === "witness-law")).toBe(true);
   });
 
-  it("Markdown export includes mode, event log, reality layers, laws, and Boulder name", () => {
+  it("reports pressure building before a law exists", () => {
+    const messages = pressureBuildMessages(newRun());
+
+    expect(messages).toEqual([
+      "Witness pressure: 0",
+      "Named Weight pressure: 0",
+      "Institutional pressure: 0",
+      "Concern pressure: 0",
+    ]);
+  });
+
+  it("Markdown export includes mode, memory seeds, event log, meters, reality layers, laws, and Boulder state", () => {
     const named = advanceTurn(newRun(), "name", rules, { boulderName: "Anchor" });
     const markdown = buildMarkdownRunLog(named);
 
-    expect(markdown).toContain("Mode: experimental");
+    expect(markdown).toContain("Run Mode: experimental");
+    expect(markdown).toContain("Turn Count: 1");
     expect(markdown).toContain("Boulder Name: Anchor");
+    expect(markdown).toContain("Boulder Position: center");
+    expect(markdown).toContain("## Active Memory Seeds");
+    expect(markdown).toContain("Mara: Life A - Scarcity");
     expect(markdown).toContain("## Event Log");
+    expect(markdown).toContain("## Final Meters");
+    expect(markdown).toContain("Named Weight:");
     expect(markdown).toContain("## Final Reality Layers");
     expect(markdown).toContain("## Laws Formed");
     expect(markdown).toContain("[Base]");

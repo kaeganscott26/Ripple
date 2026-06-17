@@ -208,6 +208,15 @@ p {
   padding: 16px;
 }
 
+.objective-panel {
+  border-color: rgba(215, 196, 106, 0.35);
+  background: rgba(31, 34, 24, 0.9);
+}
+
+.objective-panel h2 {
+  color: #f0dd82;
+}
+
 .board-header {
   display: flex;
   justify-content: space-between;
@@ -309,6 +318,22 @@ p {
   padding: 6px 10px;
 }
 
+.law-progress {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  border: 1px solid rgba(214, 221, 202, 0.12);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.035);
+  padding: 12px;
+}
+
+.law-progress h3,
+.feedback-panel h3 {
+  color: #f0dd82;
+  font-size: 0.95rem;
+}
+
 .panel {
   display: grid;
   gap: 12px;
@@ -337,17 +362,59 @@ dd {
 }
 
 .action-grid button {
+  position: relative;
   display: grid;
   gap: 4px;
+  border: 1px solid transparent;
   border-radius: 6px;
   background: #202621;
   padding: 12px;
   text-align: left;
 }
 
+.action-grid button.selected {
+  border-color: rgba(215, 196, 106, 0.72);
+  background: #34311f;
+  box-shadow: inset 0 0 0 1px rgba(215, 196, 106, 0.28);
+}
+
+.selected-label {
+  justify-self: start;
+  border-radius: 999px;
+  background: rgba(215, 196, 106, 0.22);
+  color: #f0dd82;
+  padding: 2px 7px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
 .action-grid span {
   color: #aeb7aa;
   font-size: 0.9rem;
+}
+
+.action-grid .selected-label {
+  color: #f0dd82;
+}
+
+.selected-action-summary {
+  display: grid;
+  gap: 4px;
+  border-left: 3px solid #d7c46a;
+  background: rgba(215, 196, 106, 0.08);
+  padding: 10px 12px;
+}
+
+.selected-action-summary span {
+  color: #a9b99a;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.selected-action-summary p {
+  color: #d2d7ca;
 }
 
 .name-field {
@@ -392,6 +459,13 @@ dd {
   font-size: 1rem;
 }
 
+.how-to-panel ol {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 20px;
+}
+
 ul {
   margin: 0;
   padding-left: 18px;
@@ -400,6 +474,46 @@ ul {
 li {
   margin: 0 0 6px;
   color: #d8ddcf;
+}
+
+.compact-list {
+  display: grid;
+  gap: 5px;
+  padding-left: 18px;
+}
+
+.compact-list li {
+  margin: 0;
+}
+
+.feedback-panel {
+  border-color: rgba(47, 93, 103, 0.48);
+}
+
+.feedback-summary {
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.035);
+  padding: 10px;
+}
+
+.formed-law-callout {
+  display: grid;
+  gap: 6px;
+  border: 1px solid rgba(215, 196, 106, 0.35);
+  border-radius: 6px;
+  background: rgba(215, 196, 106, 0.09);
+  padding: 10px;
+}
+
+details {
+  border-top: 1px solid rgba(214, 221, 202, 0.12);
+  padding-top: 10px;
+}
+
+summary {
+  color: #a9b99a;
+  cursor: pointer;
+  font-weight: 700;
 }
 
 .agent-list,

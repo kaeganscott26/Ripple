@@ -8,6 +8,8 @@ import type {
   RulesData,
   RunState,
 } from "./types";
+import { lawProgressMessages } from "./lawProgress";
+import { pressureChanges } from "./pressure";
 import { summarizeLayerShift } from "./realityLayers";
 
 const emptyPressure: PressureValues = { witness: 0, namedWeight: 0, institution: 0, concern: 0 };
@@ -46,7 +48,10 @@ function createEvent(turn: number, type: EventType, text: string, index: number)
   };
 }
 
-function reactionForAgent(agent: ActiveAgent, action: BoulderAction): { text: string; pressure: PressureValues } {
+function reactionForAgent(
+  agent: ActiveAgent,
+  action: BoulderAction,
+): { text: string; pressure: PressureValues; triggered: boolean } {
   const seed = agent.seeds[agent.activeSeed];
   const tag = actionTag(action);
   const triggered = seed.triggerTags.includes(tag);
@@ -61,6 +66,7 @@ function reactionForAgent(agent: ActiveAgent, action: BoulderAction): { text: st
 
   return {
     pressure,
+    triggered,
     text: `${agent.name} (${seed.label}) ${actionText[action]}.`,
   };
 }
@@ -104,11 +110,13 @@ export function advanceTurn(
 
   let pressureDelta = addPressure(emptyPressure, actionRule.pressure);
   const agentEvents: string[] = [];
+  let agentReactionCount = 0;
 
   const agents = state.agents.map((agent) => {
     const reaction = reactionForAgent(agent, action);
     pressureDelta = addPressure(pressureDelta, reaction.pressure);
     agentEvents.push(reaction.text);
+    agentReactionCount += 1;
 
     return {
       ...agent,
@@ -167,5 +175,14 @@ export function advanceTurn(
     ...withLaws,
     layers,
     events,
+    lastTurnFeedback: {
+      turn: nextTurn,
+      processedAction: actionRule.label,
+      pressureChanges: pressureChanges(state.pressures, partialState.pressures),
+      agentReactionCount,
+      agentReactions: agentEvents,
+      lawProgress: lawProgressMessages(withLaws, rules),
+      formedLaws: newLaws,
+    },
   };
 }

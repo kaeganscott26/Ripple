@@ -2,7 +2,7 @@
 
 This is the first local playable prototype for Ripple. It is a small 2D turn loop centered on the Boulder Room, memory-seeded agents, pressure changes, reality layers, law formation, and Markdown run export.
 
-It is not an AI system, backend service, Minecraft build, Docker app, or direct rewrite of the source archive. v0.2 focuses on stabilization, tests, custom Boulder naming, and local browser persistence.
+It is not an AI system, backend service, Minecraft build, Docker app, or direct rewrite of the source archive. v0.3 focuses on playability, clearer turn feedback, law progress messaging, and improved Markdown export formatting.
 
 ## Install
 

@@ -1,6 +1,6 @@
 import type { RunState } from "./types";
-import { seedDisplay } from "./memorySystem";
 import { eventTypeLabel } from "./eventLabels";
+import { pressureKeys, pressureLabels } from "./pressure";
 
 function linesForList(items: string[]): string[] {
   return items.length > 0 ? items.map((item) => `- ${item}`) : ["- None"];
@@ -10,16 +10,20 @@ export function buildMarkdownRunLog(state: RunState): string {
   const lines: string[] = [
     "# Ripple: The Boulder Build Run Log",
     "",
-    `Mode: ${state.mode}`,
-    `Turns: ${state.turn}`,
-    `Boulder Name: ${state.boulderName ?? "Boulder"}`,
+    "## Run Summary",
     "",
-    "## Active Agents",
+    `- Run Mode: ${state.mode}`,
+    `- Turn Count: ${state.turn}`,
+    `- Boulder Name: ${state.boulderName ?? "Boulder"}`,
+    `- Boulder Position: ${state.boulderPosition}`,
+    "",
+    "## Active Memory Seeds",
     "",
   ];
 
   state.agents.forEach((agent) => {
-    lines.push(`- ${agent.name}: ${seedDisplay(agent, state.mode)}`);
+    const seed = agent.seeds[agent.activeSeed];
+    lines.push(`- ${agent.name}: Life ${agent.activeSeed} - ${seed.label}. ${seed.compactMemory}`);
   });
 
   lines.push("", "## Actions Taken", "");
@@ -33,6 +37,11 @@ export function buildMarkdownRunLog(state: RunState): string {
     lines.push(`- Turn ${event.turn} [${eventTypeLabel(event.type)}]: ${event.text}`);
   });
   if (state.events.length === 0) lines.push("- No turns advanced.");
+
+  lines.push("", "## Final Meters", "");
+  pressureKeys.forEach((key) => {
+    lines.push(`- ${pressureLabels[key]}: ${state.pressures[key]}`);
+  });
 
   lines.push("", "## Final Reality Layers", "", "### Base Reality", "");
   lines.push(...linesForList(state.layers.base));

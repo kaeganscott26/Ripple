@@ -9,6 +9,14 @@ export interface PressureValues {
   concern: number;
 }
 
+export interface PressureChange {
+  key: keyof PressureValues;
+  label: string;
+  before: number;
+  after: number;
+  delta: number;
+}
+
 export interface SeedData {
   label: string;
   compactMemory: string;
@@ -93,6 +101,16 @@ export interface LawState {
   formedTurn: number;
 }
 
+export interface TurnFeedback {
+  turn: number;
+  processedAction: string;
+  pressureChanges: PressureChange[];
+  agentReactionCount: number;
+  agentReactions: string[];
+  lawProgress: string[];
+  formedLaws: LawState[];
+}
+
 export interface RunState {
   mode: Mode;
   turn: number;
@@ -103,6 +121,7 @@ export interface RunState {
   laws: LawState[];
   events: EventEntry[];
   actionsTaken: Array<{ turn: number; action: BoulderAction; label: string }>;
+  lastTurnFeedback?: TurnFeedback;
   boulderName?: string;
   boulderPosition: "center" | "shifted";
 }

@@ -1,12 +1,15 @@
 import type { ArtifactData, LawState, RoomData, RunState } from "../engine/types";
+import type { RulesData } from "../engine/types";
+import { getLawProgress, pressureBuildMessages } from "../engine/lawProgress";
 
 interface BoardViewProps {
   state: RunState;
   room: RoomData;
   artifact: ArtifactData;
+  rules: RulesData;
 }
 
-export function BoardView({ state, room, artifact }: BoardViewProps) {
+export function BoardView({ state, room, artifact, rules }: BoardViewProps) {
   const boulderLabel = state.boulderName ?? artifact.name;
 
   return (
@@ -35,6 +38,7 @@ export function BoardView({ state, room, artifact }: BoardViewProps) {
       </div>
 
       <LawBadges laws={state.laws} />
+      <LawProgress state={state} rules={rules} />
     </section>
   );
 }
@@ -58,6 +62,51 @@ function LawBadges({ laws }: { laws: LawState[] }) {
       {laws.map((law) => (
         <span key={law.id}>{law.name}</span>
       ))}
+    </div>
+  );
+}
+
+function LawProgress({ state, rules }: { state: RunState; rules: RulesData }) {
+  const progress = getLawProgress(state, rules);
+
+  if (state.laws.length === 0) {
+    return (
+      <div className="law-progress">
+        <h3>Pressure Building</h3>
+        <ul className="compact-list">
+          {pressureBuildMessages(state).map((message) => (
+            <li key={message}>{message}</li>
+          ))}
+        </ul>
+        <h3>Law Thresholds</h3>
+        <ul className="compact-list">
+          {progress.map((entry) => (
+            <li key={entry.id}>
+              {entry.name}:{" "}
+              {entry.thresholdStatus
+                .map((threshold) => `${threshold.label} ${threshold.current}/${threshold.target}`)
+                .join(", ")}
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+
+  return (
+    <div className="law-progress">
+      <h3>Law Status</h3>
+      <ul className="compact-list">
+        {progress.map((entry) => (
+          <li key={entry.id}>
+            {entry.formed
+              ? `${entry.name} formed on turn ${entry.formedTurn}.`
+              : `${entry.name}: ${entry.thresholdStatus
+                  .map((threshold) => `${threshold.label} ${threshold.current}/${threshold.target}`)
+                  .join(", ")}`}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

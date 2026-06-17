@@ -6,11 +6,14 @@ import rulesJson from "./data/rules.json";
 import { AgentPanel } from "./components/AgentPanel";
 import { ArtifactPanel } from "./components/ArtifactPanel";
 import { BoardView } from "./components/BoardView";
+import { CurrentObjectivePanel } from "./components/CurrentObjectivePanel";
 import { EventLog } from "./components/EventLog";
 import { ExportRunButton } from "./components/ExportRunButton";
+import { HowToPlayPanel } from "./components/HowToPlayPanel";
 import { ModeSelect } from "./components/ModeSelect";
 import { RealityLayerPanel } from "./components/RealityLayerPanel";
 import { RoomPanel } from "./components/RoomPanel";
+import { TurnFeedbackPanel } from "./components/TurnFeedbackPanel";
 import { TurnControls } from "./components/TurnControls";
 import { advanceTurn } from "./engine/ruleEngine";
 import { createRunState } from "./engine/runState";
@@ -30,7 +33,7 @@ const agents = agentsJson as AgentData[];
 const rooms = roomsJson as RoomData[];
 const artifacts = artifactsJson as ArtifactData[];
 const rules = rulesJson as RulesData;
-const savedRunKey = "ripple-boulder-build-run-v0.2";
+const savedRunKey = "ripple-boulder-build-run-v0.3";
 
 const initialSeeds = agents.reduce<Record<string, SeedKey>>((acc, agent) => {
   acc[agent.id] = "A";
@@ -111,7 +114,7 @@ export default function App() {
     <main className="app game-layout">
       <header className="topbar">
         <div>
-          <p className="eyebrow">Ripple v0.2</p>
+          <p className="eyebrow">Ripple v0.3</p>
           <h1>The Boulder Build</h1>
         </div>
         <div className="topbar-actions">
@@ -124,11 +127,13 @@ export default function App() {
 
       <section className="main-grid">
         <div className="left-column">
-          <BoardView state={runState} room={currentRoom} artifact={boulder} />
+          <CurrentObjectivePanel />
+          <BoardView state={runState} room={currentRoom} artifact={boulder} rules={rules} />
           <RealityLayerPanel layers={runState.layers} />
         </div>
 
         <aside className="right-column">
+          <HowToPlayPanel />
           <TurnControls
             rules={rules}
             selectedAction={selectedAction}
@@ -137,6 +142,7 @@ export default function App() {
             onBoulderNameChange={setBoulderNameInput}
             onAdvance={handleAdvance}
           />
+          <TurnFeedbackPanel feedback={runState.lastTurnFeedback} />
           <RoomPanel room={currentRoom} />
           <ArtifactPanel artifact={boulder} state={runState} />
         </aside>
