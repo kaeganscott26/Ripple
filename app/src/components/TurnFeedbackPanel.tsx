@@ -22,6 +22,17 @@ export function TurnFeedbackPanel({ feedback }: { feedback?: TurnFeedback }) {
           </dl>
 
           <div>
+            <h3>Observer Text</h3>
+            {feedback.observerInput ? (
+              <p>
+                Classified as {feedback.observerInput.classification}: "{feedback.observerInput.text}".
+              </p>
+            ) : (
+              <p className="quiet-line">No new Observer text classified this turn.</p>
+            )}
+          </div>
+
+          <div>
             <h3>Meter Changes</h3>
             {feedback.pressureChanges.length === 0 ? (
               <p className="quiet-line">No meter changed.</p>

@@ -6,6 +6,7 @@ import { advanceTurn } from "./ruleEngine";
 import { createRunState } from "./runState";
 import { buildMarkdownRunLog } from "./runLog";
 import { pressureBuildMessages } from "./lawProgress";
+import { classifyObserverInput } from "./observerInput";
 import type { AgentData, RulesData, SeedKey } from "./types";
 
 const agents = agentsJson as AgentData[];
@@ -23,7 +24,36 @@ function newRun(seed: SeedKey = "A") {
   return createRunState(agents, { mode: "experimental", selectedSeeds: selectedSeeds(seed) });
 }
 
-describe("Boulder Build v0.3", () => {
+describe("Boulder Build v0.4", () => {
+  it("classifies Artifact Name observer input", () => {
+    expect(classifyObserverInput("Stone Anchor", 1).classification).toBe("Artifact Name");
+  });
+
+  it("classifies Crisis Label observer input", () => {
+    expect(classifyObserverInput("Food Drought", 1).classification).toBe("Crisis Label");
+    expect(classifyObserverInput("Crop Thief", 1).classification).toBe("Crisis Label");
+  });
+
+  it("classifies Policy Proposal observer input", () => {
+    expect(classifyObserverInput("Add Security agents to crop fields to prevent theft", 1).classification).toBe(
+      "Policy Proposal",
+    );
+  });
+
+  it("classifies Doctrine observer input", () => {
+    expect(classifyObserverInput("The fields must be protected", 1).classification).toBe("Doctrine");
+  });
+
+  it("classifies Era Marker observer input", () => {
+    expect(classifyObserverInput("Scientific Breakthrough in science and technology", 1).classification).toBe(
+      "Era Marker",
+    );
+  });
+
+  it("classifies Myth Seed observer input", () => {
+    expect(classifyObserverInput("The first theft created the Watchers", 1).classification).toBe("Myth Seed");
+  });
+
   it("Mystery mode assigns valid A/B/C seeds", () => {
     vi.spyOn(Math, "random").mockReturnValue(0.99);
 
@@ -76,6 +106,17 @@ describe("Boulder Build v0.3", () => {
     expect(next.events.some((event) => event.text.includes('"Burden"'))).toBe(true);
   });
 
+  it("Turn Feedback includes classification after naming", () => {
+    const state = newRun();
+    const next = advanceTurn(state, "name", rules, {
+      boulderName: "Add Security agents to crop fields to prevent theft",
+    });
+
+    expect(next.lastTurnFeedback?.observerInput?.classification).toBe("Policy Proposal");
+    expect(next.lastTurnFeedback?.observerInput?.interpretationNote).toContain("trying to govern the room");
+    expect(next.events.some((event) => event.type === "observer" && event.text.includes("Policy Proposal"))).toBe(true);
+  });
+
   it("Moving the Boulder changes Boulder position", () => {
     const state = newRun();
     const next = advanceTurn(state, "move", rules);
@@ -108,7 +149,7 @@ describe("Boulder Build v0.3", () => {
     ]);
   });
 
-  it("Markdown export includes mode, memory seeds, event log, meters, reality layers, laws, and Boulder state", () => {
+  it("Markdown export includes mode, memory seeds, event log, meters, reality layers, laws, Boulder state, and Observer Inputs", () => {
     const named = advanceTurn(newRun(), "name", rules, { boulderName: "Anchor" });
     const markdown = buildMarkdownRunLog(named);
 
@@ -118,6 +159,9 @@ describe("Boulder Build v0.3", () => {
     expect(markdown).toContain("Boulder Position: center");
     expect(markdown).toContain("## Active Memory Seeds");
     expect(markdown).toContain("Mara: Life A - Scarcity");
+    expect(markdown).toContain("## Observer Inputs");
+    expect(markdown).toContain('Turn 1: "Anchor"');
+    expect(markdown).toContain("Classification: Artifact Name");
     expect(markdown).toContain("## Event Log");
     expect(markdown).toContain("## Final Meters");
     expect(markdown).toContain("Named Weight:");

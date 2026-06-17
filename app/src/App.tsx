@@ -11,6 +11,7 @@ import { EventLog } from "./components/EventLog";
 import { ExportRunButton } from "./components/ExportRunButton";
 import { HowToPlayPanel } from "./components/HowToPlayPanel";
 import { ModeSelect } from "./components/ModeSelect";
+import { ObserverInputPanel } from "./components/ObserverInputPanel";
 import { RealityLayerPanel } from "./components/RealityLayerPanel";
 import { RoomPanel } from "./components/RoomPanel";
 import { TurnFeedbackPanel } from "./components/TurnFeedbackPanel";
@@ -33,7 +34,7 @@ const agents = agentsJson as AgentData[];
 const rooms = roomsJson as RoomData[];
 const artifacts = artifactsJson as ArtifactData[];
 const rules = rulesJson as RulesData;
-const savedRunKey = "ripple-boulder-build-run-v0.3";
+const savedRunKey = "ripple-boulder-build-run-v0.4";
 
 const initialSeeds = agents.reduce<Record<string, SeedKey>>((acc, agent) => {
   acc[agent.id] = "A";
@@ -69,6 +70,7 @@ export default function App() {
     [runState],
   );
   const boulder = artifacts.find((artifact) => artifact.id === "boulder") ?? artifacts[0];
+  const latestObserverInput = runState?.observerInputs.slice(-1)[0];
 
   function updateSeed(agentId: string, seed: SeedKey) {
     setSelectedSeeds((current) => ({ ...current, [agentId]: seed }));
@@ -114,7 +116,7 @@ export default function App() {
     <main className="app game-layout">
       <header className="topbar">
         <div>
-          <p className="eyebrow">Ripple v0.3</p>
+          <p className="eyebrow">Ripple v0.4</p>
           <h1>The Boulder Build</h1>
         </div>
         <div className="topbar-actions">
@@ -143,6 +145,7 @@ export default function App() {
             onAdvance={handleAdvance}
           />
           <TurnFeedbackPanel feedback={runState.lastTurnFeedback} />
+          <ObserverInputPanel input={latestObserverInput} />
           <RoomPanel room={currentRoom} />
           <ArtifactPanel artifact={boulder} state={runState} />
         </aside>

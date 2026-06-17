@@ -1,6 +1,13 @@
 export type Mode = "mystery" | "vague" | "experimental";
 export type SeedKey = "A" | "B" | "C";
 export type BoulderAction = "observe" | "name" | "move" | "ignore";
+export type ObserverInputType =
+  | "Artifact Name"
+  | "Crisis Label"
+  | "Policy Proposal"
+  | "Doctrine"
+  | "Era Marker"
+  | "Myth Seed";
 
 export interface PressureValues {
   witness: number;
@@ -85,7 +92,7 @@ export interface RealityLayers {
   institutional: string[];
 }
 
-export type EventType = "base" | "agent" | "social" | "institutional" | "law";
+export type EventType = "base" | "observer" | "agent" | "social" | "institutional" | "law";
 
 export interface EventEntry {
   id: string;
@@ -101,6 +108,14 @@ export interface LawState {
   formedTurn: number;
 }
 
+export interface ObserverInputClassification {
+  turn: number;
+  text: string;
+  classification: ObserverInputType;
+  explanation: string;
+  interpretationNote: string;
+}
+
 export interface TurnFeedback {
   turn: number;
   processedAction: string;
@@ -109,6 +124,7 @@ export interface TurnFeedback {
   agentReactions: string[];
   lawProgress: string[];
   formedLaws: LawState[];
+  observerInput?: ObserverInputClassification;
 }
 
 export interface RunState {
@@ -121,6 +137,7 @@ export interface RunState {
   laws: LawState[];
   events: EventEntry[];
   actionsTaken: Array<{ turn: number; action: BoulderAction; label: string }>;
+  observerInputs: ObserverInputClassification[];
   lastTurnFeedback?: TurnFeedback;
   boulderName?: string;
   boulderPosition: "center" | "shifted";

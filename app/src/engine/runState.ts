@@ -15,6 +15,7 @@ export function createRunState(agents: AgentData[], selection: SetupSelection): 
     laws: [],
     events: [],
     actionsTaken: [],
+    observerInputs: [],
     boulderPosition: "center",
   };
 }

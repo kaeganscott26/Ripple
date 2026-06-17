@@ -9,6 +9,7 @@ import type {
   RunState,
 } from "./types";
 import { lawProgressMessages } from "./lawProgress";
+import { classifyObserverInput } from "./observerInput";
 import { pressureChanges } from "./pressure";
 import { summarizeLayerShift } from "./realityLayers";
 
@@ -106,6 +107,7 @@ export function advanceTurn(
   const actionRule = rules.actions[action];
   const proposedName = options.boulderName?.trim() || "Consequence";
   const boulderName = action === "name" ? proposedName : state.boulderName;
+  const observerInput = action === "name" ? classifyObserverInput(proposedName, nextTurn) : undefined;
   const boulderPosition = action === "move" ? "shifted" : state.boulderPosition;
 
   let pressureDelta = addPressure(emptyPressure, actionRule.pressure);
@@ -142,6 +144,7 @@ export function advanceTurn(
     agents,
     pressures: addPressure(state.pressures, pressureDelta),
     actionsTaken: [...state.actionsTaken, { turn: nextTurn, action, label: actionRule.label }],
+    observerInputs: observerInput ? [...(state.observerInputs ?? []), observerInput] : (state.observerInputs ?? []),
     boulderName,
     boulderPosition,
   };
@@ -157,6 +160,14 @@ export function advanceTurn(
       : actionRule.baseEvent;
 
   const eventTexts = [
+    ...(observerInput
+      ? [
+          {
+            type: "observer" as const,
+            text: `The Observer entered a ${observerInput.classification}: "${observerInput.text}".`,
+          },
+        ]
+      : []),
     { type: "base" as const, text: baseEvent },
     { type: "social" as const, text: actionRule.socialSignal },
     ...agentEvents.map((text) => ({ type: "agent" as const, text })),
@@ -183,6 +194,7 @@ export function advanceTurn(
       agentReactions: agentEvents,
       lawProgress: lawProgressMessages(withLaws, rules),
       formedLaws: newLaws,
+      observerInput,
     },
   };
 }

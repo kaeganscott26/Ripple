@@ -32,6 +32,15 @@ export function buildMarkdownRunLog(state: RunState): string {
   });
   if (state.actionsTaken.length === 0) lines.push("- None");
 
+  lines.push("", "## Observer Inputs", "");
+  const observerInputs = state.observerInputs ?? [];
+  observerInputs.forEach((input) => {
+    lines.push(`- Turn ${input.turn}: "${input.text}"`);
+    lines.push(`  - Classification: ${input.classification}`);
+    lines.push(`  - Interpretation: ${input.interpretationNote}`);
+  });
+  if (observerInputs.length === 0) lines.push("- None");
+
   lines.push("", "## Event Log", "");
   state.events.forEach((event) => {
     lines.push(`- Turn ${event.turn} [${eventTypeLabel(event.type)}]: ${event.text}`);
