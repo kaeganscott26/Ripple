@@ -77,10 +77,12 @@ export interface RealityLayers {
   institutional: string[];
 }
 
+export type EventType = "base" | "agent" | "social" | "institutional" | "law";
+
 export interface EventEntry {
   id: string;
   turn: number;
-  layer: keyof RealityLayers | "agent" | "law";
+  type: EventType;
   text: string;
 }
 

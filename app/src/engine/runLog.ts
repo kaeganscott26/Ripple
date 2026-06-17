@@ -1,5 +1,6 @@
 import type { RunState } from "./types";
 import { seedDisplay } from "./memorySystem";
+import { eventTypeLabel } from "./eventLabels";
 
 function linesForList(items: string[]): string[] {
   return items.length > 0 ? items.map((item) => `- ${item}`) : ["- None"];
@@ -11,6 +12,7 @@ export function buildMarkdownRunLog(state: RunState): string {
     "",
     `Mode: ${state.mode}`,
     `Turns: ${state.turn}`,
+    `Boulder Name: ${state.boulderName ?? "Boulder"}`,
     "",
     "## Active Agents",
     "",
@@ -28,7 +30,7 @@ export function buildMarkdownRunLog(state: RunState): string {
 
   lines.push("", "## Event Log", "");
   state.events.forEach((event) => {
-    lines.push(`- Turn ${event.turn} [${event.layer}]: ${event.text}`);
+    lines.push(`- Turn ${event.turn} [${eventTypeLabel(event.type)}]: ${event.text}`);
   });
   if (state.events.length === 0) lines.push("- No turns advanced.");
 

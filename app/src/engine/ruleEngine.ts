@@ -2,6 +2,7 @@ import type {
   ActiveAgent,
   BoulderAction,
   EventEntry,
+  EventType,
   LawState,
   PressureValues,
   RulesData,
@@ -36,11 +37,11 @@ function actionTag(action: BoulderAction): string {
   return "ignored";
 }
 
-function createEvent(turn: number, layer: EventEntry["layer"], text: string, index: number): EventEntry {
+function createEvent(turn: number, type: EventType, text: string, index: number): EventEntry {
   return {
-    id: `${turn}-${layer}-${index}-${text.slice(0, 12)}`,
+    id: `${turn}-${type}-${index}-${text.slice(0, 12)}`,
     turn,
-    layer,
+    type,
     text,
   };
 }
@@ -89,10 +90,16 @@ function checkLaws(state: RunState, rules: RulesData, turn: number): LawState[] 
   return newLaws;
 }
 
-export function advanceTurn(state: RunState, action: BoulderAction, rules: RulesData): RunState {
+export function advanceTurn(
+  state: RunState,
+  action: BoulderAction,
+  rules: RulesData,
+  options: { boulderName?: string } = {},
+): RunState {
   const nextTurn = state.turn + 1;
   const actionRule = rules.actions[action];
-  const boulderName = action === "name" && !state.boulderName ? "Named Weight" : state.boulderName;
+  const proposedName = options.boulderName?.trim() || "Consequence";
+  const boulderName = action === "name" ? proposedName : state.boulderName;
   const boulderPosition = action === "move" ? "shifted" : state.boulderPosition;
 
   let pressureDelta = addPressure(emptyPressure, actionRule.pressure);
@@ -136,19 +143,24 @@ export function advanceTurn(state: RunState, action: BoulderAction, rules: Rules
   const withLaws = { ...partialState, laws };
   const layers = summarizeLayerShift(withLaws, action);
 
+  const baseEvent =
+    action === "name" && boulderName
+      ? `The Observer names the Boulder "${boulderName}".`
+      : actionRule.baseEvent;
+
   const eventTexts = [
-    { layer: "base" as const, text: actionRule.baseEvent },
-    { layer: "social" as const, text: actionRule.socialSignal },
-    ...agentEvents.map((text) => ({ layer: "agent" as const, text })),
+    { type: "base" as const, text: baseEvent },
+    { type: "social" as const, text: actionRule.socialSignal },
+    ...agentEvents.map((text) => ({ type: "agent" as const, text })),
     ...newLaws.map((law) => ({
-      layer: "law" as const,
+      type: "law" as const,
       text: `${law.name} formed: ${law.description}`,
     })),
   ];
 
   const events = [
     ...state.events,
-    ...eventTexts.map((entry, index) => createEvent(nextTurn, entry.layer, entry.text, state.events.length + index)),
+    ...eventTexts.map((entry, index) => createEvent(nextTurn, entry.type, entry.text, state.events.length + index)),
   ];
 
   return {

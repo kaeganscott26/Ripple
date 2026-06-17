@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import agentsJson from "./data/agents.json";
 import artifactsJson from "./data/artifacts.json";
 import roomsJson from "./data/rooms.json";
@@ -12,9 +12,8 @@ import { ModeSelect } from "./components/ModeSelect";
 import { RealityLayerPanel } from "./components/RealityLayerPanel";
 import { RoomPanel } from "./components/RoomPanel";
 import { TurnControls } from "./components/TurnControls";
-import { buildActiveAgents } from "./engine/memorySystem";
-import { createInitialLayers } from "./engine/realityLayers";
 import { advanceTurn } from "./engine/ruleEngine";
+import { createRunState } from "./engine/runState";
 import type {
   AgentData,
   ArtifactData,
@@ -31,34 +30,36 @@ const agents = agentsJson as AgentData[];
 const rooms = roomsJson as RoomData[];
 const artifacts = artifactsJson as ArtifactData[];
 const rules = rulesJson as RulesData;
+const savedRunKey = "ripple-boulder-build-run-v0.2";
 
 const initialSeeds = agents.reduce<Record<string, SeedKey>>((acc, agent) => {
   acc[agent.id] = "A";
   return acc;
 }, {});
 
-function createRunState(selection: SetupSelection): RunState {
-  const activeAgents = buildActiveAgents(agents, selection.mode, selection.selectedSeeds);
-
-  return {
-    mode: selection.mode,
-    turn: 0,
-    currentRoomId: "boulder-room",
-    agents: activeAgents,
-    pressures: { witness: 0, namedWeight: 0, institution: 0, concern: 0 },
-    layers: createInitialLayers(),
-    laws: [],
-    events: [],
-    actionsTaken: [],
-    boulderPosition: "center",
-  };
+function loadSavedRun(): RunState | null {
+  try {
+    const saved = window.localStorage.getItem(savedRunKey);
+    if (!saved) return null;
+    const parsed = JSON.parse(saved) as RunState;
+    return parsed?.mode && Array.isArray(parsed.events) ? parsed : null;
+  } catch {
+    return null;
+  }
 }
 
 export default function App() {
   const [selectedMode, setSelectedMode] = useState<Mode>("mystery");
   const [selectedSeeds, setSelectedSeeds] = useState<Record<string, SeedKey>>(initialSeeds);
   const [selectedAction, setSelectedAction] = useState<BoulderAction>("observe");
-  const [runState, setRunState] = useState<RunState | null>(null);
+  const [boulderNameInput, setBoulderNameInput] = useState("");
+  const [runState, setRunState] = useState<RunState | null>(() => loadSavedRun());
+
+  useEffect(() => {
+    if (runState) {
+      window.localStorage.setItem(savedRunKey, JSON.stringify(runState));
+    }
+  }, [runState]);
 
   const currentRoom = useMemo(
     () => rooms.find((room) => room.id === (runState?.currentRoomId ?? "boulder-room")) ?? rooms[1],
@@ -71,19 +72,24 @@ export default function App() {
   }
 
   function startRun(selection: SetupSelection) {
-    setRunState(createRunState(selection));
+    setRunState(createRunState(agents, selection));
   }
 
   function resetRun() {
+    window.localStorage.removeItem(savedRunKey);
     setRunState(null);
     setSelectedAction("observe");
+    setBoulderNameInput("");
   }
 
   function handleAdvance() {
     setRunState((current) => {
       if (!current) return current;
-      return advanceTurn(current, selectedAction, rules);
+      return advanceTurn(current, selectedAction, rules, { boulderName: boulderNameInput });
     });
+    if (selectedAction === "name") {
+      setBoulderNameInput("");
+    }
   }
 
   if (!runState) {
@@ -105,7 +111,7 @@ export default function App() {
     <main className="app game-layout">
       <header className="topbar">
         <div>
-          <p className="eyebrow">Ripple v0.1</p>
+          <p className="eyebrow">Ripple v0.2</p>
           <h1>The Boulder Build</h1>
         </div>
         <div className="topbar-actions">
@@ -126,7 +132,9 @@ export default function App() {
           <TurnControls
             rules={rules}
             selectedAction={selectedAction}
+            boulderNameInput={boulderNameInput}
             onActionChange={setSelectedAction}
+            onBoulderNameChange={setBoulderNameInput}
             onAdvance={handleAdvance}
           />
           <RoomPanel room={currentRoom} />

@@ -1,4 +1,5 @@
 import type { EventEntry } from "../engine/types";
+import { eventTypeLabel } from "../engine/eventLabels";
 
 export function EventLog({ events }: { events: EventEntry[] }) {
   return (
@@ -11,9 +12,9 @@ export function EventLog({ events }: { events: EventEntry[] }) {
           .slice()
           .reverse()
           .map((event) => (
-            <article className={`event-entry ${event.layer}`} key={event.id}>
+            <article className={`event-entry ${event.type}`} key={event.id}>
               <span>
-                Turn {event.turn} / {event.layer}
+                Turn {event.turn} / {eventTypeLabel(event.type)}
               </span>
               <p>{event.text}</p>
             </article>

@@ -3,13 +3,22 @@ import type { BoulderAction, RulesData } from "../engine/types";
 interface TurnControlsProps {
   rules: RulesData;
   selectedAction: BoulderAction;
+  boulderNameInput: string;
   onActionChange: (action: BoulderAction) => void;
+  onBoulderNameChange: (name: string) => void;
   onAdvance: () => void;
 }
 
 const actions: BoulderAction[] = ["observe", "name", "move", "ignore"];
 
-export function TurnControls({ rules, selectedAction, onActionChange, onAdvance }: TurnControlsProps) {
+export function TurnControls({
+  rules,
+  selectedAction,
+  boulderNameInput,
+  onActionChange,
+  onBoulderNameChange,
+  onAdvance,
+}: TurnControlsProps) {
   return (
     <section className="panel turn-panel">
       <p className="eyebrow">Turn</p>
@@ -27,6 +36,17 @@ export function TurnControls({ rules, selectedAction, onActionChange, onAdvance 
           </button>
         ))}
       </div>
+      {selectedAction === "name" && (
+        <label className="name-field">
+          <span>Boulder Name</span>
+          <input
+            onChange={(event) => onBoulderNameChange(event.target.value)}
+            placeholder="Consequence"
+            type="text"
+            value={boulderNameInput}
+          />
+        </label>
+      )}
       <button className="primary-action" onClick={onAdvance} type="button">
         Advance Ripple
       </button>

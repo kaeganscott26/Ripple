@@ -140,6 +140,16 @@ Until then:
 5. Build the first 2D board prototype.
 6. Add local-first AI behavior after the skeleton works.
 
+## Playable Prototype
+
+The first local prototype lives in `app/`.
+
+```bash
+cd app
+npm install
+npm run dev
+```
+
 ---
 
 ## Design Principle
