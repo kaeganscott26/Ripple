@@ -11,6 +11,7 @@ import type {
 import { lawProgressMessages } from "./lawProgress";
 import { classifyObserverInput } from "./observerInput";
 import { pressureChanges } from "./pressure";
+import { appendMetricSnapshot, calculateRealityMetrics } from "./realityMetrics";
 import { summarizeLayerShift } from "./realityLayers";
 
 const emptyPressure: PressureValues = { witness: 0, namedWeight: 0, institution: 0, concern: 0 };
@@ -152,6 +153,8 @@ export function advanceTurn(
   const newLaws = checkLaws(partialState, rules, nextTurn);
   const laws = [...state.laws, ...newLaws];
   const withLaws = { ...partialState, laws };
+  const metrics = calculateRealityMetrics(withLaws);
+  const meterHistory = appendMetricSnapshot(state.meterHistory ?? [], metrics);
   const layers = summarizeLayerShift(withLaws, action);
 
   const baseEvent =
@@ -184,6 +187,7 @@ export function advanceTurn(
 
   return {
     ...withLaws,
+    meterHistory,
     layers,
     events,
     lastTurnFeedback: {
@@ -195,6 +199,7 @@ export function advanceTurn(
       lawProgress: lawProgressMessages(withLaws, rules),
       formedLaws: newLaws,
       observerInput,
+      metrics,
     },
   };
 }

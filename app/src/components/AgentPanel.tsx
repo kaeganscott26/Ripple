@@ -1,5 +1,7 @@
 import type { ActiveAgent, Mode } from "../engine/types";
+import { agentPresentation } from "../engine/agentPresentation";
 import { seedDisplay } from "../engine/memorySystem";
+import { StateHalo } from "./StateHalo";
 
 interface AgentPanelProps {
   agents: ActiveAgent[];
@@ -16,17 +18,25 @@ export function AgentPanel({ agents, mode }: AgentPanelProps) {
           const memoryDetail = memoryLine(agent, mode);
           const fearDetail = fearLine(agent, mode);
           const behaviorDetail = behaviorLine(agent, mode);
+          const presentation = agentPresentation(agent);
 
           return (
             <article className="agent-card" key={agent.id}>
               <div className="agent-card-header">
                 <div>
                   <strong>{agent.name}</strong>
-                  <span>{agent.role}</span>
+                  <span>
+                    {presentation.tokenName} / {agent.role}
+                  </span>
                 </div>
                 <span>{seedDisplay(agent, mode)}</span>
               </div>
               <dl className="agent-memory-grid">
+                <dt>Halo</dt>
+                <dd className="halo-readout">
+                  <StateHalo state={presentation.haloState} />
+                  {presentation.haloLabel}
+                </dd>
                 <dt>Memory</dt>
                 <dd>{memoryDetail}</dd>
                 <dt>Pressure</dt>

@@ -5,15 +5,19 @@ import roomsJson from "./data/rooms.json";
 import rulesJson from "./data/rules.json";
 import { AgentPanel } from "./components/AgentPanel";
 import { ArtifactPanel } from "./components/ArtifactPanel";
-import { BoardView } from "./components/BoardView";
+import { BoardScaleToggle } from "./components/BoardScaleToggle";
 import { CurrentObjectivePanel } from "./components/CurrentObjectivePanel";
 import { EventLog } from "./components/EventLog";
 import { ExportRunButton } from "./components/ExportRunButton";
 import { HowToPlayPanel } from "./components/HowToPlayPanel";
 import { ModeSelect } from "./components/ModeSelect";
+import { MoodSummary } from "./components/MoodSummary";
 import { ObserverInputPanel } from "./components/ObserverInputPanel";
 import { RealityLayerPanel } from "./components/RealityLayerPanel";
+import { RealityMeters } from "./components/RealityMeters";
 import { RoomPanel } from "./components/RoomPanel";
+import { RoomBoardView } from "./components/RoomBoardView";
+import { SocietyBoardView } from "./components/SocietyBoardView";
 import { TurnFeedbackPanel } from "./components/TurnFeedbackPanel";
 import { TurnControls } from "./components/TurnControls";
 import { advanceTurn } from "./engine/ruleEngine";
@@ -21,6 +25,7 @@ import { createRunState } from "./engine/runState";
 import type {
   AgentData,
   ArtifactData,
+  BoardScaleView,
   BoulderAction,
   Mode,
   RoomData,
@@ -34,7 +39,7 @@ const agents = agentsJson as AgentData[];
 const rooms = roomsJson as RoomData[];
 const artifacts = artifactsJson as ArtifactData[];
 const rules = rulesJson as RulesData;
-const savedRunKey = "ripple-boulder-build-run-v0.4";
+const savedRunKey = "ripple-boulder-build-run-v0.5";
 
 const initialSeeds = agents.reduce<Record<string, SeedKey>>((acc, agent) => {
   acc[agent.id] = "A";
@@ -57,6 +62,7 @@ export default function App() {
   const [selectedSeeds, setSelectedSeeds] = useState<Record<string, SeedKey>>(initialSeeds);
   const [selectedAction, setSelectedAction] = useState<BoulderAction>("observe");
   const [boulderNameInput, setBoulderNameInput] = useState("");
+  const [boardScale, setBoardScale] = useState<BoardScaleView>("room");
   const [runState, setRunState] = useState<RunState | null>(() => loadSavedRun());
 
   useEffect(() => {
@@ -71,6 +77,7 @@ export default function App() {
   );
   const boulder = artifacts.find((artifact) => artifact.id === "boulder") ?? artifacts[0];
   const latestObserverInput = runState?.observerInputs.slice(-1)[0];
+  const latestMetrics = runState?.meterHistory.slice(-1)[0];
 
   function updateSeed(agentId: string, seed: SeedKey) {
     setSelectedSeeds((current) => ({ ...current, [agentId]: seed }));
@@ -116,7 +123,7 @@ export default function App() {
     <main className="app game-layout">
       <header className="topbar">
         <div>
-          <p className="eyebrow">Ripple v0.4</p>
+          <p className="eyebrow">Ripple v0.5</p>
           <h1>The Boulder Build</h1>
         </div>
         <div className="topbar-actions">
@@ -130,7 +137,13 @@ export default function App() {
       <section className="main-grid">
         <div className="left-column">
           <CurrentObjectivePanel />
-          <BoardView state={runState} room={currentRoom} artifact={boulder} rules={rules} />
+          <BoardScaleToggle value={boardScale} onChange={setBoardScale} />
+          {boardScale === "room" ? (
+            <RoomBoardView state={runState} room={currentRoom} artifact={boulder} rules={rules} />
+          ) : (
+            <SocietyBoardView state={runState} />
+          )}
+          <RealityMeters history={runState.meterHistory} />
           <RealityLayerPanel layers={runState.layers} />
         </div>
 
@@ -145,6 +158,7 @@ export default function App() {
             onAdvance={handleAdvance}
           />
           <TurnFeedbackPanel feedback={runState.lastTurnFeedback} />
+          <MoodSummary metrics={latestMetrics} />
           <ObserverInputPanel input={latestObserverInput} />
           <RoomPanel room={currentRoom} />
           <ArtifactPanel artifact={boulder} state={runState} />

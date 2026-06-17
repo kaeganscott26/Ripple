@@ -51,6 +51,12 @@ export function buildMarkdownRunLog(state: RunState): string {
   pressureKeys.forEach((key) => {
     lines.push(`- ${pressureLabels[key]}: ${state.pressures[key]}`);
   });
+  const latestMetrics = state.meterHistory.slice(-1)[0];
+  if (latestMetrics) {
+    lines.push(`- RUFS: ${latestMetrics.rufs}`);
+    lines.push(`- Mood Output: ${latestMetrics.mood} (${latestMetrics.label})`);
+    lines.push(`- Safety / Agency / Trust / Meaning: ${latestMetrics.safety} / ${latestMetrics.agency} / ${latestMetrics.trust} / ${latestMetrics.meaning}`);
+  }
 
   lines.push("", "## Final Reality Layers", "", "### Base Reality", "");
   lines.push(...linesForList(state.layers.base));

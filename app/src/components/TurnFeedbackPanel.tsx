@@ -33,6 +33,13 @@ export function TurnFeedbackPanel({ feedback }: { feedback?: TurnFeedback }) {
           </div>
 
           <div>
+            <h3>Frame Readout</h3>
+            <p>
+              RUFS {feedback.metrics.rufs}/100. Mood {feedback.metrics.mood}/100: {feedback.metrics.label}.
+            </p>
+          </div>
+
+          <div>
             <h3>Meter Changes</h3>
             {feedback.pressureChanges.length === 0 ? (
               <p className="quiet-line">No meter changed.</p>

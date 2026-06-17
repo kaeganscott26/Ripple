@@ -1,11 +1,11 @@
 import { buildActiveAgents } from "./memorySystem";
+import { calculateRealityMetrics } from "./realityMetrics";
 import { createInitialLayers } from "./realityLayers";
 import type { AgentData, RunState, SetupSelection } from "./types";
 
 export function createRunState(agents: AgentData[], selection: SetupSelection): RunState {
   const activeAgents = buildActiveAgents(agents, selection.mode, selection.selectedSeeds);
-
-  return {
+  const state: RunState = {
     mode: selection.mode,
     turn: 0,
     currentRoomId: "boulder-room",
@@ -16,6 +16,13 @@ export function createRunState(agents: AgentData[], selection: SetupSelection): 
     events: [],
     actionsTaken: [],
     observerInputs: [],
+    meterHistory: [],
     boulderPosition: "center",
+  };
+  const initialMetrics = calculateRealityMetrics(state);
+
+  return {
+    ...state,
+    meterHistory: [initialMetrics],
   };
 }

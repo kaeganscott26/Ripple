@@ -1,6 +1,8 @@
 export type Mode = "mystery" | "vague" | "experimental";
 export type SeedKey = "A" | "B" | "C";
 export type BoulderAction = "observe" | "name" | "move" | "ignore";
+export type BoardScaleView = "room" | "society";
+export type HaloState = "dim" | "bright" | "pulsing" | "double" | "clipped";
 export type ObserverInputType =
   | "Artifact Name"
   | "Crisis Label"
@@ -108,6 +110,20 @@ export interface LawState {
   formedTurn: number;
 }
 
+export interface RealityMetricSnapshot {
+  turn: number;
+  pressures: PressureValues;
+  rufs: number;
+  mood: number;
+  happiness: number;
+  safety: number;
+  agency: number;
+  trust: number;
+  meaning: number;
+  pressureLoad: number;
+  label: string;
+}
+
 export interface ObserverInputClassification {
   turn: number;
   text: string;
@@ -125,6 +141,7 @@ export interface TurnFeedback {
   lawProgress: string[];
   formedLaws: LawState[];
   observerInput?: ObserverInputClassification;
+  metrics: RealityMetricSnapshot;
 }
 
 export interface RunState {
@@ -138,6 +155,7 @@ export interface RunState {
   events: EventEntry[];
   actionsTaken: Array<{ turn: number; action: BoulderAction; label: string }>;
   observerInputs: ObserverInputClassification[];
+  meterHistory: RealityMetricSnapshot[];
   lastTurnFeedback?: TurnFeedback;
   boulderName?: string;
   boulderPosition: "center" | "shifted";

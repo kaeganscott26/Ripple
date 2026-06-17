@@ -1,4 +1,5 @@
 import type { BoulderAction, RealityLayers, RunState } from "./types";
+import { calculateRealityMetrics } from "./realityMetrics";
 
 export function createInitialLayers(): RealityLayers {
   return {
@@ -11,6 +12,7 @@ export function createInitialLayers(): RealityLayers {
 
 export function summarizeLayerShift(state: RunState, action: BoulderAction): RealityLayers {
   const named = state.boulderName ?? "the Boulder";
+  const metrics = calculateRealityMetrics(state);
   const baseByAction: Record<BoulderAction, string> = {
     observe: `Turn ${state.turn}: The Boulder was observed in place.`,
     name: `Turn ${state.turn}: The Boulder was named "${named}".`,
@@ -19,10 +21,10 @@ export function summarizeLayerShift(state: RunState, action: BoulderAction): Rea
   };
 
   const perceivedByAction: Record<BoulderAction, string> = {
-    observe: "Attention makes the object harder for agents to treat as background.",
-    name: "The name gives agents a handle they can repeat, resist, or formalize.",
-    move: "The changed path makes the object's consequence visible.",
-    ignore: "The ignored weight becomes a pressure some agents read as avoidance.",
+    observe: `Attention makes the object harder to treat as background. Mood: ${metrics.label}.`,
+    name: `The name gives agents a handle they can repeat, resist, or formalize. Meaning ${metrics.meaning}/100.`,
+    move: `The changed path makes consequence visible. Agency ${metrics.agency}/100.`,
+    ignore: `The ignored weight becomes pressure some agents read as avoidance. Safety ${metrics.safety}/100.`,
   };
 
   const socialByAction: Record<BoulderAction, string> = {

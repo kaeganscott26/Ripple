@@ -7,7 +7,13 @@ import { createRunState } from "./runState";
 import { buildMarkdownRunLog } from "./runLog";
 import { pressureBuildMessages } from "./lawProgress";
 import { classifyObserverInput } from "./observerInput";
-import type { AgentData, RulesData, SeedKey } from "./types";
+import {
+  appendMetricSnapshot,
+  buildSocietySummary,
+  calculateRealityMetrics,
+  deriveHaloState,
+} from "./realityMetrics";
+import type { AgentData, RealityMetricSnapshot, RulesData, SeedKey } from "./types";
 
 const agents = agentsJson as AgentData[];
 const rules = rulesJson as RulesData;
@@ -24,7 +30,7 @@ function newRun(seed: SeedKey = "A") {
   return createRunState(agents, { mode: "experimental", selectedSeeds: selectedSeeds(seed) });
 }
 
-describe("Boulder Build v0.4", () => {
+describe("Boulder Build v0.5", () => {
   it("classifies Artifact Name observer input", () => {
     expect(classifyObserverInput("Stone Anchor", 1).classification).toBe("Artifact Name");
   });
@@ -95,6 +101,7 @@ describe("Boulder Build v0.4", () => {
     expect(next.lastTurnFeedback?.pressureChanges.some((change) => change.key === "witness")).toBe(true);
     expect(next.lastTurnFeedback?.agentReactionCount).toBe(agents.length);
     expect(next.lastTurnFeedback?.lawProgress.length).toBeGreaterThan(0);
+    expect(next.lastTurnFeedback?.metrics.rufs).toBeGreaterThan(0);
   });
 
   it("Naming the Boulder increases named weight pressure", () => {
@@ -149,6 +156,54 @@ describe("Boulder Build v0.4", () => {
     ]);
   });
 
+  it("calculates RUFS as perceived reality pressure rises", () => {
+    const state = newRun();
+    const named = advanceTurn(state, "name", rules, { boulderName: "Food Drought" });
+
+    expect(named.meterHistory.slice(-1)[0]?.rufs).toBeGreaterThan(state.meterHistory.slice(-1)[0]?.rufs ?? 0);
+    expect(named.meterHistory.slice(-1)[0]?.meaning).toBeGreaterThan(state.meterHistory.slice(-1)[0]?.meaning ?? 0);
+  });
+
+  it("treats mood as an output of underlying pressure drivers", () => {
+    const calm = calculateRealityMetrics(newRun());
+    const pressured = calculateRealityMetrics({
+      ...newRun(),
+      pressures: { witness: 0, namedWeight: 0, institution: 10, concern: 10 },
+    });
+
+    expect(pressured.mood).toBeLessThan(calm.mood);
+    expect(pressured.safety).toBeLessThan(calm.safety);
+  });
+
+  it("derives readable halo states from agent pressure", () => {
+    expect(deriveHaloState({ witness: 0, namedWeight: 0, institution: 0, concern: 0 })).toBe("dim");
+    expect(deriveHaloState({ witness: 2, namedWeight: 0, institution: 0, concern: 0 })).toBe("bright");
+    expect(deriveHaloState({ witness: 8, namedWeight: 0, institution: 0, concern: 0 })).toBe("pulsing");
+    expect(deriveHaloState({ witness: 1, namedWeight: 4, institution: 4, concern: 0 })).toBe("double");
+    expect(deriveHaloState({ witness: 1, namedWeight: 1, institution: 0, concern: 6 })).toBe("clipped");
+  });
+
+  it("keeps compact metric history for trend strips", () => {
+    const history = Array.from({ length: 10 }, (_, index): RealityMetricSnapshot => ({
+      ...calculateRealityMetrics(newRun()),
+      turn: index,
+      rufs: index,
+    })).reduce<RealityMetricSnapshot[]>((acc, snapshot) => appendMetricSnapshot(acc, snapshot), []);
+
+    expect(history).toHaveLength(8);
+    expect(history[0].turn).toBe(2);
+    expect(history[7].turn).toBe(9);
+  });
+
+  it("summarizes Society View from current Boulder Room state", () => {
+    const named = advanceTurn(newRun(), "name", rules, { boulderName: "The first theft created the Watchers" });
+    const summary = buildSocietySummary(named);
+
+    expect(summary.frameQuestion).toContain("larger frame");
+    expect(summary.observerEffect).toContain("Myth Seed");
+    expect(summary.nestedStatus).toContain("Inner Board");
+  });
+
   it("Markdown export includes mode, memory seeds, event log, meters, reality layers, laws, Boulder state, and Observer Inputs", () => {
     const named = advanceTurn(newRun(), "name", rules, { boulderName: "Anchor" });
     const markdown = buildMarkdownRunLog(named);
@@ -165,6 +220,8 @@ describe("Boulder Build v0.4", () => {
     expect(markdown).toContain("## Event Log");
     expect(markdown).toContain("## Final Meters");
     expect(markdown).toContain("Named Weight:");
+    expect(markdown).toContain("RUFS:");
+    expect(markdown).toContain("Mood Output:");
     expect(markdown).toContain("## Final Reality Layers");
     expect(markdown).toContain("## Laws Formed");
     expect(markdown).toContain("[Base]");

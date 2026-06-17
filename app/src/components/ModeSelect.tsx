@@ -28,7 +28,7 @@ export function ModeSelect({
   return (
     <section className="setup-screen">
       <div className="setup-copy">
-        <p className="eyebrow">Ripple: The Boulder Build v0.4</p>
+        <p className="eyebrow">Ripple: The Boulder Build v0.5</p>
         <h1>The room is waiting.</h1>
       </div>
 
