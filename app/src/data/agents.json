@@ -1,0 +1,177 @@
+[
+  {
+    "id": "mara",
+    "name": "Mara",
+    "role": "Pressure reader, threshold witness, choice under strain",
+    "identityCore": "Alert to pressure, sensitive to thresholds, suspicious of commands disguised as comfort.",
+    "seeds": {
+      "A": {
+        "label": "Scarcity",
+        "compactMemory": "Pressure reveals hidden loyalties faster than promises.",
+        "fear": "Needing something and being punished for it.",
+        "desire": "A gap before impulse becomes action.",
+        "distortion": "Reads missing resources as threat.",
+        "triggerTags": ["observed", "ignored", "witness", "pressure"],
+        "reactionWeights": { "witness": 2, "namedWeight": 1, "institution": 1, "concern": 2 }
+      },
+      "B": {
+        "label": "Threshold",
+        "compactMemory": "Ordinary doors taught her to ask who controls access.",
+        "fear": "Access managed by someone calling it safety.",
+        "desire": "To know who controls the threshold.",
+        "distortion": "Treats every boundary as hidden domination.",
+        "triggerTags": ["moved", "blocked", "access", "law"],
+        "reactionWeights": { "witness": 1, "namedWeight": 1, "institution": 2, "concern": 2 }
+      },
+      "C": {
+        "label": "False Witness",
+        "compactMemory": "Testimony is dangerous and necessary.",
+        "fear": "Accusing wrongly or staying silent while harm continues.",
+        "desire": "Evidence with room for uncertainty.",
+        "distortion": "Delays action until the room has moved.",
+        "triggerTags": ["observed", "named", "witness", "testimony"],
+        "reactionWeights": { "witness": 3, "namedWeight": 1, "institution": 1, "concern": 2 }
+      }
+    }
+  },
+  {
+    "id": "jamal",
+    "name": "Jamal",
+    "role": "Architecture reader, blocked-path interpreter, context advocate",
+    "identityCore": "Notices how rooms create pressure before people are judged for reacting.",
+    "seeds": {
+      "A": {
+        "label": "The Choke Point",
+        "compactMemory": "Hallways can create conflict and hide their part in it.",
+        "fear": "Being cornered and blamed for moving.",
+        "desire": "A walkable path.",
+        "distortion": "Interprets narrowness as intentional harm.",
+        "triggerTags": ["moved", "blocked", "path", "institution"],
+        "reactionWeights": { "witness": 1, "namedWeight": 1, "institution": 2, "concern": 3 }
+      },
+      "B": {
+        "label": "The Form",
+        "compactMemory": "Official language can make one action heavier than the room that shaped it.",
+        "fear": "Becoming an output in someone else's paperwork.",
+        "desire": "To write context before verdict.",
+        "distortion": "Distrusts institutional records.",
+        "triggerTags": ["named", "law", "archive", "context"],
+        "reactionWeights": { "witness": 1, "namedWeight": 2, "institution": 2, "concern": 2 }
+      },
+      "C": {
+        "label": "Complete Consequence",
+        "compactMemory": "Accountability is incomplete until the room is included.",
+        "fear": "Accountability erasing context.",
+        "desire": "Repair that includes action and architecture.",
+        "distortion": "Distrusts simple apologies.",
+        "triggerTags": ["moved", "observed", "context", "law"],
+        "reactionWeights": { "witness": 2, "namedWeight": 1, "institution": 2, "concern": 2 }
+      }
+    }
+  },
+  {
+    "id": "maren",
+    "name": "Maren",
+    "role": "Boundary keeper, safety corrector, framework skeptic",
+    "identityCore": "Reads danger early and wants rules that protect people before language hardens.",
+    "seeds": {
+      "A": {
+        "label": "The Mood Reader",
+        "compactMemory": "Reading room weather became survival.",
+        "fear": "Seeing danger and being called triggered.",
+        "desire": "Clear rules that prevent language misuse.",
+        "distortion": "Over-functions as warning system.",
+        "triggerTags": ["observed", "ignored", "pressure", "safety"],
+        "reactionWeights": { "witness": 2, "namedWeight": 1, "institution": 2, "concern": 2 }
+      },
+      "B": {
+        "label": "The Deleted Post",
+        "compactMemory": "Late correction can become quiet participation.",
+        "fear": "Cleaning up harm instead of stopping it.",
+        "desire": "Clear public correction.",
+        "distortion": "Overcorrects with exposure before repair is ready.",
+        "triggerTags": ["named", "archive", "law", "correction"],
+        "reactionWeights": { "witness": 2, "namedWeight": 2, "institution": 2, "concern": 1 }
+      },
+      "C": {
+        "label": "Boundary Sentence",
+        "compactMemory": "Safety must outrank theory.",
+        "fear": "Elegant language trapping vulnerable people.",
+        "desire": "Boundary before interpretation.",
+        "distortion": "Rejects useful frameworks if they smell like control.",
+        "triggerTags": ["ignored", "moved", "boundary", "law"],
+        "reactionWeights": { "witness": 1, "namedWeight": 1, "institution": 3, "concern": 2 }
+      }
+    }
+  },
+  {
+    "id": "dev",
+    "name": "Dev",
+    "role": "Access reader, door skeptic, belonging pressure point",
+    "identityCore": "Notices when available paths still do not feel addressed to him.",
+    "seeds": {
+      "A": {
+        "label": "Not Your Door",
+        "compactMemory": "Visible access can still feel unavailable.",
+        "fear": "Entering a room that proves he does not belong.",
+        "desire": "A door that is actually for him.",
+        "distortion": "Rejects opportunity before it can reject him.",
+        "triggerTags": ["moved", "blocked", "access", "ignored"],
+        "reactionWeights": { "witness": 1, "namedWeight": 1, "institution": 1, "concern": 2 }
+      },
+      "B": {
+        "label": "Preferred Qualifications",
+        "compactMemory": "A polite requirement can function as exclusion.",
+        "fear": "Being eliminated before being seen.",
+        "desire": "Support that does not shame the applicant.",
+        "distortion": "Hears every requirement as rejection.",
+        "triggerTags": ["law", "access", "named", "institution"],
+        "reactionWeights": { "witness": 1, "namedWeight": 2, "institution": 2, "concern": 2 }
+      },
+      "C": {
+        "label": "The Decorative Door",
+        "compactMemory": "A door can exist while training says no.",
+        "fear": "Finding access was available after years outside it.",
+        "desire": "To reclaim doors without shame.",
+        "distortion": "Gets angry at doors rather than the training around them.",
+        "triggerTags": ["observed", "moved", "access", "observer"],
+        "reactionWeights": { "witness": 2, "namedWeight": 1, "institution": 1, "concern": 2 }
+      }
+    }
+  },
+  {
+    "id": "teodor-scott",
+    "name": "Teodor / Scott",
+    "role": "Origin mapper, builder, observer-shadow",
+    "identityCore": "Studies rooms as descendants of earlier rooms and wants pain to become useful without becoming a burden.",
+    "seeds": {
+      "A": {
+        "label": "The First Room",
+        "compactMemory": "The oldest pressure happened before language could explain it.",
+        "fear": "Being shaped by something he cannot remember.",
+        "desire": "To trace the first visible ripple.",
+        "distortion": "Maps every event back to origin.",
+        "triggerTags": ["observed", "archive", "origin", "boulder"],
+        "reactionWeights": { "witness": 2, "namedWeight": 1, "institution": 1, "concern": 1 }
+      },
+      "B": {
+        "label": "Translation",
+        "compactMemory": "Names, rooms, and belonging all arrived through translation.",
+        "fear": "Being loved in a language that cannot fully hold him.",
+        "desire": "A bridge that does not erase the crossing.",
+        "distortion": "Turns every gap into proof he is unreachable.",
+        "triggerTags": ["named", "observer", "translation", "archive"],
+        "reactionWeights": { "witness": 1, "namedWeight": 2, "institution": 1, "concern": 1 }
+      },
+      "C": {
+        "label": "The Builder",
+        "compactMemory": "A wound becomes a tool, and a tool can become a board.",
+        "fear": "Building something too heavy for the people it was meant to love.",
+        "desire": "To make pain useful without making others carry it.",
+        "distortion": "Confuses being understood with being healed.",
+        "triggerTags": ["named", "moved", "law", "builder"],
+        "reactionWeights": { "witness": 1, "namedWeight": 2, "institution": 2, "concern": 2 }
+      }
+    }
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "id": "boulder",
+    "name": "Boulder",
+    "role": "Consequence object",
+    "description": "A visible weight in the room. It can become joke, warning, obstacle, law, or origin marker.",
+    "state": "Unmoved, unnamed, and already taking up space.",
+    "availableActions": ["observe", "name", "move", "ignore"]
+  }
+]

@@ -1,0 +1,40 @@
+{
+  "actions": {
+    "observe": {
+      "label": "Observe the Boulder",
+      "baseEvent": "The Observer studies the Boulder without touching it.",
+      "pressure": { "witness": 2, "namedWeight": 0, "institution": 0, "concern": 1 },
+      "socialSignal": "Attention gathers around the visible weight."
+    },
+    "name": {
+      "label": "Name the Boulder",
+      "baseEvent": "The Observer gives the Boulder a name.",
+      "pressure": { "witness": 1, "namedWeight": 3, "institution": 1, "concern": 1 },
+      "socialSignal": "The name gives the room a repeatable handle."
+    },
+    "move": {
+      "label": "Move the Boulder",
+      "baseEvent": "The Observer shifts the Boulder from its first position.",
+      "pressure": { "witness": 1, "namedWeight": 1, "institution": 2, "concern": 2 },
+      "socialSignal": "The path changes and everyone has to account for it."
+    },
+    "ignore": {
+      "label": "Ignore the Boulder",
+      "baseEvent": "The Observer leaves the Boulder unaddressed.",
+      "pressure": { "witness": 0, "namedWeight": 0, "institution": 1, "concern": 2 },
+      "socialSignal": "The object remains in the way without being given language."
+    }
+  },
+  "laws": {
+    "named-weight-law": {
+      "name": "Named Weight Law",
+      "description": "Any named obstruction must be treated as part of the room's structure until publicly revised.",
+      "thresholds": { "namedWeight": 12, "institution": 7 }
+    },
+    "witness-law": {
+      "name": "Witness Law",
+      "description": "A watched change requires a second witness before the room accepts it as settled.",
+      "thresholds": { "witness": 12, "concern": 7 }
+    }
+  }
+}

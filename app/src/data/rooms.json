@@ -1,0 +1,26 @@
+[
+  {
+    "id": "doorway-room",
+    "name": "Doorway Room",
+    "function": "Entry and consent to observe.",
+    "pressure": "First contact",
+    "artifactIds": [],
+    "adjacentRoomIds": ["boulder-room"]
+  },
+  {
+    "id": "boulder-room",
+    "name": "Boulder Room",
+    "function": "Weight and consequence made visible.",
+    "pressure": "Consequence, obstruction, naming, delayed recognition",
+    "artifactIds": ["boulder"],
+    "adjacentRoomIds": ["doorway-room", "archive-room"]
+  },
+  {
+    "id": "archive-room",
+    "name": "Archive Room",
+    "function": "Record the run without settling its meaning.",
+    "pressure": "Documentation",
+    "artifactIds": [],
+    "adjacentRoomIds": ["boulder-room"]
+  }
+]
