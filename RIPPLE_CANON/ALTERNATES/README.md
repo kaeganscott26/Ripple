@@ -36,7 +36,13 @@ canonical chapter → alternate mirror → board space → dice event → artifa
 
 ## 🗺️ Reading / Board Order
 
-1. [[ALTERNATE_01_THE_UNADOPTED_ROOM]] — mirrors [[Chapter 01]]
+### [[Chapter 01]] — The First Ripple
+
+- [[ALTERNATE_01_THE_UNADOPTED_ROOM]] — Branch 01A / witness without rescue
+- [[ALTERNATE_01B_THE_BROADCAST_THAT_NEVER_REACHED]] — Branch 01B / signal without receipt
+
+### Chapter 02 onward
+
 2. [[ALTERNATE_02_THE_TRIGGER_THAT_PASSED]] — mirrors [[Chapter 02]]
 3. [[ALTERNATE_03_THE_ROOM_THAT_COUNTED_ITSELF]] — mirrors [[Chapter 03]]
 4. [[ALTERNATE_04_THE_LAYER_THAT_WAS_NOT_MISSED]] — mirrors [[Chapter 04]]
