@@ -71,9 +71,14 @@ canonical chapter → alternate mirror → board space → dice event → artifa
 - [[ALTERNATE_07_THE_OBSERVER_WHO_ACTED]] — Branch 07A / survival without reclassification
 - [[ALTERNATE_07B_THE_CLASSROOM_THAT_CLOSED_THE_SCREEN]] — Branch 07B / care before broadcast repetition
 
-### Chapter 08 onward
+### [[Chapter 08]] — 0826
 
-8. [[ALTERNATE_08_THE_DATE_THAT_ANSWERED]] — mirrors [[Chapter 08]]
+- [[ALTERNATE_08_THE_DATE_THAT_ANSWERED]] — Branch 08A / love as load
+- [[ALTERNATE_08B_THE_GAME_THAT_REACHED_HIM]] — Branch 08B / invitation without demand
+- [[KAEGAN]] — conditional character / Player 0826
+
+### Chapter 09 onward
+
 9. [[ALTERNATE_09_THE_KITCHEN_THAT_HELD]] — mirrors [[Chapter 09]]
 10. [[ALTERNATE_10_THE_SIGNAL_THAT_ARRIVED]] — mirrors [[Chapter 10]]
 11. [[ALTERNATE_11_THE_LOOP_THAT_BROKE]] — mirrors [[Chapter 11]]
