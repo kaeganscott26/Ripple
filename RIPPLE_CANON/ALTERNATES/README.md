@@ -41,9 +41,13 @@ canonical chapter → alternate mirror → board space → dice event → artifa
 - [[ALTERNATE_01_THE_UNADOPTED_ROOM]] — Branch 01A / witness without rescue
 - [[ALTERNATE_01B_THE_BROADCAST_THAT_NEVER_REACHED]] — Branch 01B / signal without receipt
 
-### Chapter 02 onward
+### [[Chapter 02]] — Trigger
 
-2. [[ALTERNATE_02_THE_TRIGGER_THAT_PASSED]] — mirrors [[Chapter 02]]
+- [[ALTERNATE_02_THE_TRIGGER_THAT_PASSED]] — Branch 02A / instruction before gap
+- [[ALTERNATE_02B_THE_WITNESS_WHO_ARRIVED_FIRST]] — Branch 02B / witness before command
+
+### Chapter 03 onward
+
 3. [[ALTERNATE_03_THE_ROOM_THAT_COUNTED_ITSELF]] — mirrors [[Chapter 03]]
 4. [[ALTERNATE_04_THE_LAYER_THAT_WAS_NOT_MISSED]] — mirrors [[Chapter 04]]
 5. [[ALTERNATE_05_THE_SHARED_REALITY_THAT_SPLIT]] — mirrors [[Chapter 05]]
