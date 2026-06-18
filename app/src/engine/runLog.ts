@@ -1,11 +1,20 @@
-import type { RunState } from "./types";
+import type { CharacterPathState, RunState } from "./types";
 import { nestedSimulationProgress, normalizeBoardTurnState } from "./boardTurnEngine";
-import { eventTypeLabel } from "./eventLabels";
 import { formatMetricValue } from "./formatting";
 import { pressureKeys, pressureLabels } from "./pressure";
 
 function linesForList(items: string[]): string[] {
   return items.length > 0 ? items.map((item) => `- ${item}`) : ["- None"];
+}
+
+function branchLine(path: CharacterPathState, name: string): string {
+  return [
+    `- ${name}: ${path.currentBranch}`,
+    `  - Position: ${path.currentPosition + 1}`,
+    `  - Artifacts: ${path.carriedArtifacts.join(", ") || "None"}`,
+    `  - Counts: ${path.interventionCount} intervention / ${path.rippleCount} ripple / ${path.missedInterventionCount} missed`,
+    `  - Ending Tendency: ${path.currentEndingTendency}`,
+  ].join("\n");
 }
 
 export function buildMarkdownRunLog(state: RunState): string {
@@ -14,45 +23,68 @@ export function buildMarkdownRunLog(state: RunState): string {
   const lines: string[] = [
     "# Ripple: Living Board Run Log",
     "",
+    "The board is the story.",
+    "The dice render the reality.",
+    "The artifact bends the path.",
+    "The run log records the alternate reality.",
+    "",
     "## Run Summary",
     "",
-    `- Run Mode: ${state.mode}`,
+    `- Mode: ${state.mode}`,
     `- Round Count: ${Math.max(0, boardTurn.currentRound - 1)}`,
     `- Turn Count: ${state.turn}`,
-    `- Board Turns: ${boardTurn.currentTurn}`,
-    `- Boulder Name: ${state.boulderName ?? "Boulder"}`,
-    `- Boulder Position: ${state.boulderPosition}`,
+    `- Character Turn Order: ${state.agents.map((agent) => agent.name).join(" -> ")}`,
+    `- Current Room State: ${boardTurn.roomState}`,
+    `- Current Society State: ${boardTurn.societyState}`,
     "",
-    "## Active Memory Seeds",
+    "## Turn Records",
     "",
   ];
 
+  boardTurn.landings.forEach((landing) => {
+    lines.push(`### Turn ${landing.turn} - ${landing.agentName}`, "");
+    lines.push("Movement dice:");
+    lines.push(`${landing.dice.dieA} + ${landing.dice.dieB} = ${landing.dice.total}`, "");
+    lines.push("Reality die:");
+    lines.push(`${landing.dice.realityDie} - ${landing.dice.realityOutcome}`, "");
+    lines.push("Artifact die:");
+    lines.push(`${landing.dice.artifactDie} - ${landing.artifactName}`, "");
+    lines.push("Landed on:");
+    lines.push(
+      `${landing.alternateId?.toUpperCase().replace("-", "_") ?? "ALTERNATE"} / Space ${landing.spaceIndex ?? landing.toPosition + 1} - ${landing.spaceTitle}`,
+      "",
+    );
+    lines.push(`Mirrors: ${landing.mirrorsChapter ?? landing.sourceTitle}`);
+    lines.push(`Source: ${landing.sourceFile}`, "");
+    lines.push("What the board reveals:");
+    lines.push(landing.plainMeaning, "");
+    lines.push(`${landing.agentName}'s branch:`);
+    lines.push(landing.branchText, "");
+    lines.push("Artifact effect:");
+    lines.push(landing.artifactEffect, "");
+    lines.push("Result:");
+    lines.push(landing.resultText, "");
+    lines.push("Room effect:");
+    lines.push(landing.roomResponse, "");
+    lines.push("Society effect:");
+    lines.push(landing.societyResponse, "");
+  });
+  if (boardTurn.landings.length === 0) lines.push("- No turns rolled yet.");
+
+  lines.push("", "## Character Branch State", "");
   state.agents.forEach((agent) => {
-    const seed = agent.seeds[agent.activeSeed];
-    lines.push(`- ${agent.name}: Life ${agent.activeSeed} - ${seed.label}. ${seed.compactMemory}`);
+    const path = boardTurn.characterPaths[agent.id];
+    if (path) lines.push(branchLine(path, agent.name));
   });
 
-  lines.push("", "## Actions Taken", "");
-  state.actionsTaken.forEach((entry) => {
-    lines.push(`- Turn ${entry.turn}: ${entry.label}`);
-  });
-  if (state.actionsTaken.length === 0) lines.push("- None");
-
-  lines.push("", "## Dice Rolls", "");
-  boardTurn.landings.forEach((landing) => {
-    lines.push(`- Turn ${landing.turn}: ${landing.agentName} rolled ${landing.dice.dieA} + ${landing.dice.dieB} = ${landing.dice.total}`);
-  });
-  if (boardTurn.landings.length === 0) lines.push("- None");
-
-  lines.push("", "## Board Spaces Landed On", "");
-  boardTurn.landings.forEach((landing) => {
-    lines.push(`- Turn ${landing.turn}: ${landing.agentName} landed on ${landing.spaceTitle}`);
-    lines.push(`  - Source: ${landing.sourceFile}`);
-    lines.push(`  - Meaning: ${landing.plainMeaning}`);
-    lines.push(`  - ${landing.agentName}'s Reading: ${landing.characterReading}`);
-    lines.push(`  - Result: ${landing.roomResponse}`);
-  });
-  if (boardTurn.landings.length === 0) lines.push("- None");
+  lines.push("", "## Alternate Reality Counts", "");
+  lines.push(`- Intervention Points: ${boardTurn.landings.filter((landing) => landing.revealedOutcome === "Intervention Point").length}`);
+  lines.push(`- Ripple Events: ${boardTurn.landings.filter((landing) => landing.revealedOutcome === "Ripple Event").length}`);
+  lines.push(
+    `- Missed Intervention Points: ${boardTurn.landings.filter((landing) => landing.revealedOutcome === "Missed Intervention Point").length}`,
+  );
+  lines.push(`- Artifacts Used: ${boardTurn.artifactsUsed.join(", ") || "None"}`);
+  lines.push(`- Sources Contacted: ${boardTurn.sourceContact.join(", ") || "None"}`);
 
   lines.push("", "## Round Summaries", "");
   boardTurn.roundSummaries.forEach((summary) => {
@@ -62,71 +94,7 @@ export function buildMarkdownRunLog(state: RunState): string {
     lines.push(`  - Strongest Meter Change: ${summary.strongestMeterChange}`);
     lines.push(`  - Laws Formed: ${summary.lawsFormed.map((law) => law.name).join(", ") || "None"}`);
   });
-  if (boardTurn.roundSummaries.length === 0) lines.push("- None");
-
-  lines.push("", "## Observer Inputs", "");
-  const observerInputs = state.observerInputs ?? [];
-  observerInputs.forEach((input) => {
-    lines.push(`- Turn ${input.turn}: "${input.text}"`);
-    lines.push(`  - Classification: ${input.classification}`);
-    lines.push(`  - Interpretation: ${input.interpretationNote}`);
-  });
-  if (observerInputs.length === 0) lines.push("- None");
-
-  lines.push("", "## Interpretation History", "");
-  const interpretationHistory = state.interpretationHistory ?? [];
-  interpretationHistory.forEach((entry) => {
-    const classification = entry.observerClassification ? ` / ${entry.observerClassification}` : "";
-    const target = entry.targetCharacterId ? ` / target ${entry.targetCharacterId}` : "";
-    lines.push(`- Turn ${entry.turn}: ${entry.action}${classification}${target}`);
-    lines.push(`  - ${entry.roomInterpretation}`);
-  });
-  if (interpretationHistory.length === 0) lines.push("- None");
-
-  lines.push("", "## Story Objects Used", "");
-  const storyObjectUses = state.storyObjectUses ?? [];
-  storyObjectUses.forEach((use) => {
-    lines.push(`- Turn ${use.turn}: ${use.objectName}`);
-    lines.push(`  - Source: ${use.sourceFile}`);
-    lines.push(`  - Target: ${use.targetName ?? "Room"}`);
-    lines.push(`  - Meaning: ${use.plainLanguageMeaning}`);
-    lines.push(`  - Result: ${use.resultingInterpretation}`);
-  });
-  if (storyObjectUses.length === 0) lines.push("- None");
-
-  lines.push("", "## Story Sources Used", "");
-  const sourceUses = [
-    ...storyObjectUses.filter((use) => use.objectType !== "board-space").map((use) => ({
-      turn: use.turn,
-      name: use.objectName,
-      sourceFile: use.sourceFile,
-      targetName: use.targetName ?? "Room",
-      meaning: use.plainLanguageMeaning,
-      result: use.resultingInterpretation,
-    })),
-    ...boardTurn.landings.map((landing) => ({
-      turn: landing.turn,
-      name: landing.spaceTitle,
-      sourceFile: landing.sourceFile,
-      targetName: landing.agentName,
-      meaning: landing.plainMeaning,
-      result: landing.characterReading,
-    })),
-  ];
-  sourceUses.forEach((use) => {
-    lines.push(`- Turn ${use.turn}: ${use.name}`);
-    lines.push(`  - Source File: ${use.sourceFile}`);
-    lines.push(`  - Target: ${use.targetName}`);
-    lines.push(`  - Plain Meaning: ${use.meaning}`);
-    lines.push(`  - Resulting Interpretation: ${use.result}`);
-  });
-  if (sourceUses.length === 0) lines.push("- None");
-
-  lines.push("", "## Event Log", "");
-  state.events.forEach((event) => {
-    lines.push(`- Turn ${event.turn} [${eventTypeLabel(event.type)}]: ${event.text}`);
-  });
-  if (state.events.length === 0) lines.push("- No turns advanced.");
+  if (boardTurn.roundSummaries.length === 0) lines.push("- None yet.");
 
   lines.push("", "## Final Meters", "");
   pressureKeys.forEach((key) => {
@@ -141,7 +109,12 @@ export function buildMarkdownRunLog(state: RunState): string {
     );
   }
 
-  lines.push("", "## Final Reality Layers", "", "### Base Reality", "");
+  lines.push("", "## Final Room State", "");
+  lines.push(boardTurn.roomState);
+  lines.push("", "## Final Society State", "");
+  lines.push(boardTurn.societyState);
+
+  lines.push("", "## Reality Layers", "", "### Base Reality", "");
   lines.push(...linesForList(state.layers.base));
   lines.push("", "### Perceived Reality", "");
   lines.push(...linesForList(state.layers.perceived));
@@ -150,16 +123,8 @@ export function buildMarkdownRunLog(state: RunState): string {
   lines.push("", "### Institutional Reality", "");
   lines.push(...linesForList(state.layers.institutional));
 
-  lines.push("", "## Laws Formed", "");
-  if (state.laws.length === 0) {
-    lines.push("- None");
-  } else {
-    state.laws.forEach((law) => {
-      lines.push(`- Turn ${law.formedTurn}: ${law.name} - ${law.description}`);
-    });
-  }
-
   lines.push("", "## Nested Simulation Progress", "");
+  lines.push("Goal: Create the room that creates the next room.");
   lines.push(`- Rounds: ${nestedProgress.completedRounds}/${nestedProgress.roundGoal}`);
   lines.push(`- Characters Landed: ${nestedProgress.charactersLanded}/${nestedProgress.characterGoal}`);
   lines.push(`- Laws Formed: ${nestedProgress.lawsFormed}/${nestedProgress.lawGoal}`);
@@ -169,7 +134,12 @@ export function buildMarkdownRunLog(state: RunState): string {
   lines.push(
     nestedProgress.unlocked
       ? "- Status: Ready to create the room that creates the next room."
-      : `- Remaining: ${nestedProgress.remaining.join("; ")}`,
+      : `- Locked: ${nestedProgress.remaining.join("; ")}`,
+  );
+
+  lines.push("", "## Boundary", "");
+  lines.push(
+    "Ripple is fictional and symbolic. It is not proof of simulation, a diagnosis tool, a command system, or a replacement for support or care.",
   );
 
   return `${lines.join("\n")}\n`;
@@ -181,7 +151,7 @@ export function downloadMarkdownRunLog(state: RunState): void {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `ripple-boulder-run-turn-${state.turn}.md`;
+  link.download = `ripple-living-board-turn-${state.turn}.md`;
   document.body.appendChild(link);
   link.click();
   link.remove();

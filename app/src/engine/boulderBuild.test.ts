@@ -40,7 +40,7 @@ import {
   calculateRealityMetrics,
   deriveHaloState,
 } from "./realityMetrics";
-import type { AgentData, LayerCard, RealityMetricSnapshot, RulesData, SeedKey, StoryBoulder } from "./types";
+import type { AgentData, DiceRoll, LayerCard, RealityMetricSnapshot, RulesData, SeedKey, StoryBoulder } from "./types";
 
 const agents = agentsJson as AgentData[];
 const layerCards = layerCardsJson as LayerCard[];
@@ -60,19 +60,42 @@ function newRun(seed: SeedKey = "A") {
   return createRunState(agents, { mode: "experimental", selectedSeeds: selectedSeeds(seed) });
 }
 
+function testRoll(dieA: number, dieB: number, realityDie = 1, artifactDie = 1): DiceRoll {
+  return {
+    dieA,
+    dieB,
+    total: dieA + dieB,
+    realityDie,
+    artifactDie,
+    realityOutcome: realityDie <= 2 ? "Intervention Point" : realityDie <= 4 ? "Ripple Event" : "Missed Intervention Point",
+    artifact: {
+      die: artifactDie,
+      artifactName: "No Artifact",
+      effectType: "none",
+      effectText: "No artifact enters this turn.",
+    },
+  };
+}
+
 describe("Boulder Build v0.8.1", () => {
-  it("rollDice returns valid 2d6 data", () => {
-    const values = [0, 0.999];
+  it("rollDice returns valid four-dice data", () => {
+    const values = [0, 0.999, 0.34, 0.84];
     const dice = rollDice(() => values.shift() ?? 0.5);
 
-    expect(dice).toEqual({ dieA: 1, dieB: 6, total: 7 });
+    expect(dice.dieA).toBe(1);
+    expect(dice.dieB).toBe(6);
+    expect(dice.total).toBe(7);
+    expect(dice.realityDie).toBe(3);
+    expect(dice.realityOutcome).toBe("Ripple Event");
+    expect(dice.artifactDie).toBe(6);
+    expect(dice.artifact.artifactName).toBeDefined();
   });
 
   it("board movement resolves a valid landing space", () => {
-    expect(storySpaces).toHaveLength(12);
+    expect(storySpaces).toHaveLength(204);
     expect(landingPosition(0, 7, storySpaces)).toBe(7);
 
-    const next = resolveBoardTurn(newRun(), storySpaces, rules, { dieA: 3, dieB: 4, total: 7 });
+    const next = resolveBoardTurn(newRun(), storySpaces, rules, testRoll(3, 4));
     const landing = next.boardTurn.landings[0];
 
     expect(landing.agentName).toBe("Mara");
@@ -85,13 +108,13 @@ describe("Boulder Build v0.8.1", () => {
   });
 
   it("current agent turn order advances and round increments after all agents act", () => {
-    const first = resolveBoardTurn(newRun(), storySpaces, rules, { dieA: 1, dieB: 1, total: 2 });
+    const first = resolveBoardTurn(newRun(), storySpaces, rules, testRoll(1, 1));
 
     expect(first.boardTurn.currentAgentId).toBe("jamal");
     expect(first.boardTurn.currentRound).toBe(1);
 
     const afterRound = first.agents.slice(1).reduce(
-      (state) => resolveBoardTurn(state, storySpaces, rules, { dieA: 1, dieB: 1, total: 2 }),
+      (state) => resolveBoardTurn(state, storySpaces, rules, testRoll(1, 1)),
       first,
     );
 
@@ -108,7 +131,7 @@ describe("Boulder Build v0.8.1", () => {
     expect(previews[0].rollTotal).toBe(2);
     expect(previews[0].visibility).toBe("full");
     expect(previews[0].label).toBe(storySpaces[2].title);
-    expect(previews[0].detail).toContain("Layer pull");
+    expect(previews[0].detail).toContain("Intervention:");
   });
 
   it("Mystery and Vague modes change possible landing space info", () => {
@@ -124,7 +147,7 @@ describe("Boulder Build v0.8.1", () => {
   it("Story Weight and Board Space event logs do not use new-name language", () => {
     const boulder = storyBoulderById(storyBoulders, "complete-consequence");
     const storyTurn = introduceStoryBoulder(newRun(), boulder!, layerCards, rules, "jamal");
-    const boardTurn = resolveBoardTurn(newRun(), storySpaces, rules, { dieA: 3, dieB: 4, total: 7 });
+    const boardTurn = resolveBoardTurn(newRun(), storySpaces, rules, testRoll(3, 4));
 
     expect(storyTurn.events.map((event) => event.text).join(" ")).not.toContain("new name");
     expect(boardTurn.events.map((event) => event.text).join(" ")).not.toContain("new name");
@@ -549,57 +572,47 @@ describe("Boulder Build v0.8.1", () => {
     expect(summary.nestedStatus).toContain("Inner Board");
   });
 
-  it("Markdown export includes mode, memory seeds, event log, meters, reality layers, laws, Boulder state, and Observer Inputs", () => {
-    const named = advanceTurn(newRun(), "name", rules, { boulderName: "Anchor" });
-    const markdown = buildMarkdownRunLog(named);
-
-    expect(markdown).toContain("Run Mode: experimental");
-    expect(markdown).toContain("Turn Count: 1");
-    expect(markdown).toContain("Boulder Name: Anchor");
-    expect(markdown).toContain("Boulder Position: center");
-    expect(markdown).toContain("## Active Memory Seeds");
-    expect(markdown).toContain("Mara: Life A - Scarcity");
-    expect(markdown).toContain("## Observer Inputs");
-    expect(markdown).toContain('Turn 1: "Anchor"');
-    expect(markdown).toContain("Classification: Artifact Name");
-    expect(markdown).toContain("## Interpretation History");
-    expect(markdown).toContain("label or a handle");
-    expect(markdown).toContain("## Event Log");
-    expect(markdown).toContain("## Final Meters");
-    expect(markdown).toContain("Named Weight:");
-    expect(markdown).toContain("RUFS:");
-    expect(markdown).toContain("Mood Output:");
-    expect(markdown).toContain("## Final Reality Layers");
-    expect(markdown).toContain("## Laws Formed");
-    expect(markdown).toContain("[Base]");
-  });
-
-  it("Markdown export includes Story Objects Used", () => {
-    const boulder = storyBoulderById(storyBoulders, "trigger-is-not-instruction");
-    expect(boulder).toBeDefined();
-    const state = introduceStoryBoulder(newRun(), boulder!, layerCards, rules, "mara");
+  it("Markdown export includes board summary, meters, reality layers, and boundary language", () => {
+    const state = resolveBoardTurn(newRun(), storySpaces, rules, testRoll(3, 4, 1, 2));
     const markdown = buildMarkdownRunLog(state);
 
-    expect(markdown).toContain("## Story Objects Used");
-    expect(markdown).toContain("Turn 1: Trigger Is Not Instruction");
-    expect(markdown).toContain("Source: INTERVENTION ARG/Chapter 02.md");
-    expect(markdown).toContain("Target: Mara");
-    expect(markdown).toContain("Feeling activated is real");
-    expect(markdown).toContain("## Story Sources Used");
-    expect(markdown).toContain("Source File: INTERVENTION ARG/Chapter 02.md");
-    expect(markdown).toContain("Resulting Interpretation:");
+    expect(markdown).toContain("Mode: experimental");
+    expect(markdown).toContain("Turn Count: 1");
+    expect(markdown).toContain("The board is the story.");
+    expect(markdown).toContain("## Turn Records");
+    expect(markdown).toContain("Reality die:");
+    expect(markdown).toContain("Artifact die:");
+    expect(markdown).toContain("## Character Branch State");
+    expect(markdown).toContain("## Final Meters");
+    expect(markdown).toContain("RUFS:");
+    expect(markdown).toContain("Mood Output:");
+    expect(markdown).toContain("## Reality Layers");
+    expect(markdown).toContain("## Boundary");
+  });
+
+  it("Markdown export includes Story Objects through turn records", () => {
+    const boulder = storyBoulderById(storyBoulders, "trigger-is-not-instruction");
+    expect(boulder).toBeDefined();
+    const state = resolveBoardTurn(newRun(), storySpaces, rules, testRoll(3, 4, 3, 4));
+    const markdown = buildMarkdownRunLog(state);
+
+    expect(markdown).toContain("### Turn 1 - Mara");
+    expect(markdown).toContain(`Source: ${storySpaces[7].sourceFile}`);
+    expect(markdown).toContain("Mara's branch:");
+    expect(markdown).toContain("Artifact effect:");
+    expect(markdown).toContain("## Alternate Reality Counts");
+    expect(markdown).toContain("Sources Contacted:");
   });
 
   it("Markdown export includes dice rolls, board spaces, story sources, and Nested Simulation progress", () => {
-    const state = resolveBoardTurn(newRun(), storySpaces, rules, { dieA: 3, dieB: 4, total: 7 });
+    const state = resolveBoardTurn(newRun(), storySpaces, rules, testRoll(3, 4, 1, 2));
     const markdown = buildMarkdownRunLog({ ...state, exportedRun: true });
 
-    expect(markdown).toContain("## Dice Rolls");
-    expect(markdown).toContain("Mara rolled 3 + 4 = 7");
-    expect(markdown).toContain("## Board Spaces Landed On");
-    expect(markdown).toContain(`Mara landed on ${storySpaces[7].title}`);
-    expect(markdown).toContain("## Story Sources Used");
-    expect(markdown).toContain(`Source File: ${storySpaces[7].sourceFile}`);
+    expect(markdown).toContain("Movement dice:");
+    expect(markdown).toContain("3 + 4 = 7");
+    expect(markdown).toContain("Landed on:");
+    expect(markdown).toContain(storySpaces[7].title);
+    expect(markdown).toContain(`Source: ${storySpaces[7].sourceFile}`);
     expect(markdown).toContain("## Nested Simulation Progress");
     expect(markdown).toContain("Run Exported: Yes");
   });

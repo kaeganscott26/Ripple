@@ -3,7 +3,7 @@ import layerCardsJson from "./layerCards.json";
 import storyBouldersJson from "./storyBoulders.json";
 import type { AgentData, LayerCard, StoryBoulder } from "../engine/types";
 
-export type ArchiveSourceType = "order" | "prologue" | "chapter" | "epilogue" | "artifact" | "note";
+export type ArchiveSourceType = "order" | "prologue" | "chapter" | "epilogue" | "artifact" | "note" | "alternate";
 
 export interface ArchiveDocument {
   id: string;
@@ -26,6 +26,12 @@ const interventionSources = import.meta.glob("../../../INTERVENTION ARG/{ORDER.m
 }) as Record<string, string>;
 
 const noteSources = import.meta.glob("../../../NOTES/*.md", {
+  eager: true,
+  import: "default",
+  query: "?raw",
+}) as Record<string, string>;
+
+const alternateSources = import.meta.glob("../../../RIPPLE_CANON/ALTERNATES/*.md", {
   eager: true,
   import: "default",
   query: "?raw",
@@ -74,6 +80,7 @@ function sourceTypeFor(sourceFile: string): ArchiveSourceType {
   if (sourceFile.endsWith("PROLOGUE.md")) return "prologue";
   if (sourceFile.endsWith("EPILOGUE.md")) return "epilogue";
   if (sourceFile.includes("/ARTIFACTS/")) return "artifact";
+  if (sourceFile.startsWith("RIPPLE_CANON/ALTERNATES/")) return "alternate";
   if (sourceFile.startsWith("NOTES/")) return "note";
   return "chapter";
 }
@@ -84,6 +91,8 @@ function orderFor(sourceFile: string): number {
   const chapter = sourceFile.match(/Chapter (\d+)/)?.[1];
   if (chapter) return Number(chapter);
   if (sourceFile.endsWith("EPILOGUE.md")) return 18;
+  const alternate = sourceFile.match(/ALTERNATE_(\d+)/)?.[1];
+  if (alternate) return 50 + Number(alternate);
   if (sourceFile.includes("/ARTIFACTS/")) return 100 + sourceFile.localeCompare("");
   return 200 + sourceFile.localeCompare("");
 }
@@ -108,6 +117,9 @@ function summaryFor(sourceFile: string, title: string): string {
   const layer = layerCards.find((card) => card.sourceFile === sourceFile);
   if (layer) return layer.plainLanguageMeaning;
   if (sourceFile.endsWith("ORDER.md")) return "The canonical route through the INTERVENTION archive.";
+  if (sourceFile.startsWith("RIPPLE_CANON/ALTERNATES/")) {
+    return `${title} is alternate canon for the board route. It supplies spaces, intervention points, missed interventions, ripple events, artifact pulls, and end-state language.`;
+  }
   if (sourceFile.endsWith("PROLOGUE.md")) return "The archive explains how a story can become a tool without becoming proof or command.";
   if (sourceFile.endsWith("EPILOGUE.md")) return "Ripple Theory is returned to the reader as consequence, responsibility, and choice.";
   return `${title} is source material that can feed Ripple's board objects without becoming a fixed level.`;
@@ -158,9 +170,11 @@ function buildDocuments(sources: Record<string, string>): ArchiveDocument[] {
   });
 }
 
-export const archiveDocuments: ArchiveDocument[] = [...buildDocuments(interventionSources), ...buildDocuments(noteSources)].sort(
-  (a, b) => a.order - b.order || a.title.localeCompare(b.title),
-);
+export const archiveDocuments: ArchiveDocument[] = [
+  ...buildDocuments(interventionSources),
+  ...buildDocuments(alternateSources),
+  ...buildDocuments(noteSources),
+].sort((a, b) => a.order - b.order || a.title.localeCompare(b.title));
 
 export function archiveDocumentById(id?: string): ArchiveDocument | undefined {
   return archiveDocuments.find((document) => document.id === id);

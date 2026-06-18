@@ -84,11 +84,28 @@ export type StorySpaceType =
 export interface StorySpace {
   id: string;
   title: string;
+  alternateId?: string;
+  alternateTitle?: string;
+  mirrorsChapter?: string;
+  chapterTitle?: string;
+  sourceLinks?: string[];
+  layers?: string[];
+  artifactEchoes?: string[];
+  spaceIndex?: number;
   sourceFile: string;
   sourceTitle: string;
   type: StorySpaceType;
   shortMeaning: string;
   plainMeaning: string;
+  interventionText?: string;
+  missedText?: string;
+  rippleText?: string;
+  artifactHooks?: string[];
+  possibleEndStateImpact?: {
+    intervention: string;
+    ripple: string;
+    missed: string;
+  };
   relatedStoryWeightIds: string[];
   relatedLayerIds: string[];
   relatedCharacters: string[];
@@ -296,10 +313,60 @@ export interface StoryObjectUse {
   resultingInterpretation: string;
 }
 
+export type RealityOutcome = "Intervention Point" | "Ripple Event" | "Missed Intervention Point";
+
+export type ArtifactEffectType =
+  | "none"
+  | "protect"
+  | "convert-missed"
+  | "redirect"
+  | "reveal-hidden"
+  | "affect-other"
+  | "delay"
+  | "room-state"
+  | "society-state"
+  | "log-language";
+
+export interface CanonArtifact {
+  id: string;
+  name: string;
+  sourceFile: string;
+  plainMeaning: string;
+  effectType: ArtifactEffectType;
+  effectText: string;
+  relatedLayers: string[];
+}
+
+export interface ArtifactDieResult {
+  die: number;
+  artifactId?: string;
+  artifactName: string;
+  effectType: ArtifactEffectType;
+  effectText: string;
+  modifiedRealityOutcome?: RealityOutcome;
+}
+
 export interface DiceRoll {
   dieA: number;
   dieB: number;
   total: number;
+  realityDie: number;
+  artifactDie: number;
+  realityOutcome: RealityOutcome;
+  artifact: ArtifactDieResult;
+}
+
+export interface CharacterPathState {
+  characterId: string;
+  currentPosition: number;
+  currentBranch: string;
+  carriedArtifacts: string[];
+  pressureState: "steady" | "watchful" | "strained";
+  interventionCount: number;
+  missedInterventionCount: number;
+  rippleCount: number;
+  currentEndingTendency: "unformed" | "intervention" | "ripple" | "missed";
+  sourceContactCount: number;
 }
 
 export interface BoardLanding {
@@ -310,13 +377,30 @@ export interface BoardLanding {
   fromPosition: number;
   toPosition: number;
   dice: DiceRoll;
+  movementText: string;
   spaceId: string;
   spaceTitle: string;
+  alternateId?: string;
+  alternateTitle?: string;
+  mirrorsChapter?: string;
+  spaceIndex?: number;
   sourceFile: string;
   sourceTitle: string;
+  sourceLinks?: string[];
   plainMeaning: string;
+  realityOutcome: RealityOutcome;
+  revealedOutcome: RealityOutcome;
+  interventionText: string;
+  missedText: string;
+  rippleText: string;
   characterReading: string;
   roomResponse: string;
+  societyResponse: string;
+  resultText: string;
+  artifactName: string;
+  artifactEffect: string;
+  branchText: string;
+  characterPath: CharacterPathState;
   meterEffects: PressureValues;
   affectedLayers: string[];
   lawsFormed: LawState[];
@@ -331,6 +415,11 @@ export interface BoardTurnState {
   lastDiceRoll?: DiceRoll;
   lastLandingSpaceId?: string;
   boardPositions: Record<string, number>;
+  characterPaths: Record<string, CharacterPathState>;
+  roomState: string;
+  societyState: string;
+  sourceContact: string[];
+  artifactsUsed: string[];
   completedTurns: string[];
   landings: BoardLanding[];
   roundSummaries: RoundSummary[];
