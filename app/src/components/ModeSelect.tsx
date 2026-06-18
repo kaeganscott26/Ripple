@@ -10,9 +10,9 @@ interface ModeSelectProps {
 }
 
 const modes: Array<{ id: Mode; label: string; detail: string }> = [
-  { id: "mystery", label: "Mystery", detail: "The board remembers for you. Seeds stay hidden." },
-  { id: "vague", label: "Vague", detail: "Choose A, B, or C without seeing the meaning." },
-  { id: "experimental", label: "Experimental", detail: "Choose seeds with compact meanings visible." },
+  { id: "mystery", label: "Mystery", detail: "Roll first. The board reveals what the space means after landing." },
+  { id: "vague", label: "Vague", detail: "Public mode. Space names, plain explanations, and source links stay readable." },
+  { id: "experimental", label: "Experimental", detail: "Engine room. Inspect possible futures before rolling." },
 ];
 
 const seedKeys: SeedKey[] = ["A", "B", "C"];
@@ -28,8 +28,16 @@ export function ModeSelect({
   return (
     <section className="setup-screen">
       <div className="setup-copy">
-        <p className="eyebrow">Ripple: The Boulder Build v0.8</p>
-        <h1>The room is waiting.</h1>
+        <p className="eyebrow">Ripple v0.8.1</p>
+        <h1>The Living Board</h1>
+        <p>
+          Ripple is a playable mirror of the INTERVENTION archive. Roll dice, move character pieces through symbolic rooms,
+          land on Story Spaces, and watch interpretation become pressure, memory, law, and simulation.
+        </p>
+        <p className="setup-disclaimer">
+          Ripple is a fictional, symbolic game and archive experience. It is not proof of simulation, a diagnosis tool, a
+          command system, or a replacement for mental health care. If it feels too intense, pause or talk to someone you trust.
+        </p>
       </div>
 
       <div className="mode-grid">
@@ -82,7 +90,7 @@ export function ModeSelect({
         onClick={() => onStart({ mode: selectedMode, selectedSeeds })}
         type="button"
       >
-        Enter Boulder Room
+        Start the Board
       </button>
     </section>
   );

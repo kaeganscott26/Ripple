@@ -61,10 +61,10 @@ function reactionForAgent(
   const pressure = triggered ? seed.reactionWeights : scalePressure(seed.reactionWeights, 0.5);
 
   const actionText: Record<BoulderAction, string> = {
-    observe: "treats the attention as evidence that the weight matters",
+    observe: "reads the attention as witness pressure: if the room is watching, silence can start to look like agreement",
     name: "tests the new name against what the room is becoming",
     move: "reads the changed path as consequence entering architecture",
-    ignore: "notices the silence around the object",
+    ignore: "reads the silence as pressure the room may still count",
   };
 
   return {

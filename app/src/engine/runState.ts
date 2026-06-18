@@ -1,4 +1,5 @@
 import { buildActiveAgents } from "./memorySystem";
+import { createInitialBoardTurnState } from "./boardTurnEngine";
 import { calculateRealityMetrics } from "./realityMetrics";
 import { createInitialLayers } from "./realityLayers";
 import type { AgentData, RunState, SetupSelection } from "./types";
@@ -20,6 +21,7 @@ export function createRunState(agents: AgentData[], selection: SetupSelection): 
     meterHistory: [],
     boulderPosition: "center",
     storyObjectUses: [],
+    boardTurn: createInitialBoardTurnState(activeAgents),
   };
   const initialMetrics = calculateRealityMetrics(state);
 

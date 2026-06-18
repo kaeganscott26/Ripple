@@ -1,7 +1,13 @@
 export type Mode = "mystery" | "vague" | "experimental";
 export type SeedKey = "A" | "B" | "C";
 export type BoulderAction = "observe" | "name" | "move" | "ignore";
-export type TurnAction = BoulderAction | "introduce-story-boulder" | "ask-room" | "archive-weight" | "refuse-weight";
+export type TurnAction =
+  | BoulderAction
+  | "introduce-story-boulder"
+  | "ask-room"
+  | "archive-weight"
+  | "refuse-weight"
+  | "dice-space";
 export type BoardScaleView = "room" | "society" | "archive";
 export type HaloState = "dim" | "bright" | "pulsing" | "double" | "clipped";
 export type MeterKey =
@@ -63,6 +69,36 @@ export interface StoryBoulder {
   inspectorCopy: string[];
   triggerTags: string[];
   targetFit: Record<string, string>;
+}
+
+export type StorySpaceType =
+  | "story"
+  | "layer"
+  | "artifact"
+  | "law"
+  | "mask"
+  | "spectacle"
+  | "boundary"
+  | "simulation";
+
+export interface StorySpace {
+  id: string;
+  title: string;
+  sourceFile: string;
+  sourceTitle: string;
+  type: StorySpaceType;
+  shortMeaning: string;
+  plainMeaning: string;
+  relatedStoryWeightIds: string[];
+  relatedLayerIds: string[];
+  relatedCharacters: string[];
+  baseMeterEffects: PressureValues;
+  modeVisibility: Record<Mode, "hidden" | "hint" | "full">;
+  mysteryText: string;
+  vagueText: string;
+  experimentalText: string;
+  triggerPattern: string;
+  characterReadings: Record<string, string>;
 }
 
 export interface LayerCard {
@@ -251,13 +287,87 @@ export interface StoryObjectUse {
   turn: number;
   objectId: string;
   objectName: string;
-  objectType: "story-boulder" | "layer-card";
+  objectType: "story-boulder" | "layer-card" | "board-space";
   sourceFile: string;
   target: "room" | "character";
   targetCharacterId?: string;
   targetName?: string;
   plainLanguageMeaning: string;
   resultingInterpretation: string;
+}
+
+export interface DiceRoll {
+  dieA: number;
+  dieB: number;
+  total: number;
+}
+
+export interface BoardLanding {
+  turn: number;
+  round: number;
+  agentId: string;
+  agentName: string;
+  fromPosition: number;
+  toPosition: number;
+  dice: DiceRoll;
+  spaceId: string;
+  spaceTitle: string;
+  sourceFile: string;
+  sourceTitle: string;
+  plainMeaning: string;
+  characterReading: string;
+  roomResponse: string;
+  meterEffects: PressureValues;
+  affectedLayers: string[];
+  lawsFormed: LawState[];
+}
+
+export interface BoardTurnState {
+  currentRound: number;
+  currentTurn: number;
+  currentAgentId: string;
+  currentAgentIndex: number;
+  hasRolledThisTurn: boolean;
+  lastDiceRoll?: DiceRoll;
+  lastLandingSpaceId?: string;
+  boardPositions: Record<string, number>;
+  completedTurns: string[];
+  landings: BoardLanding[];
+  roundSummaries: RoundSummary[];
+}
+
+export interface BoardSpacePreview {
+  rollTotal: number;
+  landingPosition: number;
+  space: StorySpace;
+  visibility: "hidden" | "hint" | "full";
+  label: string;
+  detail: string;
+}
+
+export interface RoundSummary {
+  round: number;
+  landedSpaces: string[];
+  charactersMoved: string[];
+  strongestMeterChange: string;
+  lawsFormed: LawState[];
+  societyEffect: string;
+  nestedSimulationProgress: NestedSimulationProgress;
+}
+
+export interface NestedSimulationProgress {
+  completedRounds: number;
+  roundGoal: number;
+  charactersLanded: number;
+  characterGoal: number;
+  lawsFormed: number;
+  lawGoal: number;
+  sourceDocumentsUsed: number;
+  sourceGoal: number;
+  exportedRun: boolean;
+  simulationSeedGenerated: boolean;
+  unlocked: boolean;
+  remaining: string[];
 }
 
 export interface RunState {
@@ -277,6 +387,8 @@ export interface RunState {
   boulderName?: string;
   boulderPosition: "center" | "shifted";
   storyObjectUses: StoryObjectUse[];
+  boardTurn: BoardTurnState;
+  exportedRun?: boolean;
 }
 
 export interface SetupSelection {

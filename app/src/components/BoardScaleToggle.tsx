@@ -24,7 +24,7 @@ export function BoardScaleToggle({ value, onChange }: BoardScaleToggleProps) {
           {view.label}
         </button>
       ))}
-      <span>Nested Simulation: locked</span>
+      <span>Nested Simulation: goal locked</span>
     </section>
   );
 }

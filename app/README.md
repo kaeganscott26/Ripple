@@ -1,40 +1,66 @@
-# Ripple: The Boulder Build
+# Ripple: The Living Board
 
-This is the first local playable prototype for Ripple. It is a small 2D turn loop centered on the Boulder Room, memory-seeded agents, source-derived story Boulders, pressure changes, reality layers, law formation, and Markdown run export.
+Ripple v0.8.1 is the Living Board refactor. It keeps the v0.8 archive, Story Weight, layer card, meter, inspector, Society View, and Markdown export systems, but reorganizes play around a turn-based board loop.
 
-It is not an AI system, backend service, Minecraft build, Docker app, or direct rewrite of the source archive. v0.8 keeps the Boulder Build loop local and deterministic while making the board self-explaining and the INTERVENTION archive readable inside the game.
+Ripple is local, offline once served or bundled, deterministic, and source-backed. It is not an AI system, backend service, Cloudflare deployment, R2 storage layer, source ingestion pipeline, diagnosis tool, or proof system.
 
-## v0.8 Loop
+## v0.8.1 Board Loop
 
-1. Choose a mode.
-2. Select a character or leave the target as Room.
-3. Choose a Story Weight.
-4. Tap Inspect to update the Inspector and the visible inspection strip.
-5. Read the Action Preview beside Introduce Selected Boulder.
-6. Introduce the selected weight.
-7. Watch meters, halos, reality layers, Society View, and Turn Feedback change.
-8. Use Read Source or Archive View to read the chapter, artifact, or note that produced the game object.
-9. Export the run when it becomes worth archiving.
+1. Choose Mystery, Vague, or Experimental mode.
+2. The current character takes a turn.
+3. Roll 2d6.
+4. Move the character piece around the 12-space Room Board.
+5. Land on a Story Space built from the INTERVENTION archive.
+6. Read the landing reveal, source, plain meaning, character reading, meter changes, and room response.
+7. Move to the next character.
+8. After every character acts, read the round summary and Society View.
+9. Keep playing until the room forms enough memory, source trace, and law to approach Nested Simulation.
+10. Export the run as a Markdown artifact.
 
-Story Weights are pieces of the INTERVENTION archive that can enter the room. When one is introduced, Ripple records the source file, target, plain-language meaning, and resulting interpretation in Turn Feedback and the Markdown export.
+## Dice And Turn Order
 
-## v0.8 Interaction Notes
+- Dice use 2d6, stored as individual dice plus total.
+- Each active character gets one board turn per round: Mara, Jamal, Maren, Dev, and Teodor / Scott.
+- Board positions are tracked per character.
+- The first board is a readable 12-space loop using curated v0.8 Story Weights plus a locked Nested Simulation Gate.
 
-- Inspecting Story Weights, layer cards, agent pieces, halos, meters, law badges, the Boulder, and Society View nodes updates the Inspector with plain-language meaning, source context, mechanical effects, current run context, and a suggested next action.
-- The selected Story Weight and selected target remain visible while the inspected object can change independently.
-- Metric values are formatted for play, so long floating-point artifacts are hidden.
-- Mobile layouts use larger card actions and a sticky inspection strip so taps produce visible feedback near the board.
-- Archive View statically bundles the INTERVENTION chapters, artifacts, and notes through Vite raw imports. It does not read the filesystem at runtime and it does not mutate original source files.
+## Mode Behavior
 
-## Install
+- Mystery: possible spaces stay hidden before the roll. The board reveals meaning after landing.
+- Vague: possible spaces show names and short meanings. This is the default public feel.
+- Experimental: possible landings are inspectable before rolling, including source, layer pull, trigger pattern, likely effects, and related Story Weights.
+
+## Archive View
+
+Archive View remains the source layer. It still includes the document list, reader, Read Source behavior, related Story Weights, related Layer Cards, related characters, and return-to-board flow. Story Spaces and landing reveals link back to source documents through the Inspector and Read Source path.
+
+## Manual Story Weight Mode
+
+The v0.8 manual Story Weight loop remains available as a secondary/experimental tool. It is useful for direct archive play, testing a specific Story Weight against a target character, and inspecting source-linked behavior without waiting for dice.
+
+## Nested Simulation Goal
+
+Nested Simulation is still locked, but now has visible progress:
+
+- complete rounds
+- land characters on Story Spaces
+- form laws
+- use source documents
+- export a run log
+- generate a Simulation Seed
+
+The direction is: create the room that creates the next room.
+
+## Language And Inspection
+
+Player-facing copy now favors plain language first and Ripple terms second. Board turns use Story Space language. The legacy Name the Boulder action can still use naming language.
+
+The Active Inspection Summary is compact and collapsible. It defaults collapsed in Archive View so it does not dominate the reader.
+
+## Local Use
 
 ```bash
 npm install
-```
-
-## Run
-
-```bash
 npm run dev
 ```
 
@@ -47,15 +73,13 @@ npm run build
 ## Test
 
 ```bash
-npm run test
+CI=1 npm run test
 npm run test:run
 ```
 
-## Current Limitations
+## Current Limits
 
-- The board is intentionally small and local-only.
+- Nested Simulation progress exists, but full nested simulation mechanics are not built yet.
+- Real-world evidence cards are intentionally not added yet.
+- Source ingestion remains curated static app data for this pass.
 - Runs persist in browser localStorage, not a backend.
-- Agent behavior is deterministic rule logic, not AI.
-- The prototype covers the Boulder Build loop plus a supporting Archive Reader.
-- Nested Simulation is visible as a locked future layer, not an active simulation.
-- Full markdown ingestion/generation is not built yet; archive documents are curated static app data for this pass.

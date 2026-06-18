@@ -11,17 +11,20 @@ import {
   archiveDocuments,
   nextArchiveDocument,
 } from "./data/archiveDocuments";
+import { buildStorySpaces } from "./data/boardSpaces";
 import { ActiveInspectionSummary } from "./components/ActiveInspectionSummary";
 import { AgentPanel } from "./components/AgentPanel";
 import { ArchiveView } from "./components/ArchiveView";
 import { ArtifactPanel } from "./components/ArtifactPanel";
 import { BoardScaleToggle } from "./components/BoardScaleToggle";
+import { BoardGameControls } from "./components/BoardGameControls";
 import { CharacterTargetPanel } from "./components/CharacterTargetPanel";
 import { CurrentObjectivePanel } from "./components/CurrentObjectivePanel";
 import { EventLog } from "./components/EventLog";
 import { ExportRunButton } from "./components/ExportRunButton";
 import { HowToPlayPanel } from "./components/HowToPlayPanel";
 import { InspectorPanel } from "./components/InspectorPanel";
+import { LanguagePanel } from "./components/LanguagePanel";
 import { ModeSelect } from "./components/ModeSelect";
 import { MoodSummary } from "./components/MoodSummary";
 import { ObserverInputPanel } from "./components/ObserverInputPanel";
@@ -34,6 +37,7 @@ import { StoryObjectPanel } from "./components/StoryObjectPanel";
 import { TurnFeedbackPanel } from "./components/TurnFeedbackPanel";
 import { TurnControls } from "./components/TurnControls";
 import { advanceTurn } from "./engine/ruleEngine";
+import { createInitialBoardTurnState, normalizeBoardTurnState, resolveBoardTurn } from "./engine/boardTurnEngine";
 import { introduceStoryBoulder } from "./engine/storyTurnEngine";
 import { createRunState } from "./engine/runState";
 import { defaultHelpItem, explainMeter } from "./engine/explanations";
@@ -61,7 +65,8 @@ const artifacts = artifactsJson as ArtifactData[];
 const storyBoulders = storyBouldersJson as StoryBoulder[];
 const layerCards = layerCardsJson as LayerCard[];
 const rules = rulesJson as RulesData;
-const savedRunKey = "ripple-boulder-build-run-v0.8";
+const savedRunKey = "ripple-boulder-build-run-v0.8.1";
+const previousV08SavedRunKey = "ripple-boulder-build-run-v0.8";
 const previousV07SavedRunKey = "ripple-boulder-build-run-v0.7";
 const previousSavedRunKey = "ripple-boulder-build-run-v0.6";
 
@@ -74,6 +79,7 @@ function loadSavedRun(): RunState | null {
   try {
     const saved =
       window.localStorage.getItem(savedRunKey) ??
+      window.localStorage.getItem(previousV08SavedRunKey) ??
       window.localStorage.getItem(previousV07SavedRunKey) ??
       window.localStorage.getItem(previousSavedRunKey);
     if (!saved) return null;
@@ -85,6 +91,8 @@ function loadSavedRun(): RunState | null {
           observerInputs: parsed.observerInputs ?? [],
           interpretationHistory: parsed.interpretationHistory ?? [],
           meterHistory: parsed.meterHistory ?? [],
+          boardTurn: parsed.boardTurn ?? createInitialBoardTurnState(parsed.agents),
+          exportedRun: parsed.exportedRun ?? false,
         }
       : null;
   } catch {
@@ -123,6 +131,7 @@ export default function App() {
   const selectedAgent = runState?.agents.find((agent) => agent.id === selectedCharacterId);
   const latestObserverInput = runState?.observerInputs.slice(-1)[0];
   const latestMetrics = runState?.meterHistory.slice(-1)[0];
+  const storySpaces = useMemo(() => buildStorySpaces(storyBoulders, layerCards), []);
   const sourceDocument = archiveDocumentBySourceFile(inspectorItem.sourceFile);
   const selectedArchiveDocument = archiveDocumentById(selectedArchiveDocumentId) ?? archiveDocuments[0];
   const selectedTargetName = selectedAgent?.name ?? "Room";
@@ -137,6 +146,7 @@ export default function App() {
 
   function resetRun() {
     window.localStorage.removeItem(savedRunKey);
+    window.localStorage.removeItem(previousV08SavedRunKey);
     window.localStorage.removeItem(previousSavedRunKey);
     setRunState(null);
     setSelectedAction("observe");
@@ -188,6 +198,18 @@ export default function App() {
     inspectItem(explainStoryBoulder(storyBoulder, selectedAgent));
   }
 
+  function handleBoardRoll() {
+    setRunState((current) => {
+      if (!current) return current;
+      const normalized = { ...current, boardTurn: normalizeBoardTurnState(current) };
+      return resolveBoardTurn(normalized, storySpaces, rules);
+    });
+  }
+
+  function handleExportLogged() {
+    setRunState((current) => (current ? { ...current, exportedRun: true } : current));
+  }
+
   if (!runState) {
     return (
       <main className="app">
@@ -207,11 +229,11 @@ export default function App() {
     <main className="app game-layout">
       <header className="topbar">
         <div>
-          <p className="eyebrow">Ripple v0.8</p>
-          <h1>The Boulder Build</h1>
+          <p className="eyebrow">Ripple v0.8.1</p>
+          <h1>The Living Board</h1>
         </div>
         <div className="topbar-actions">
-          <ExportRunButton state={runState} />
+          <ExportRunButton onExport={handleExportLogged} state={runState} />
           <button className="ghost-action" onClick={resetRun} type="button">
             New Run
           </button>
@@ -223,6 +245,7 @@ export default function App() {
           <CurrentObjectivePanel />
           <BoardScaleToggle value={boardScale} onChange={setBoardScale} />
           <ActiveInspectionSummary
+            compactByDefault={boardScale === "archive"}
             canReadSource={Boolean(sourceDocument)}
             item={inspectorItem}
             onReadSource={sourceDocument ? readInspectorSource : undefined}
@@ -243,17 +266,26 @@ export default function App() {
               storyBoulders={storyBoulders}
             />
           ) : boardScale === "room" ? (
-            <RoomBoardView
-              state={runState}
-              room={currentRoom}
-              artifact={boulder}
-              onInspect={inspectItem}
-              onSelectCharacter={setSelectedCharacterId}
-              selectedAgent={selectedAgent}
-              selectedCharacterId={selectedCharacterId}
-              selectedStoryBoulder={selectedStoryBoulder}
-              rules={rules}
-            />
+            <>
+              <BoardGameControls
+                state={runState}
+                storySpaces={storySpaces}
+                onInspect={inspectItem}
+                onRoll={handleBoardRoll}
+                onSelectCharacter={setSelectedCharacterId}
+              />
+              <RoomBoardView
+                state={runState}
+                room={currentRoom}
+                artifact={boulder}
+                onInspect={inspectItem}
+                onSelectCharacter={setSelectedCharacterId}
+                selectedAgent={selectedAgent}
+                selectedCharacterId={selectedCharacterId}
+                selectedStoryBoulder={selectedStoryBoulder}
+                rules={rules}
+              />
+            </>
           ) : (
             <SocietyBoardView onInspect={inspectItem} state={runState} />
           )}
@@ -267,6 +299,7 @@ export default function App() {
 
         <aside className="right-column">
           <HowToPlayPanel />
+          <LanguagePanel />
           <CharacterTargetPanel
             agents={runState.agents}
             mode={runState.mode}

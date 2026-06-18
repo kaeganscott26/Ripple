@@ -4,9 +4,19 @@ import layerCardsJson from "../data/layerCards.json";
 import rulesJson from "../data/rules.json";
 import storyBouldersJson from "../data/storyBoulders.json";
 import { archiveDocumentBySourceFile, archiveDocuments, nextArchiveDocument } from "../data/archiveDocuments";
+import { buildStorySpaces } from "../data/boardSpaces";
+import { ActiveInspectionSummary } from "../components/ActiveInspectionSummary";
 import { howToPlaySteps } from "../components/HowToPlayPanel";
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 import { formatMetricDelta, formatMetricValue, formatPercent } from "./formatting";
 import { buildActiveAgents } from "./memorySystem";
+import {
+  landingPosition,
+  possibleLandingSpaces,
+  resolveBoardTurn,
+  rollDice,
+} from "./boardTurnEngine";
 import { advanceTurn } from "./ruleEngine";
 import { createRunState } from "./runState";
 import { buildMarkdownRunLog } from "./runLog";
@@ -36,6 +46,7 @@ const agents = agentsJson as AgentData[];
 const layerCards = layerCardsJson as LayerCard[];
 const rules = rulesJson as RulesData;
 const storyBoulders = storyBouldersJson as StoryBoulder[];
+const storySpaces = buildStorySpaces(storyBoulders, layerCards);
 const seedKeys: SeedKey[] = ["A", "B", "C"];
 
 function selectedSeeds(seed: SeedKey = "A"): Record<string, SeedKey> {
@@ -49,7 +60,114 @@ function newRun(seed: SeedKey = "A") {
   return createRunState(agents, { mode: "experimental", selectedSeeds: selectedSeeds(seed) });
 }
 
-describe("Boulder Build v0.8", () => {
+describe("Boulder Build v0.8.1", () => {
+  it("rollDice returns valid 2d6 data", () => {
+    const values = [0, 0.999];
+    const dice = rollDice(() => values.shift() ?? 0.5);
+
+    expect(dice).toEqual({ dieA: 1, dieB: 6, total: 7 });
+  });
+
+  it("board movement resolves a valid landing space", () => {
+    expect(storySpaces).toHaveLength(12);
+    expect(landingPosition(0, 7, storySpaces)).toBe(7);
+
+    const next = resolveBoardTurn(newRun(), storySpaces, rules, { dieA: 3, dieB: 4, total: 7 });
+    const landing = next.boardTurn.landings[0];
+
+    expect(landing.agentName).toBe("Mara");
+    expect(landing.dice.total).toBe(7);
+    expect(landing.spaceTitle).toBe(storySpaces[7].title);
+    expect(landing.sourceFile).toBe(storySpaces[7].sourceFile);
+    expect(landing.plainMeaning).toBe(storySpaces[7].plainMeaning);
+    expect(landing.characterReading).toContain("Mara");
+    expect(landing.meterEffects.witness).toBeGreaterThanOrEqual(0);
+  });
+
+  it("current agent turn order advances and round increments after all agents act", () => {
+    const first = resolveBoardTurn(newRun(), storySpaces, rules, { dieA: 1, dieB: 1, total: 2 });
+
+    expect(first.boardTurn.currentAgentId).toBe("jamal");
+    expect(first.boardTurn.currentRound).toBe(1);
+
+    const afterRound = first.agents.slice(1).reduce(
+      (state) => resolveBoardTurn(state, storySpaces, rules, { dieA: 1, dieB: 1, total: 2 }),
+      first,
+    );
+
+    expect(afterRound.boardTurn.currentRound).toBe(2);
+    expect(afterRound.boardTurn.currentAgentId).toBe("mara");
+    expect(afterRound.boardTurn.completedTurns).toEqual([]);
+    expect(afterRound.boardTurn.roundSummaries[0].charactersMoved).toEqual(["Mara", "Jamal", "Maren", "Dev", "Teodor / Scott"]);
+  });
+
+  it("Experimental Mode preview exposes possible landing spaces", () => {
+    const previews = possibleLandingSpaces(newRun(), storySpaces);
+
+    expect(previews).toHaveLength(11);
+    expect(previews[0].rollTotal).toBe(2);
+    expect(previews[0].visibility).toBe("full");
+    expect(previews[0].label).toBe(storySpaces[2].title);
+    expect(previews[0].detail).toContain("Layer pull");
+  });
+
+  it("Mystery and Vague modes change possible landing space info", () => {
+    const mystery = createRunState(agents, { mode: "mystery", selectedSeeds: selectedSeeds() });
+    const vague = createRunState(agents, { mode: "vague", selectedSeeds: selectedSeeds() });
+
+    expect(possibleLandingSpaces(mystery, storySpaces)[0].label).toBe("Unknown space");
+    expect(possibleLandingSpaces(mystery, storySpaces)[0].visibility).toBe("hidden");
+    expect(possibleLandingSpaces(vague, storySpaces)[0].label).toBe(storySpaces[2].title);
+    expect(possibleLandingSpaces(vague, storySpaces)[0].detail).toBe(storySpaces[2].shortMeaning);
+  });
+
+  it("Story Weight and Board Space event logs do not use new-name language", () => {
+    const boulder = storyBoulderById(storyBoulders, "complete-consequence");
+    const storyTurn = introduceStoryBoulder(newRun(), boulder!, layerCards, rules, "jamal");
+    const boardTurn = resolveBoardTurn(newRun(), storySpaces, rules, { dieA: 3, dieB: 4, total: 7 });
+
+    expect(storyTurn.events.map((event) => event.text).join(" ")).not.toContain("new name");
+    expect(boardTurn.events.map((event) => event.text).join(" ")).not.toContain("new name");
+  });
+
+  it("legacy Name the Boulder action can still use name language", () => {
+    const named = advanceTurn(newRun(), "name", rules, { boulderName: "Anchor" });
+
+    expect(named.events.map((event) => event.text).join(" ")).toContain("new name");
+  });
+
+  it("character reactions are not identical for shared Story Weight events", () => {
+    const boulder = storyBoulderById(storyBoulders, "closed-door-saved-life");
+    const next = introduceStoryBoulder(newRun(), boulder!, layerCards, rules);
+    const reactions = next.lastTurnFeedback?.agentReactions ?? [];
+
+    expect(new Set(reactions).size).toBeGreaterThan(1);
+  });
+
+  it("compact Active Inspection Summary renders selected item, weight, target, and source", () => {
+    const html = renderToStaticMarkup(
+      createElement(ActiveInspectionSummary, {
+        compactByDefault: true,
+        canReadSource: true,
+        item: {
+          id: "space-test",
+          kind: "story-boulder",
+          title: "The Closed Door",
+          summary: "A blocked path can change meaning.",
+          details: [],
+          sourceFile: "INTERVENTION ARG/Chapter 07.md",
+        },
+        selectedTargetName: "Mara",
+        selectedWeightName: "The Closed Door",
+      }),
+    );
+
+    expect(html).toContain("Inspecting");
+    expect(html).toContain("The Closed Door");
+    expect(html).toContain("Mara");
+    expect(html).toContain("INTERVENTION ARG/Chapter 07.md");
+  });
+
   it("loads source-derived story Boulder data", () => {
     expect(validateStoryBoulderData(storyBoulders)).toBe(true);
     expect(storyBoulders.length).toBeGreaterThanOrEqual(8);
@@ -339,9 +457,10 @@ describe("Boulder Build v0.8", () => {
     expect(targetPreview).toContain("Source:");
   });
 
-  it("How to Play copy includes the Story Weight loop", () => {
-    expect(howToPlaySteps.join(" ")).toContain("Choose a Story Weight");
-    expect(howToPlaySteps.join(" ")).toContain("Read the Action Preview");
+  it("How to Play copy includes the Living Board loop and manual Story Weight tool", () => {
+    expect(howToPlaySteps.join(" ")).toContain("rolls dice");
+    expect(howToPlaySteps.join(" ")).toContain("landing Story Space");
+    expect(howToPlaySteps.join(" ")).toContain("Manual Story Weight tools");
     expect(howToPlaySteps.join(" ")).toContain("Use Archive View");
   });
 
@@ -469,5 +588,19 @@ describe("Boulder Build v0.8", () => {
     expect(markdown).toContain("## Story Sources Used");
     expect(markdown).toContain("Source File: INTERVENTION ARG/Chapter 02.md");
     expect(markdown).toContain("Resulting Interpretation:");
+  });
+
+  it("Markdown export includes dice rolls, board spaces, story sources, and Nested Simulation progress", () => {
+    const state = resolveBoardTurn(newRun(), storySpaces, rules, { dieA: 3, dieB: 4, total: 7 });
+    const markdown = buildMarkdownRunLog({ ...state, exportedRun: true });
+
+    expect(markdown).toContain("## Dice Rolls");
+    expect(markdown).toContain("Mara rolled 3 + 4 = 7");
+    expect(markdown).toContain("## Board Spaces Landed On");
+    expect(markdown).toContain(`Mara landed on ${storySpaces[7].title}`);
+    expect(markdown).toContain("## Story Sources Used");
+    expect(markdown).toContain(`Source File: ${storySpaces[7].sourceFile}`);
+    expect(markdown).toContain("## Nested Simulation Progress");
+    expect(markdown).toContain("Run Exported: Yes");
   });
 });
