@@ -56,9 +56,13 @@ canonical chapter → alternate mirror → board space → dice event → artifa
 - [[ALTERNATE_04_THE_LAYER_THAT_WAS_NOT_MISSED]] — Branch 04A / surface without depth
 - [[ALTERNATE_04B_THE_SERVER_WHO_NAMED_THE_LAYER]] — Branch 04B / front-room witness before back-room judgment
 
-### Chapter 05 onward
+### [[Chapter 05]] — Shared Reality
 
-5. [[ALTERNATE_05_THE_SHARED_REALITY_THAT_SPLIT]] — mirrors [[Chapter 05]]
+- [[ALTERNATE_05_THE_SHARED_REALITY_THAT_SPLIT]] — Branch 05A / private narrative becoming official record
+- [[ALTERNATE_05B_THE_ROOM_THAT_MOVED_WITHOUT_HER]] — Branch 05B / community signal without self-inclusion
+
+### Chapter 06 onward
+
 6. [[ALTERNATE_06_THE_FALSE_WORLD_THAT_FAILED]] — mirrors [[Chapter 06]]
 7. [[ALTERNATE_07_THE_OBSERVER_WHO_ACTED]] — mirrors [[Chapter 07]]
 8. [[ALTERNATE_08_THE_DATE_THAT_ANSWERED]] — mirrors [[Chapter 08]]
