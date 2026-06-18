@@ -1,5 +1,6 @@
 import type { ArtifactData, LawState, RoomData, RunState } from "../engine/types";
 import type { RulesData } from "../engine/types";
+import { formatMetricValue } from "../engine/formatting";
 import { getLawProgress, pressureBuildMessages } from "../engine/lawProgress";
 
 interface BoardViewProps {
@@ -84,7 +85,7 @@ function LawProgress({ state, rules }: { state: RunState; rules: RulesData }) {
             <li key={entry.id}>
               {entry.name}:{" "}
               {entry.thresholdStatus
-                .map((threshold) => `${threshold.label} ${threshold.current}/${threshold.target}`)
+                .map((threshold) => `${threshold.label} ${formatMetricValue(threshold.current)}/${formatMetricValue(threshold.target)}`)
                 .join(", ")}
             </li>
           ))}
@@ -102,7 +103,7 @@ function LawProgress({ state, rules }: { state: RunState; rules: RulesData }) {
             {entry.formed
               ? `${entry.name} formed on turn ${entry.formedTurn}.`
               : `${entry.name}: ${entry.thresholdStatus
-                  .map((threshold) => `${threshold.label} ${threshold.current}/${threshold.target}`)
+                  .map((threshold) => `${threshold.label} ${formatMetricValue(threshold.current)}/${formatMetricValue(threshold.target)}`)
                   .join(", ")}`}
           </li>
         ))}

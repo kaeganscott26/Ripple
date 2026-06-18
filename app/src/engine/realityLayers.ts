@@ -1,4 +1,5 @@
 import type { BoulderAction, RealityLayers, RunState } from "./types";
+import { formatMetricValue } from "./formatting";
 import { calculateRealityMetrics } from "./realityMetrics";
 
 export function createInitialLayers(): RealityLayers {
@@ -23,9 +24,9 @@ export function summarizeLayerShift(state: RunState, action: BoulderAction): Rea
 
   const perceivedByAction: Record<BoulderAction, string> = {
     observe: `Attention makes the object harder to treat as background. Mood: ${metrics.label}.`,
-    name: `The name gives agents a handle they can repeat, resist, or formalize. Meaning ${metrics.meaning}/100.`,
-    move: `The changed path makes consequence visible. Agency ${metrics.agency}/100.`,
-    ignore: `The ignored weight becomes pressure some agents read as avoidance. Safety ${metrics.safety}/100.`,
+    name: `The name gives agents a handle they can repeat, resist, or formalize. Meaning ${formatMetricValue(metrics.meaning)}/100.`,
+    move: `The changed path makes consequence visible. Agency ${formatMetricValue(metrics.agency)}/100.`,
+    ignore: `The ignored weight becomes pressure some agents read as avoidance. Safety ${formatMetricValue(metrics.safety)}/100.`,
   };
 
   const socialByAction: Record<BoulderAction, string> = {

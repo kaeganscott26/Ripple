@@ -1,5 +1,6 @@
 import type { RunState } from "./types";
 import { eventTypeLabel } from "./eventLabels";
+import { formatMetricValue } from "./formatting";
 import { pressureKeys, pressureLabels } from "./pressure";
 
 function linesForList(items: string[]): string[] {
@@ -62,6 +63,16 @@ export function buildMarkdownRunLog(state: RunState): string {
   });
   if (storyObjectUses.length === 0) lines.push("- None");
 
+  lines.push("", "## Story Sources Used", "");
+  storyObjectUses.forEach((use) => {
+    lines.push(`- Turn ${use.turn}: ${use.objectName}`);
+    lines.push(`  - Source File: ${use.sourceFile}`);
+    lines.push(`  - Target: ${use.targetName ?? "Room"}`);
+    lines.push(`  - Plain Meaning: ${use.plainLanguageMeaning}`);
+    lines.push(`  - Resulting Interpretation: ${use.resultingInterpretation}`);
+  });
+  if (storyObjectUses.length === 0) lines.push("- None");
+
   lines.push("", "## Event Log", "");
   state.events.forEach((event) => {
     lines.push(`- Turn ${event.turn} [${eventTypeLabel(event.type)}]: ${event.text}`);
@@ -70,13 +81,15 @@ export function buildMarkdownRunLog(state: RunState): string {
 
   lines.push("", "## Final Meters", "");
   pressureKeys.forEach((key) => {
-    lines.push(`- ${pressureLabels[key]}: ${state.pressures[key]}`);
+    lines.push(`- ${pressureLabels[key]}: ${formatMetricValue(state.pressures[key])}`);
   });
   const latestMetrics = state.meterHistory.slice(-1)[0];
   if (latestMetrics) {
-    lines.push(`- RUFS: ${latestMetrics.rufs}`);
-    lines.push(`- Mood Output: ${latestMetrics.mood} (${latestMetrics.label})`);
-    lines.push(`- Safety / Agency / Trust / Meaning: ${latestMetrics.safety} / ${latestMetrics.agency} / ${latestMetrics.trust} / ${latestMetrics.meaning}`);
+    lines.push(`- RUFS: ${formatMetricValue(latestMetrics.rufs)}`);
+    lines.push(`- Mood Output: ${formatMetricValue(latestMetrics.mood)} (${latestMetrics.label})`);
+    lines.push(
+      `- Safety / Agency / Trust / Meaning: ${formatMetricValue(latestMetrics.safety)} / ${formatMetricValue(latestMetrics.agency)} / ${formatMetricValue(latestMetrics.trust)} / ${formatMetricValue(latestMetrics.meaning)}`,
+    );
   }
 
   lines.push("", "## Final Reality Layers", "", "### Base Reality", "");

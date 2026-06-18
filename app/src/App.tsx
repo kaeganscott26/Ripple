@@ -5,7 +5,15 @@ import layerCardsJson from "./data/layerCards.json";
 import roomsJson from "./data/rooms.json";
 import rulesJson from "./data/rules.json";
 import storyBouldersJson from "./data/storyBoulders.json";
+import {
+  archiveDocumentById,
+  archiveDocumentBySourceFile,
+  archiveDocuments,
+  nextArchiveDocument,
+} from "./data/archiveDocuments";
+import { ActiveInspectionSummary } from "./components/ActiveInspectionSummary";
 import { AgentPanel } from "./components/AgentPanel";
+import { ArchiveView } from "./components/ArchiveView";
 import { ArtifactPanel } from "./components/ArtifactPanel";
 import { BoardScaleToggle } from "./components/BoardScaleToggle";
 import { CharacterTargetPanel } from "./components/CharacterTargetPanel";
@@ -53,7 +61,8 @@ const artifacts = artifactsJson as ArtifactData[];
 const storyBoulders = storyBouldersJson as StoryBoulder[];
 const layerCards = layerCardsJson as LayerCard[];
 const rules = rulesJson as RulesData;
-const savedRunKey = "ripple-boulder-build-run-v0.7";
+const savedRunKey = "ripple-boulder-build-run-v0.8";
+const previousV07SavedRunKey = "ripple-boulder-build-run-v0.7";
 const previousSavedRunKey = "ripple-boulder-build-run-v0.6";
 
 const initialSeeds = agents.reduce<Record<string, SeedKey>>((acc, agent) => {
@@ -63,7 +72,10 @@ const initialSeeds = agents.reduce<Record<string, SeedKey>>((acc, agent) => {
 
 function loadSavedRun(): RunState | null {
   try {
-    const saved = window.localStorage.getItem(savedRunKey) ?? window.localStorage.getItem(previousSavedRunKey);
+    const saved =
+      window.localStorage.getItem(savedRunKey) ??
+      window.localStorage.getItem(previousV07SavedRunKey) ??
+      window.localStorage.getItem(previousSavedRunKey);
     if (!saved) return null;
     const parsed = JSON.parse(saved) as RunState;
     return parsed?.mode && Array.isArray(parsed.events)
@@ -89,6 +101,11 @@ export default function App() {
   const [selectedCharacterId, setSelectedCharacterId] = useState<string | undefined>();
   const [selectedStoryBoulderId, setSelectedStoryBoulderId] = useState(storyBoulders[0]?.id ?? "");
   const [inspectorItem, setInspectorItem] = useState<InspectorItem>(() => defaultHelpItem());
+  const [selectedMeterKey, setSelectedMeterKey] = useState<MeterKey | undefined>();
+  const [selectedArchiveDocumentId, setSelectedArchiveDocumentId] = useState(
+    archiveDocumentBySourceFile(storyBoulders[0]?.sourceFile)?.id ?? archiveDocuments[0]?.id ?? "",
+  );
+  const [highlightedArchiveStoryWeightId, setHighlightedArchiveStoryWeightId] = useState<string | undefined>();
   const [runState, setRunState] = useState<RunState | null>(() => loadSavedRun());
 
   useEffect(() => {
@@ -106,6 +123,9 @@ export default function App() {
   const selectedAgent = runState?.agents.find((agent) => agent.id === selectedCharacterId);
   const latestObserverInput = runState?.observerInputs.slice(-1)[0];
   const latestMetrics = runState?.meterHistory.slice(-1)[0];
+  const sourceDocument = archiveDocumentBySourceFile(inspectorItem.sourceFile);
+  const selectedArchiveDocument = archiveDocumentById(selectedArchiveDocumentId) ?? archiveDocuments[0];
+  const selectedTargetName = selectedAgent?.name ?? "Room";
 
   function updateSeed(agentId: string, seed: SeedKey) {
     setSelectedSeeds((current) => ({ ...current, [agentId]: seed }));
@@ -124,11 +144,27 @@ export default function App() {
     setSelectedCharacterId(undefined);
     setSelectedStoryBoulderId(storyBoulders[0]?.id ?? "");
     setInspectorItem(defaultHelpItem());
+    setSelectedMeterKey(undefined);
+  }
+
+  function inspectItem(item: InspectorItem) {
+    setInspectorItem(item);
+    setSelectedMeterKey(item.kind === "meter" ? (item.id.replace("meter-", "") as MeterKey) : undefined);
   }
 
   function inspectMeter(key: MeterKey) {
     if (!runState) return;
+    setSelectedMeterKey(key);
     setInspectorItem(explainMeter(key, runState.meterHistory, runState.lastTurnFeedback?.interpretation.roomInterpretation));
+  }
+
+  function readInspectorSource() {
+    if (!sourceDocument) return;
+    setSelectedArchiveDocumentId(sourceDocument.id);
+    setHighlightedArchiveStoryWeightId(
+      inspectorItem.kind === "story-boulder" ? inspectorItem.id.replace("story-boulder-", "") : undefined,
+    );
+    setBoardScale("archive");
   }
 
   function handleAdvance() {
@@ -149,7 +185,7 @@ export default function App() {
       if (!current) return current;
       return introduceStoryBoulder(current, storyBoulder, layerCards, rules, selectedCharacterId);
     });
-    setInspectorItem(explainStoryBoulder(storyBoulder, selectedAgent));
+    inspectItem(explainStoryBoulder(storyBoulder, selectedAgent));
   }
 
   if (!runState) {
@@ -171,7 +207,7 @@ export default function App() {
     <main className="app game-layout">
       <header className="topbar">
         <div>
-          <p className="eyebrow">Ripple v0.7</p>
+          <p className="eyebrow">Ripple v0.8</p>
           <h1>The Boulder Build</h1>
         </div>
         <div className="topbar-actions">
@@ -186,21 +222,47 @@ export default function App() {
         <div className="left-column">
           <CurrentObjectivePanel />
           <BoardScaleToggle value={boardScale} onChange={setBoardScale} />
-          {boardScale === "room" ? (
+          <ActiveInspectionSummary
+            canReadSource={Boolean(sourceDocument)}
+            item={inspectorItem}
+            onReadSource={sourceDocument ? readInspectorSource : undefined}
+            selectedTargetName={selectedTargetName}
+            selectedWeightName={selectedStoryBoulder?.name}
+          />
+          {boardScale === "archive" && selectedArchiveDocument ? (
+            <ArchiveView
+              agents={agents}
+              documents={archiveDocuments}
+              highlightedStoryWeightId={highlightedArchiveStoryWeightId}
+              layerCards={layerCards}
+              onNext={() => setSelectedArchiveDocumentId(nextArchiveDocument(selectedArchiveDocument.id, 1).id)}
+              onPrevious={() => setSelectedArchiveDocumentId(nextArchiveDocument(selectedArchiveDocument.id, -1).id)}
+              onReturnToRoom={() => setBoardScale("room")}
+              onSelectDocument={setSelectedArchiveDocumentId}
+              selectedDocument={selectedArchiveDocument}
+              storyBoulders={storyBoulders}
+            />
+          ) : boardScale === "room" ? (
             <RoomBoardView
               state={runState}
               room={currentRoom}
               artifact={boulder}
-              onInspect={setInspectorItem}
+              onInspect={inspectItem}
               onSelectCharacter={setSelectedCharacterId}
+              selectedAgent={selectedAgent}
               selectedCharacterId={selectedCharacterId}
+              selectedStoryBoulder={selectedStoryBoulder}
               rules={rules}
             />
           ) : (
-            <SocietyBoardView onInspect={setInspectorItem} state={runState} />
+            <SocietyBoardView onInspect={inspectItem} state={runState} />
           )}
-          <RealityMeters history={runState.meterHistory} onSelectMeter={inspectMeter} />
-          <RealityLayerPanel layers={runState.layers} />
+          {boardScale !== "archive" && (
+            <>
+              <RealityMeters history={runState.meterHistory} onSelectMeter={inspectMeter} selectedMeterKey={selectedMeterKey} />
+              <RealityLayerPanel layers={runState.layers} />
+            </>
+          )}
         </div>
 
         <aside className="right-column">
@@ -212,7 +274,7 @@ export default function App() {
             selectedBoulder={selectedStoryBoulder}
             storyBoulders={storyBoulders}
             onSelectCharacter={setSelectedCharacterId}
-            onInspect={setInspectorItem}
+            onInspect={inspectItem}
           />
           <StoryObjectPanel
             agents={runState.agents}
@@ -221,7 +283,7 @@ export default function App() {
             storyBoulders={storyBoulders}
             layerCards={layerCards}
             onSelectBoulder={setSelectedStoryBoulderId}
-            onInspect={setInspectorItem}
+            onInspect={inspectItem}
             onIntroduce={handleIntroduceStoryBoulder}
           />
           <TurnControls
@@ -233,8 +295,13 @@ export default function App() {
             onAdvance={handleAdvance}
           />
           <TurnFeedbackPanel feedback={runState.lastTurnFeedback} />
-          <InspectorPanel item={inspectorItem} onHelp={() => setInspectorItem(defaultHelpItem())} />
-          <MoodSummary metrics={latestMetrics} onSelectMeter={inspectMeter} />
+          <InspectorPanel
+            canReadSource={Boolean(sourceDocument)}
+            item={inspectorItem}
+            onHelp={() => inspectItem(defaultHelpItem())}
+            onReadSource={sourceDocument ? readInspectorSource : undefined}
+          />
+          <MoodSummary metrics={latestMetrics} onSelectMeter={inspectMeter} selectedMeterKey={selectedMeterKey} />
           <ObserverInputPanel input={latestObserverInput} />
           <RoomPanel room={currentRoom} />
           <ArtifactPanel artifact={boulder} state={runState} />
@@ -247,7 +314,7 @@ export default function App() {
           mode={runState.mode}
           selectedCharacterId={selectedCharacterId}
           onSelectCharacter={setSelectedCharacterId}
-          onInspect={setInspectorItem}
+          onInspect={inspectItem}
         />
         <EventLog events={runState.events} />
       </section>

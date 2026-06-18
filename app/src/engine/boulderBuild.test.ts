@@ -3,12 +3,18 @@ import agentsJson from "../data/agents.json";
 import layerCardsJson from "../data/layerCards.json";
 import rulesJson from "../data/rules.json";
 import storyBouldersJson from "../data/storyBoulders.json";
+import { archiveDocumentBySourceFile, archiveDocuments, nextArchiveDocument } from "../data/archiveDocuments";
+import { howToPlaySteps } from "../components/HowToPlayPanel";
+import { formatMetricDelta, formatMetricValue, formatPercent } from "./formatting";
 import { buildActiveAgents } from "./memorySystem";
 import { advanceTurn } from "./ruleEngine";
 import { createRunState } from "./runState";
 import { buildMarkdownRunLog } from "./runLog";
 import { introduceStoryBoulder } from "./storyTurnEngine";
 import {
+  buildStoryActionPreview,
+  explainLayerCard,
+  explainStoryBoulder,
   storyBoulderById,
   validateAgentStoryProfiles,
   validateLayerCardData,
@@ -16,7 +22,7 @@ import {
 } from "./storyObjects";
 import { pressureBuildMessages } from "./lawProgress";
 import { classifyObserverInput } from "./observerInput";
-import { explainHalo, explainMeter } from "./explanations";
+import { explainAgent, explainHalo, explainMeter } from "./explanations";
 import { createTurnInterpretation } from "./interpretationEngine";
 import {
   appendMetricSnapshot,
@@ -43,7 +49,7 @@ function newRun(seed: SeedKey = "A") {
   return createRunState(agents, { mode: "experimental", selectedSeeds: selectedSeeds(seed) });
 }
 
-describe("Boulder Build v0.7", () => {
+describe("Boulder Build v0.8", () => {
   it("loads source-derived story Boulder data", () => {
     expect(validateStoryBoulderData(storyBoulders)).toBe(true);
     expect(storyBoulders.length).toBeGreaterThanOrEqual(8);
@@ -274,6 +280,86 @@ describe("Boulder Build v0.7", () => {
     expect(explanation.summary).toContain("Concern is");
     expect(explanation.details.join(" ")).toContain("risky or unstable");
     expect(explanation.details.join(" ")).toContain("changed path");
+    expect(explanation.currentValue).toBeDefined();
+    expect(explanation.delta).toMatch(/[+-]?\d/);
+  });
+
+  it("formats metric values without long floating point artifacts", () => {
+    expect(formatMetricValue(22.200000000000003)).toBe("22.2");
+    expect(formatMetricDelta(9.000000000000002)).toBe("+9");
+    expect(formatMetricValue(14.75)).toBe("14.8");
+    expect(formatMetricValue(100)).toBe("100");
+    expect(formatPercent(33.3333333333)).toBe("33.3%");
+  });
+
+  it("Story Weight Inspect payload includes title, meaning, source, effects, and next action", () => {
+    const boulder = storyBoulderById(storyBoulders, "closed-door-saved-life");
+    expect(boulder).toBeDefined();
+
+    const explanation = explainStoryBoulder(boulder!);
+
+    expect(explanation.title).toBe("The Closed Door");
+    expect(explanation.plainLanguageMeaning).toContain("closed door");
+    expect(explanation.sourceFile).toBe("INTERVENTION ARG/Chapter 07.md");
+    expect(explanation.affects?.join(" ")).toContain("Witness");
+    expect(explanation.suggestedNextAction).toContain("Read Source");
+  });
+
+  it("Layer Card Inspect payload includes plain-language explanation", () => {
+    const card = layerCards.find((entry) => entry.id === "masking") ?? layerCards[0];
+    const explanation = explainLayerCard(card);
+
+    expect(explanation.title).toBe(card.name);
+    expect(explanation.plainLanguageMeaning).toBe(card.plainLanguageMeaning);
+    expect(explanation.whyItMatters).toBe(card.inspectorExplanation);
+    expect(explanation.affects?.join(" ")).toContain(card.relatedMeters[0]);
+  });
+
+  it("character inspect payload includes halo and current state information", () => {
+    const state = newRun();
+    const explanation = explainAgent(state.agents[0], state.mode);
+
+    expect(explanation.typeLabel).toBe("Character Piece");
+    expect(explanation.currentContext).toContain("No last-turn reaction yet");
+    expect(explanation.details.join(" ")).toContain("Token identity");
+    expect(explanation.details.join(" ")).toContain("Current carried pressure");
+  });
+
+  it("action preview updates based on selected Story Weight and target", () => {
+    const state = newRun();
+    const boulder = storyBoulderById(storyBoulders, "closed-door-saved-life");
+    expect(boulder).toBeDefined();
+
+    const roomPreview = buildStoryActionPreview(boulder);
+    const targetPreview = buildStoryActionPreview(boulder, state.agents.find((agent) => agent.id === "dev"));
+
+    expect(roomPreview).toContain("room itself");
+    expect(targetPreview).toContain("Dev");
+    expect(targetPreview).toContain("connected");
+    expect(targetPreview).toContain("Source:");
+  });
+
+  it("How to Play copy includes the Story Weight loop", () => {
+    expect(howToPlaySteps.join(" ")).toContain("Choose a Story Weight");
+    expect(howToPlaySteps.join(" ")).toContain("Read the Action Preview");
+    expect(howToPlaySteps.join(" ")).toContain("Use Archive View");
+  });
+
+  it("archive documents load with chapter ordering", () => {
+    expect(archiveDocuments.length).toBeGreaterThan(20);
+    expect(archiveDocuments[0].sourceFile).toBe("INTERVENTION ARG/ORDER.md");
+    expect(archiveDocuments.find((document) => document.sourceFile === "INTERVENTION ARG/Chapter 01.md")?.order).toBe(1);
+    expect(nextArchiveDocument(archiveDocuments[0].id, 1).sourceFile).toBe("INTERVENTION ARG/PROLOGUE.md");
+  });
+
+  it("Story Weight sourceFile maps to Archive document and Read Source resolves", () => {
+    const boulder = storyBoulderById(storyBoulders, "trigger-is-not-instruction");
+    expect(boulder).toBeDefined();
+    const document = archiveDocumentBySourceFile(boulder?.sourceFile);
+
+    expect(document?.sourceFile).toBe("INTERVENTION ARG/Chapter 02.md");
+    expect(document?.content).toContain("# Trigger");
+    expect(document?.relatedStoryWeights).toContain("trigger-is-not-instruction");
   });
 
   it("explains halo states in plain language", () => {
@@ -380,5 +466,8 @@ describe("Boulder Build v0.7", () => {
     expect(markdown).toContain("Source: INTERVENTION ARG/Chapter 02.md");
     expect(markdown).toContain("Target: Mara");
     expect(markdown).toContain("Feeling activated is real");
+    expect(markdown).toContain("## Story Sources Used");
+    expect(markdown).toContain("Source File: INTERVENTION ARG/Chapter 02.md");
+    expect(markdown).toContain("Resulting Interpretation:");
   });
 });

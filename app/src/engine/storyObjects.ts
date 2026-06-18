@@ -1,4 +1,5 @@
 import type { ActiveAgent, AgentData, InspectorItem, LayerCard, StoryBoulder } from "./types";
+import { formatMetricDelta } from "./formatting";
 
 export function storyBoulderById(boulders: StoryBoulder[], id?: string): StoryBoulder | undefined {
   return boulders.find((boulder) => boulder.id === id);
@@ -34,7 +35,21 @@ export function explainStoryBoulder(boulder: StoryBoulder, agent?: ActiveAgent):
     id: `story-boulder-${boulder.id}`,
     kind: "story-boulder",
     title: boulder.name,
+    typeLabel: "Story Weight",
+    sourceFile: boulder.sourceFile,
     summary: boulder.shortDescription,
+    plainLanguageMeaning: boulder.plainLanguageMeaning,
+    whyItMatters: boulder.symbolicFunction,
+    affects: [
+      `Witness ${formatMetricDelta(boulder.pressureProfile.witness)}`,
+      `Named Weight ${formatMetricDelta(boulder.pressureProfile.namedWeight)}`,
+      `Institutional ${formatMetricDelta(boulder.pressureProfile.institution)}`,
+      `Concern ${formatMetricDelta(boulder.pressureProfile.concern)}`,
+      ...boulder.relatedLayers,
+    ],
+    currentContext: whyBoulderMattersToAgent(boulder, agent),
+    suggestedNextAction: "Read Source, select a target, or introduce this weight after reading the Action Preview.",
+    relatedSource: boulder.sourceChapter ?? boulder.sourceNote,
     details: [
       boulder.plainLanguageMeaning,
       `Source: ${boulder.sourceFile}${boulder.sourceChapter ? ` (${boulder.sourceChapter})` : ""}.`,
@@ -51,7 +66,14 @@ export function explainLayerCard(card: LayerCard): InspectorItem {
     id: `layer-card-${card.id}`,
     kind: "layer-card",
     title: card.name,
+    typeLabel: "Layer / Artifact Card",
+    sourceFile: card.sourceFile,
     summary: card.plainLanguageMeaning,
+    plainLanguageMeaning: card.plainLanguageMeaning,
+    whyItMatters: card.inspectorExplanation,
+    affects: [...card.relatedMeters, ...card.relatedBoulders],
+    currentContext: card.unlockCondition ?? "Available at start.",
+    suggestedNextAction: "Introduce a Story Weight connected to memory, denial, access, pressure, or hidden truth.",
     details: [
       `Type: ${card.cardType}.`,
       `Source: ${card.sourceFile}.`,
@@ -61,6 +83,26 @@ export function explainLayerCard(card: LayerCard): InspectorItem {
       card.inspectorExplanation,
     ],
   };
+}
+
+export function buildStoryActionPreview(boulder?: StoryBoulder, agent?: ActiveAgent): string {
+  if (!boulder) return "Choose a Story Weight to preview what it will do before it enters the room.";
+
+  const targetName = agent?.name ?? "the room itself";
+  const connected = agent ? boulder.relatedCharacters.includes(agent.id) || Boolean(boulder.targetFit[agent.id]) : true;
+  const fit = connected ? "connected" : "mismatched";
+  const effects = [
+    `Witness ${formatMetricDelta(boulder.pressureProfile.witness)}`,
+    `Named Weight ${formatMetricDelta(boulder.pressureProfile.namedWeight)}`,
+    `Institutional ${formatMetricDelta(boulder.pressureProfile.institution)}`,
+    `Concern ${formatMetricDelta(boulder.pressureProfile.concern)}`,
+  ].join(", ");
+
+  if (!agent) {
+    return `${boulder.name} will enter the room itself. The room will treat it as shared pressure rather than one character's private memory. Likely meter effects: ${effects}. Source: ${boulder.sourceChapter ?? boulder.sourceFile}.`;
+  }
+
+  return `${boulder.name} will enter ${targetName}'s reality. ${agent.name} is ${fit} to this weight, so the turn will likely affect ${effects}. The room may interpret it as: ${boulder.possibleInterpretations[0]} Source: ${boulder.sourceChapter ?? boulder.sourceFile}.`;
 }
 
 export function validateStoryBoulderData(boulders: StoryBoulder[]): boolean {

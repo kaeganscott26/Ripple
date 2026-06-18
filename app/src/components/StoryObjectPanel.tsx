@@ -1,4 +1,5 @@
 import {
+  buildStoryActionPreview,
   bouldersForAgent,
   explainLayerCard,
   explainStoryBoulder,
@@ -31,15 +32,20 @@ export function StoryObjectPanel({
   const selectedAgent = agents.find((agent) => agent.id === selectedCharacterId);
   const orderedBoulders = bouldersForAgent(storyBoulders, selectedCharacterId);
   const selectedBoulder = storyBoulders.find((boulder) => boulder.id === selectedBoulderId) ?? storyBoulders[0];
+  const actionPreview = buildStoryActionPreview(selectedBoulder, selectedAgent);
 
   return (
     <section className="panel story-object-panel">
       <p className="eyebrow">Cards / Artifacts</p>
       <h2>Story Weights</h2>
       <div className="selected-action-summary">
-        <span>Selected Boulder</span>
+        <span>Selected Weight</span>
         <strong>{selectedBoulder?.name ?? "None"}</strong>
         <p>{selectedBoulder?.plainLanguageMeaning ?? "Choose a story object before advancing."}</p>
+      </div>
+      <div className="action-preview" aria-live="polite">
+        <span>Action Preview</span>
+        <p>{actionPreview}</p>
       </div>
       <button className="primary-action" disabled={!selectedBoulder} onClick={onIntroduce} type="button">
         Introduce Selected Boulder
@@ -57,13 +63,17 @@ export function StoryObjectPanel({
                 <strong>{boulder.name}</strong>
                 <small>{boulder.shortDescription}</small>
                 <small>{whyBoulderMattersToAgent(boulder, selectedAgent)}</small>
+                {isSelected && <small className="selected-card-label">Selected Weight</small>}
               </button>
-              <button
-                className="inspect-link"
-                onClick={() => onInspect(explainStoryBoulder(boulder, selectedAgent))}
-                type="button"
-              >
-                Inspect
+          <button
+            className="inspect-link"
+            onClick={() => {
+              onSelectBoulder(boulder.id);
+              onInspect(explainStoryBoulder(boulder, selectedAgent));
+            }}
+            type="button"
+          >
+            Inspect
               </button>
             </article>
           );
@@ -85,6 +95,7 @@ export function StoryObjectPanel({
               <span>{locked ? "Locked" : card.cardType}</span>
               <strong>{card.name}</strong>
               <small>{card.plainLanguageMeaning}</small>
+              <small className="selected-card-label">Inspect</small>
             </button>
           );
         })}

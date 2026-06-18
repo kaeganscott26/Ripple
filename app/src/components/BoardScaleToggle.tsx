@@ -8,6 +8,7 @@ interface BoardScaleToggleProps {
 const views: Array<{ id: BoardScaleView; label: string }> = [
   { id: "room", label: "Room View" },
   { id: "society", label: "Society View" },
+  { id: "archive", label: "Archive View" },
 ];
 
 export function BoardScaleToggle({ value, onChange }: BoardScaleToggleProps) {

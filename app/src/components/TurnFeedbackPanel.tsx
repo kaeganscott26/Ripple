@@ -1,4 +1,5 @@
 import type { TurnFeedback } from "../engine/types";
+import { formatMetricDelta, formatMetricValue } from "../engine/formatting";
 
 export function TurnFeedbackPanel({ feedback }: { feedback?: TurnFeedback }) {
   return (
@@ -44,6 +45,8 @@ export function TurnFeedbackPanel({ feedback }: { feedback?: TurnFeedback }) {
                 {feedback.storyObjectUse.objectName} entered {feedback.storyObjectUse.targetName ?? "the room"} from{" "}
                 {feedback.storyObjectUse.sourceFile}.
               </p>
+              <p>Meaning: {feedback.storyObjectUse.plainLanguageMeaning}</p>
+              <p>What changed: {feedback.storyObjectUse.resultingInterpretation}</p>
             </div>
           )}
 
@@ -62,7 +65,7 @@ export function TurnFeedbackPanel({ feedback }: { feedback?: TurnFeedback }) {
           <div>
             <h3>Frame Readout</h3>
             <p>
-              RUFS {feedback.metrics.rufs}/100. Mood {feedback.metrics.mood}/100: {feedback.metrics.label}.
+              RUFS {formatMetricValue(feedback.metrics.rufs)}/100. Mood {formatMetricValue(feedback.metrics.mood)}/100: {feedback.metrics.label}.
             </p>
           </div>
 
@@ -74,8 +77,8 @@ export function TurnFeedbackPanel({ feedback }: { feedback?: TurnFeedback }) {
               <ul className="compact-list">
                 {feedback.pressureChanges.map((change) => (
                   <li key={change.key}>
-                    {change.label}: {change.before} to {change.after} ({change.delta > 0 ? "+" : ""}
-                    {change.delta})
+                    {change.label}: {formatMetricValue(change.before)} to {formatMetricValue(change.after)} (
+                    {formatMetricDelta(change.delta)})
                   </li>
                 ))}
               </ul>

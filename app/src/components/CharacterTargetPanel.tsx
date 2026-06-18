@@ -1,4 +1,5 @@
 import { agentPresentation } from "../engine/agentPresentation";
+import { explainAgent } from "../engine/explanations";
 import { seedDisplay } from "../engine/memorySystem";
 import { bouldersForAgent, explainStoryBoulder, whyBoulderMattersToAgent } from "../engine/storyObjects";
 import type { ActiveAgent, InspectorItem, Mode, StoryBoulder } from "../engine/types";
@@ -46,7 +47,10 @@ export function CharacterTargetPanel({
           <button
             className={selectedCharacterId === agent.id ? "selected" : ""}
             key={agent.id}
-            onClick={() => onSelectCharacter(agent.id)}
+            onClick={() => {
+              onSelectCharacter(agent.id);
+              onInspect(explainAgent(agent, mode));
+            }}
             type="button"
           >
             {agent.name}

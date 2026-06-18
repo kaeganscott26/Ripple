@@ -1,4 +1,5 @@
 import { pressureKeys, pressureLabels } from "./pressure";
+import { formatMetricValue } from "./formatting";
 import type { PressureValues, RulesData, RunState } from "./types";
 
 export interface LawProgressEntry {
@@ -45,7 +46,7 @@ export function getLawProgress(state: RunState, rules: RulesData): LawProgressEn
 }
 
 export function pressureBuildMessages(state: RunState): string[] {
-  return pressureKeys.map((key) => `${pressureLabels[key]} pressure: ${state.pressures[key]}`);
+  return pressureKeys.map((key) => `${pressureLabels[key]} pressure: ${formatMetricValue(state.pressures[key])}`);
 }
 
 export function lawProgressMessages(state: RunState, rules: RulesData): string[] {
@@ -55,11 +56,11 @@ export function lawProgressMessages(state: RunState, rules: RulesData): string[]
     }
 
     const status = entry.thresholdStatus
-      .map((threshold) => `${threshold.label} ${threshold.current}/${threshold.target}`)
+      .map((threshold) => `${threshold.label} ${formatMetricValue(threshold.current)}/${formatMetricValue(threshold.target)}`)
       .join(", ");
     const remaining = entry.thresholdStatus
       .filter((threshold) => threshold.remaining > 0)
-      .map((threshold) => `${threshold.remaining} more ${threshold.label}`)
+      .map((threshold) => `${formatMetricValue(threshold.remaining)} more ${threshold.label}`)
       .join(" and ");
 
     return `${entry.name} is building: ${status}${remaining ? `. Needs ${remaining}.` : "."}`;

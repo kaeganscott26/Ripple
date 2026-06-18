@@ -2,7 +2,7 @@ export type Mode = "mystery" | "vague" | "experimental";
 export type SeedKey = "A" | "B" | "C";
 export type BoulderAction = "observe" | "name" | "move" | "ignore";
 export type TurnAction = BoulderAction | "introduce-story-boulder" | "ask-room" | "archive-weight" | "refuse-weight";
-export type BoardScaleView = "room" | "society";
+export type BoardScaleView = "room" | "society" | "archive";
 export type HaloState = "dim" | "bright" | "pulsing" | "double" | "clipped";
 export type MeterKey =
   | keyof PressureValues
@@ -12,7 +12,16 @@ export type MeterKey =
   | "agency"
   | "trust"
   | "meaning";
-export type InspectorKind = "help" | "meter" | "agent" | "boulder" | "halo" | "law" | "society" | "story-boulder" | "layer-card";
+export type InspectorKind =
+  | "help"
+  | "meter"
+  | "agent"
+  | "boulder"
+  | "halo"
+  | "law"
+  | "society"
+  | "story-boulder"
+  | "layer-card";
 export type SocietyNodeKey =
   | "boulder-room"
   | "social-reality"
@@ -207,6 +216,17 @@ export interface InspectorItem {
   title: string;
   summary: string;
   details: string[];
+  typeLabel?: string;
+  sourceFile?: string;
+  plainLanguageMeaning?: string;
+  whyItMatters?: string;
+  affects?: string[];
+  currentContext?: string;
+  suggestedNextAction?: string;
+  relatedSource?: string;
+  currentValue?: string;
+  previousValue?: string;
+  delta?: string;
 }
 
 export interface TurnFeedback {

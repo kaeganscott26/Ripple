@@ -1,13 +1,15 @@
 import type { CSSProperties } from "react";
 import type { MeterKey, RealityMetricSnapshot } from "../engine/types";
+import { formatMetricDelta, formatMetricValue } from "../engine/formatting";
 import { pressureKeys, pressureLabels } from "../engine/pressure";
 
 interface RealityMetersProps {
   history: RealityMetricSnapshot[];
   onSelectMeter: (key: MeterKey) => void;
+  selectedMeterKey?: MeterKey;
 }
 
-export function RealityMeters({ history, onSelectMeter }: RealityMetersProps) {
+export function RealityMeters({ history, onSelectMeter, selectedMeterKey }: RealityMetersProps) {
   const latest = history.slice(-1)[0];
 
   return (
@@ -23,6 +25,7 @@ export function RealityMeters({ history, onSelectMeter }: RealityMetersProps) {
             meterKey={key}
             label={pressureLabels[key]}
             onSelect={onSelectMeter}
+            selected={selectedMeterKey === key}
             values={history.map((snapshot) => snapshot.pressures[key])}
             value={latest?.pressures[key] ?? 0}
           />
@@ -32,6 +35,7 @@ export function RealityMeters({ history, onSelectMeter }: RealityMetersProps) {
           label="RUFS"
           note="how loudly the room treats this event as real"
           onSelect={onSelectMeter}
+          selected={selectedMeterKey === "rufs"}
           values={history.map((snapshot) => snapshot.rufs)}
           value={latest?.rufs ?? 0}
         />
@@ -45,6 +49,7 @@ function TrendMeter({
   meterKey,
   note,
   onSelect,
+  selected,
   value,
   values,
 }: {
@@ -52,6 +57,7 @@ function TrendMeter({
   meterKey: MeterKey;
   note?: string;
   onSelect: (key: MeterKey) => void;
+  selected?: boolean;
   value: number;
   values: number[];
 }) {
@@ -60,10 +66,10 @@ function TrendMeter({
   const delta = value - previous;
 
   return (
-    <button className="trend-meter" onClick={() => onSelect(meterKey)} type="button">
+    <button className={`trend-meter ${selected ? "selected-meter" : ""}`} onClick={() => onSelect(meterKey)} type="button">
       <div className="trend-meter-header">
         <span>{label}</span>
-        <strong>{value}</strong>
+        <strong>{formatMetricValue(value)}</strong>
       </div>
       <div className="trend-bars" aria-hidden="true">
         {values.map((entry, index) => (
@@ -73,7 +79,7 @@ function TrendMeter({
           />
         ))}
       </div>
-      <p>{delta === 0 ? "steady" : delta > 0 ? `+${delta} this turn` : `${delta} this turn`}</p>
+      <p>{delta === 0 ? "steady" : `${formatMetricDelta(delta)} this turn`}</p>
       {note && <p className="meter-note">{note}</p>}
     </button>
   );

@@ -1,5 +1,6 @@
-import type { ActiveAgent, ArtifactData, HaloState, InspectorItem, LawState, RoomData, RunState } from "../engine/types";
+import type { ActiveAgent, ArtifactData, HaloState, InspectorItem, LawState, RoomData, RunState, StoryBoulder } from "../engine/types";
 import type { RulesData } from "../engine/types";
+import { formatMetricValue } from "../engine/formatting";
 import { explainAgent, explainBoulder, explainHalo, explainLaw } from "../engine/explanations";
 import { getLawProgress, pressureBuildMessages } from "../engine/lawProgress";
 import { AgentPiece } from "./AgentPiece";
@@ -11,6 +12,8 @@ interface RoomBoardViewProps {
   onInspect: (item: InspectorItem) => void;
   onSelectCharacter: (agentId: string) => void;
   selectedCharacterId?: string;
+  selectedStoryBoulder?: StoryBoulder;
+  selectedAgent?: ActiveAgent;
   rules: RulesData;
 }
 
@@ -21,6 +24,8 @@ export function RoomBoardView({
   onInspect,
   onSelectCharacter,
   selectedCharacterId,
+  selectedStoryBoulder,
+  selectedAgent,
   rules,
 }: RoomBoardViewProps) {
   const boulderLabel = state.boulderName ?? artifact.name;
@@ -48,7 +53,7 @@ export function RoomBoardView({
         <div className="room-state-chip">{state.boulderPosition === "shifted" ? "Path altered" : "Center weight"}</div>
         <button
           className={`boulder-piece ${state.boulderPosition}`}
-          onClick={() => onInspect(explainBoulder(state, artifact))}
+          onClick={() => onInspect(explainBoulder(state, artifact, selectedStoryBoulder, selectedAgent))}
           type="button"
         >
           <span>{boulderLabel}</span>
@@ -107,7 +112,7 @@ function LawProgress({ state, rules }: { state: RunState; rules: RulesData }) {
             <li key={entry.id}>
               {entry.name}:{" "}
               {entry.thresholdStatus
-                .map((threshold) => `${threshold.label} ${threshold.current}/${threshold.target}`)
+                .map((threshold) => `${threshold.label} ${formatMetricValue(threshold.current)}/${formatMetricValue(threshold.target)}`)
                 .join(", ")}
             </li>
           ))}
@@ -125,7 +130,7 @@ function LawProgress({ state, rules }: { state: RunState; rules: RulesData }) {
             {entry.formed
               ? `${entry.name} formed on turn ${entry.formedTurn}.`
               : `${entry.name}: ${entry.thresholdStatus
-                  .map((threshold) => `${threshold.label} ${threshold.current}/${threshold.target}`)
+                  .map((threshold) => `${threshold.label} ${formatMetricValue(threshold.current)}/${formatMetricValue(threshold.target)}`)
                   .join(", ")}`}
           </li>
         ))}
