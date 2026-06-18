@@ -156,6 +156,10 @@ export function explainAgent(agent: ActiveAgent, mode: Mode): InspectorItem {
       `Current carried pressure: Witness ${agent.pressure.witness}, Named Weight ${agent.pressure.namedWeight}, Institutional ${agent.pressure.institution}, Concern ${agent.pressure.concern}.`,
       agent.lastReaction ?? "This agent has not reacted yet this run.",
       `Interpretation tendency: ${seed.distortion}`,
+      `Story Boulders: ${agent.associatedBoulders.join(", ")}.`,
+      `Emotional triggers: ${agent.emotionalTriggers.join(", ")}.`,
+      `Preferred layers: ${agent.preferredLayers.join(", ")}. Feared layers: ${agent.fearedLayers.join(", ")}.`,
+      `Story tendency: ${agent.interpretationTendencies.join(" ")}`,
     ],
   };
 }
@@ -245,7 +249,7 @@ export function explainSocietyNode(key: SocietyNodeKey, state: RunState): Inspec
       id: "society-nested-simulation",
       kind: "society",
       title: "Nested Simulation: locked",
-      summary: "The inner board is visible as a future possibility, but it is not simulated in v0.6.",
+      summary: "The inner board is visible as a future possibility, but it is not simulated in v0.7.",
       details: ["Nothing inside this locked node changes mechanics yet.", "It marks that inherited myths and laws may matter later."],
     },
   };
@@ -263,7 +267,8 @@ export function defaultHelpItem(): InspectorItem {
     details: [
       "The meters show invisible pressure.",
       "The reality layers show how the event moves from physical action to belief, social agreement, and law.",
-      "Click meters, pieces, halos, laws, and society nodes to inspect what they mean.",
+      "Click meters, pieces, halos, laws, story Boulders, layer cards, and society nodes to inspect what they mean.",
+      "The main v0.7 action is choosing a source-derived story weight and introducing it to a character or the room.",
     ],
   };
 }

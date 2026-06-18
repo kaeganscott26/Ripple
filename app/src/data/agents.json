@@ -4,6 +4,16 @@
     "name": "Mara",
     "role": "Pressure reader, threshold witness, choice under strain",
     "identityCore": "Alert to pressure, sensitive to thresholds, suspicious of commands disguised as comfort.",
+    "associatedBoulders": ["trigger-is-not-instruction", "complete-consequence", "missed-layer", "false-world", "closed-door-saved-life", "loop-breakpoint", "decorative-door", "storm-not-proof"],
+    "emotionalTriggers": ["scarcity pressure", "threshold control", "dangerous testimony", "commands disguised as care"],
+    "preferredLayers": ["clinical-reality", "self-awareness", "boundary"],
+    "fearedLayers": ["power-governance", "attention-collapse"],
+    "interpretationTendencies": ["Looks for the gap before action.", "Tests whether a threshold protects someone or controls them.", "Needs evidence with room for uncertainty."],
+    "boulderReactions": {
+      "trigger-is-not-instruction": "Pauses before pressure becomes command.",
+      "false-world": "Checks whether language is becoming control.",
+      "storm-not-proof": "Treats changed atmosphere as real pressure, not as instruction."
+    },
     "seeds": {
       "A": {
         "label": "Scarcity",
@@ -39,6 +49,16 @@
     "name": "Jamal",
     "role": "Architecture reader, blocked-path interpreter, context advocate",
     "identityCore": "Notices how rooms create pressure before people are judged for reacting.",
+    "associatedBoulders": ["complete-consequence", "missed-layer", "decorative-door", "boulder-protocol"],
+    "emotionalTriggers": ["blocked path", "official record", "missing context", "architecture blamed on the person"],
+    "preferredLayers": ["geometry-as-consequence", "power-governance", "theory"],
+    "fearedLayers": ["clinical-reality"],
+    "interpretationTendencies": ["Asks what the room contributed.", "Distrusts records that omit architecture.", "Wants repair that includes action and conditions."],
+    "boulderReactions": {
+      "complete-consequence": "Receives the room as evidence without erasing responsibility.",
+      "decorative-door": "Reads access as architecture, not only attitude.",
+      "boulder-protocol": "Looks for the smallest useful room change."
+    },
     "seeds": {
       "A": {
         "label": "The Choke Point",
@@ -74,6 +94,16 @@
     "name": "Maren",
     "role": "Boundary keeper, safety corrector, framework skeptic",
     "identityCore": "Reads danger early and wants rules that protect people before language hardens.",
+    "associatedBoulders": ["trigger-is-not-instruction", "complete-consequence", "missed-layer", "false-world", "signal-released-no-receipt", "loop-breakpoint", "echo-faster-than-context", "boulder-protocol", "storm-not-proof"],
+    "emotionalTriggers": ["language misuse", "late correction", "unsafe theory", "public distortion"],
+    "preferredLayers": ["boundary", "clinical-reality", "media-communication"],
+    "fearedLayers": ["power-governance", "attention-collapse"],
+    "interpretationTendencies": ["Places safety before theory.", "Checks whether useful language is becoming a cage.", "Prefers correction before spectacle."],
+    "boulderReactions": {
+      "false-world": "Treats framework misuse as a safety problem.",
+      "echo-faster-than-context": "Tries to preserve context before the echo hardens.",
+      "signal-released-no-receipt": "Reads restraint as care."
+    },
     "seeds": {
       "A": {
         "label": "The Mood Reader",
@@ -109,6 +139,16 @@
     "name": "Dev",
     "role": "Access reader, door skeptic, belonging pressure point",
     "identityCore": "Notices when available paths still do not feel addressed to him.",
+    "associatedBoulders": ["closed-door-saved-life", "decorative-door", "boulder-protocol"],
+    "emotionalTriggers": ["visible access that feels unavailable", "preferred qualifications", "application support", "not your door"],
+    "preferredLayers": ["geometry-as-consequence", "power-governance", "clinical-reality"],
+    "fearedLayers": ["power-governance"],
+    "interpretationTendencies": ["Tests whether access is reachable and believable.", "Distrusts options that shame the person for not seeing them.", "Looks for doors that are actually addressed to him."],
+    "boulderReactions": {
+      "decorative-door": "Sees how a real door can still fail to render as available.",
+      "closed-door-saved-life": "Treats blocked access as uncertain until consequence develops.",
+      "boulder-protocol": "Looks for a door left open rather than a cage."
+    },
     "seeds": {
       "A": {
         "label": "Not Your Door",
@@ -144,6 +184,16 @@
     "name": "Teodor / Scott",
     "role": "Origin mapper, builder, observer-shadow",
     "identityCore": "Studies rooms as descendants of earlier rooms and wants pain to become useful without becoming a burden.",
+    "associatedBoulders": ["trigger-is-not-instruction", "missed-layer", "false-world", "closed-door-saved-life", "signal-released-no-receipt", "loop-breakpoint", "echo-faster-than-context", "boulder-protocol", "storm-not-proof"],
+    "emotionalTriggers": ["origin pressure", "translation gap", "fatherhood restraint", "building as proof"],
+    "preferredLayers": ["theory", "software-systems", "clinical-reality"],
+    "fearedLayers": ["attention-collapse", "power-governance"],
+    "interpretationTendencies": ["Maps events back to earlier rooms.", "Checks whether a wound is becoming a tool or a cage.", "Wants pain to become useful without making others carry it."],
+    "boulderReactions": {
+      "signal-released-no-receipt": "Receives restraint as the father carrying the intervention point.",
+      "boulder-protocol": "Treats the whole board as an ethical question about what gets thrown.",
+      "false-world": "Watches for a useful framework becoming too heavy."
+    },
     "seeds": {
       "A": {
         "label": "The First Room",

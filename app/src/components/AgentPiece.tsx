@@ -9,6 +9,7 @@ interface AgentPieceProps {
   mode: Mode;
   onSelect: (agent: ActiveAgent) => void;
   onSelectHalo: (state: HaloState) => void;
+  isSelected?: boolean;
   slot: number;
 }
 
@@ -20,13 +21,13 @@ const boardPositions = [
   { x: 50, y: 18 },
 ];
 
-export function AgentPiece({ agent, mode, onSelect, onSelectHalo, slot }: AgentPieceProps) {
+export function AgentPiece({ agent, mode, onSelect, onSelectHalo, isSelected, slot }: AgentPieceProps) {
   const presentation = agentPresentation(agent);
   const position = boardPositions[slot % boardPositions.length];
 
   return (
     <article
-      className={`agent-piece ${presentation.tokenShape} ${presentation.haloState}`}
+      className={`agent-piece ${presentation.tokenShape} ${presentation.haloState} ${isSelected ? "selected-agent-piece" : ""}`}
       style={{ "--piece-x": `${position.x}%`, "--piece-y": `${position.y}%` } as CSSProperties}
       title={`${agent.name}: ${presentation.haloLabel}`}
     >

@@ -9,13 +9,26 @@ interface RoomBoardViewProps {
   room: RoomData;
   artifact: ArtifactData;
   onInspect: (item: InspectorItem) => void;
+  onSelectCharacter: (agentId: string) => void;
+  selectedCharacterId?: string;
   rules: RulesData;
 }
 
-export function RoomBoardView({ state, room, artifact, onInspect, rules }: RoomBoardViewProps) {
+export function RoomBoardView({
+  state,
+  room,
+  artifact,
+  onInspect,
+  onSelectCharacter,
+  selectedCharacterId,
+  rules,
+}: RoomBoardViewProps) {
   const boulderLabel = state.boulderName ?? artifact.name;
   const latestLayer = state.layers.perceived.slice(-1)[0];
-  const inspectAgent = (agent: ActiveAgent) => onInspect(explainAgent(agent, state.mode));
+  const inspectAgent = (agent: ActiveAgent) => {
+    onSelectCharacter(agent.id);
+    onInspect(explainAgent(agent, state.mode));
+  };
   const inspectHalo = (haloState: HaloState) => onInspect(explainHalo(haloState));
 
   return (
@@ -45,6 +58,7 @@ export function RoomBoardView({ state, room, artifact, onInspect, rules }: RoomB
             agent={agent}
             key={agent.id}
             mode={state.mode}
+            isSelected={selectedCharacterId === agent.id}
             onSelect={inspectAgent}
             onSelectHalo={inspectHalo}
             slot={index}

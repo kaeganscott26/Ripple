@@ -45,10 +45,22 @@ export function buildMarkdownRunLog(state: RunState): string {
   const interpretationHistory = state.interpretationHistory ?? [];
   interpretationHistory.forEach((entry) => {
     const classification = entry.observerClassification ? ` / ${entry.observerClassification}` : "";
-    lines.push(`- Turn ${entry.turn}: ${entry.action}${classification}`);
+    const target = entry.targetCharacterId ? ` / target ${entry.targetCharacterId}` : "";
+    lines.push(`- Turn ${entry.turn}: ${entry.action}${classification}${target}`);
     lines.push(`  - ${entry.roomInterpretation}`);
   });
   if (interpretationHistory.length === 0) lines.push("- None");
+
+  lines.push("", "## Story Objects Used", "");
+  const storyObjectUses = state.storyObjectUses ?? [];
+  storyObjectUses.forEach((use) => {
+    lines.push(`- Turn ${use.turn}: ${use.objectName}`);
+    lines.push(`  - Source: ${use.sourceFile}`);
+    lines.push(`  - Target: ${use.targetName ?? "Room"}`);
+    lines.push(`  - Meaning: ${use.plainLanguageMeaning}`);
+    lines.push(`  - Result: ${use.resultingInterpretation}`);
+  });
+  if (storyObjectUses.length === 0) lines.push("- None");
 
   lines.push("", "## Event Log", "");
   state.events.forEach((event) => {

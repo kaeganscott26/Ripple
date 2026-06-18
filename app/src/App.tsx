@@ -1,11 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import agentsJson from "./data/agents.json";
 import artifactsJson from "./data/artifacts.json";
+import layerCardsJson from "./data/layerCards.json";
 import roomsJson from "./data/rooms.json";
 import rulesJson from "./data/rules.json";
+import storyBouldersJson from "./data/storyBoulders.json";
 import { AgentPanel } from "./components/AgentPanel";
 import { ArtifactPanel } from "./components/ArtifactPanel";
 import { BoardScaleToggle } from "./components/BoardScaleToggle";
+import { CharacterTargetPanel } from "./components/CharacterTargetPanel";
 import { CurrentObjectivePanel } from "./components/CurrentObjectivePanel";
 import { EventLog } from "./components/EventLog";
 import { ExportRunButton } from "./components/ExportRunButton";
@@ -19,17 +22,21 @@ import { RealityMeters } from "./components/RealityMeters";
 import { RoomPanel } from "./components/RoomPanel";
 import { RoomBoardView } from "./components/RoomBoardView";
 import { SocietyBoardView } from "./components/SocietyBoardView";
+import { StoryObjectPanel } from "./components/StoryObjectPanel";
 import { TurnFeedbackPanel } from "./components/TurnFeedbackPanel";
 import { TurnControls } from "./components/TurnControls";
 import { advanceTurn } from "./engine/ruleEngine";
+import { introduceStoryBoulder } from "./engine/storyTurnEngine";
 import { createRunState } from "./engine/runState";
 import { defaultHelpItem, explainMeter } from "./engine/explanations";
+import { explainStoryBoulder, storyBoulderById } from "./engine/storyObjects";
 import type {
   AgentData,
   ArtifactData,
   BoardScaleView,
   BoulderAction,
   InspectorItem,
+  LayerCard,
   MeterKey,
   Mode,
   RoomData,
@@ -37,13 +44,17 @@ import type {
   RunState,
   SeedKey,
   SetupSelection,
+  StoryBoulder,
 } from "./engine/types";
 
 const agents = agentsJson as AgentData[];
 const rooms = roomsJson as RoomData[];
 const artifacts = artifactsJson as ArtifactData[];
+const storyBoulders = storyBouldersJson as StoryBoulder[];
+const layerCards = layerCardsJson as LayerCard[];
 const rules = rulesJson as RulesData;
-const savedRunKey = "ripple-boulder-build-run-v0.6";
+const savedRunKey = "ripple-boulder-build-run-v0.7";
+const previousSavedRunKey = "ripple-boulder-build-run-v0.6";
 
 const initialSeeds = agents.reduce<Record<string, SeedKey>>((acc, agent) => {
   acc[agent.id] = "A";
@@ -52,10 +63,18 @@ const initialSeeds = agents.reduce<Record<string, SeedKey>>((acc, agent) => {
 
 function loadSavedRun(): RunState | null {
   try {
-    const saved = window.localStorage.getItem(savedRunKey);
+    const saved = window.localStorage.getItem(savedRunKey) ?? window.localStorage.getItem(previousSavedRunKey);
     if (!saved) return null;
     const parsed = JSON.parse(saved) as RunState;
-    return parsed?.mode && Array.isArray(parsed.events) ? parsed : null;
+    return parsed?.mode && Array.isArray(parsed.events)
+      ? {
+          ...parsed,
+          storyObjectUses: parsed.storyObjectUses ?? [],
+          observerInputs: parsed.observerInputs ?? [],
+          interpretationHistory: parsed.interpretationHistory ?? [],
+          meterHistory: parsed.meterHistory ?? [],
+        }
+      : null;
   } catch {
     return null;
   }
@@ -67,6 +86,8 @@ export default function App() {
   const [selectedAction, setSelectedAction] = useState<BoulderAction>("observe");
   const [boulderNameInput, setBoulderNameInput] = useState("");
   const [boardScale, setBoardScale] = useState<BoardScaleView>("room");
+  const [selectedCharacterId, setSelectedCharacterId] = useState<string | undefined>();
+  const [selectedStoryBoulderId, setSelectedStoryBoulderId] = useState(storyBoulders[0]?.id ?? "");
   const [inspectorItem, setInspectorItem] = useState<InspectorItem>(() => defaultHelpItem());
   const [runState, setRunState] = useState<RunState | null>(() => loadSavedRun());
 
@@ -81,6 +102,8 @@ export default function App() {
     [runState],
   );
   const boulder = artifacts.find((artifact) => artifact.id === "boulder") ?? artifacts[0];
+  const selectedStoryBoulder = storyBoulderById(storyBoulders, selectedStoryBoulderId) ?? storyBoulders[0];
+  const selectedAgent = runState?.agents.find((agent) => agent.id === selectedCharacterId);
   const latestObserverInput = runState?.observerInputs.slice(-1)[0];
   const latestMetrics = runState?.meterHistory.slice(-1)[0];
 
@@ -94,9 +117,12 @@ export default function App() {
 
   function resetRun() {
     window.localStorage.removeItem(savedRunKey);
+    window.localStorage.removeItem(previousSavedRunKey);
     setRunState(null);
     setSelectedAction("observe");
     setBoulderNameInput("");
+    setSelectedCharacterId(undefined);
+    setSelectedStoryBoulderId(storyBoulders[0]?.id ?? "");
     setInspectorItem(defaultHelpItem());
   }
 
@@ -113,6 +139,17 @@ export default function App() {
     if (selectedAction === "name") {
       setBoulderNameInput("");
     }
+  }
+
+  function handleIntroduceStoryBoulder() {
+    const storyBoulder = storyBoulderById(storyBoulders, selectedStoryBoulderId);
+    if (!storyBoulder) return;
+
+    setRunState((current) => {
+      if (!current) return current;
+      return introduceStoryBoulder(current, storyBoulder, layerCards, rules, selectedCharacterId);
+    });
+    setInspectorItem(explainStoryBoulder(storyBoulder, selectedAgent));
   }
 
   if (!runState) {
@@ -134,7 +171,7 @@ export default function App() {
     <main className="app game-layout">
       <header className="topbar">
         <div>
-          <p className="eyebrow">Ripple v0.6</p>
+          <p className="eyebrow">Ripple v0.7</p>
           <h1>The Boulder Build</h1>
         </div>
         <div className="topbar-actions">
@@ -155,6 +192,8 @@ export default function App() {
               room={currentRoom}
               artifact={boulder}
               onInspect={setInspectorItem}
+              onSelectCharacter={setSelectedCharacterId}
+              selectedCharacterId={selectedCharacterId}
               rules={rules}
             />
           ) : (
@@ -166,6 +205,25 @@ export default function App() {
 
         <aside className="right-column">
           <HowToPlayPanel />
+          <CharacterTargetPanel
+            agents={runState.agents}
+            mode={runState.mode}
+            selectedCharacterId={selectedCharacterId}
+            selectedBoulder={selectedStoryBoulder}
+            storyBoulders={storyBoulders}
+            onSelectCharacter={setSelectedCharacterId}
+            onInspect={setInspectorItem}
+          />
+          <StoryObjectPanel
+            agents={runState.agents}
+            selectedCharacterId={selectedCharacterId}
+            selectedBoulderId={selectedStoryBoulderId}
+            storyBoulders={storyBoulders}
+            layerCards={layerCards}
+            onSelectBoulder={setSelectedStoryBoulderId}
+            onInspect={setInspectorItem}
+            onIntroduce={handleIntroduceStoryBoulder}
+          />
           <TurnControls
             rules={rules}
             selectedAction={selectedAction}
@@ -184,7 +242,13 @@ export default function App() {
       </section>
 
       <section className="lower-grid">
-        <AgentPanel agents={runState.agents} mode={runState.mode} onInspect={setInspectorItem} />
+        <AgentPanel
+          agents={runState.agents}
+          mode={runState.mode}
+          selectedCharacterId={selectedCharacterId}
+          onSelectCharacter={setSelectedCharacterId}
+          onInspect={setInspectorItem}
+        />
         <EventLog events={runState.events} />
       </section>
     </main>

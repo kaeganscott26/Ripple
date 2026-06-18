@@ -1,8 +1,8 @@
 # Ripple: The Boulder Build
 
-This is the first local playable prototype for Ripple. It is a small 2D turn loop centered on the Boulder Room, memory-seeded agents, pressure changes, reality layers, law formation, and Markdown run export.
+This is the first local playable prototype for Ripple. It is a small 2D turn loop centered on the Boulder Room, memory-seeded agents, source-derived story Boulders, pressure changes, reality layers, law formation, and Markdown run export.
 
-It is not an AI system, backend service, Minecraft build, Docker app, or direct rewrite of the source archive. v0.6 keeps the Boulder Build loop local and deterministic while adding clickable explanations and context-aware interpretation history.
+It is not an AI system, backend service, Minecraft build, Docker app, or direct rewrite of the source archive. v0.7 keeps the Boulder Build loop local and deterministic while turning selected chapters, artifacts, field notes, layer notes, and character memory documents into playable cards and story weights.
 
 ## Install
 
@@ -35,3 +35,4 @@ npm run test:run
 - Runs persist in browser localStorage, not a backend.
 - Agent behavior is deterministic rule logic, not AI.
 - The prototype covers the Boulder Build loop only.
+- Nested Simulation is visible as a locked future layer, not an active simulation.

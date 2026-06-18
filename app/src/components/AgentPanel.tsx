@@ -8,9 +8,11 @@ interface AgentPanelProps {
   agents: ActiveAgent[];
   mode: Mode;
   onInspect: (item: InspectorItem) => void;
+  selectedCharacterId?: string;
+  onSelectCharacter: (agentId: string) => void;
 }
 
-export function AgentPanel({ agents, mode, onInspect }: AgentPanelProps) {
+export function AgentPanel({ agents, mode, onInspect, selectedCharacterId, onSelectCharacter }: AgentPanelProps) {
   return (
     <section className="panel agent-panel">
       <p className="eyebrow">Active Agents</p>
@@ -23,7 +25,7 @@ export function AgentPanel({ agents, mode, onInspect }: AgentPanelProps) {
           const presentation = agentPresentation(agent);
 
           return (
-            <article className="agent-card" key={agent.id}>
+            <article className={`agent-card ${selectedCharacterId === agent.id ? "selected-agent-card" : ""}`} key={agent.id}>
               <div className="agent-card-header">
                 <div>
                   <strong>{agent.name}</strong>
@@ -54,7 +56,14 @@ export function AgentPanel({ agents, mode, onInspect }: AgentPanelProps) {
                 <dd>{behaviorDetail}</dd>
               </dl>
               {agent.lastReaction && <p className="last-reaction">{agent.lastReaction}</p>}
-              <button className="inspect-link" onClick={() => onInspect(explainAgent(agent, mode))} type="button">
+              <button
+                className="inspect-link"
+                onClick={() => {
+                  onSelectCharacter(agent.id);
+                  onInspect(explainAgent(agent, mode));
+                }}
+                type="button"
+              >
                 Inspect piece
               </button>
             </article>

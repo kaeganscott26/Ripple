@@ -37,6 +37,28 @@ export function TurnFeedbackPanel({ feedback }: { feedback?: TurnFeedback }) {
             <p>{feedback.interpretation.roomInterpretation}</p>
           </div>
 
+          {feedback.storyObjectUse && (
+            <div>
+              <h3>Story Object</h3>
+              <p>
+                {feedback.storyObjectUse.objectName} entered {feedback.storyObjectUse.targetName ?? "the room"} from{" "}
+                {feedback.storyObjectUse.sourceFile}.
+              </p>
+            </div>
+          )}
+
+          {feedback.baseEvent && (
+            <div>
+              <h3>Layer Response</h3>
+              <ul className="compact-list">
+                <li>{feedback.baseEvent}</li>
+                {feedback.perceivedReality && <li>{feedback.perceivedReality}</li>}
+                {feedback.socialReality && <li>{feedback.socialReality}</li>}
+                {feedback.institutionalPressure && <li>{feedback.institutionalPressure}</li>}
+              </ul>
+            </div>
+          )}
+
           <div>
             <h3>Frame Readout</h3>
             <p>
@@ -52,7 +74,8 @@ export function TurnFeedbackPanel({ feedback }: { feedback?: TurnFeedback }) {
               <ul className="compact-list">
                 {feedback.pressureChanges.map((change) => (
                   <li key={change.key}>
-                    {change.label}: {change.before} to {change.after} (+{change.delta})
+                    {change.label}: {change.before} to {change.after} ({change.delta > 0 ? "+" : ""}
+                    {change.delta})
                   </li>
                 ))}
               </ul>

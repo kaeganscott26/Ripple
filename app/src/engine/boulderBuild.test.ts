@@ -1,10 +1,19 @@
 import { describe, expect, it, vi } from "vitest";
 import agentsJson from "../data/agents.json";
+import layerCardsJson from "../data/layerCards.json";
 import rulesJson from "../data/rules.json";
+import storyBouldersJson from "../data/storyBoulders.json";
 import { buildActiveAgents } from "./memorySystem";
 import { advanceTurn } from "./ruleEngine";
 import { createRunState } from "./runState";
 import { buildMarkdownRunLog } from "./runLog";
+import { introduceStoryBoulder } from "./storyTurnEngine";
+import {
+  storyBoulderById,
+  validateAgentStoryProfiles,
+  validateLayerCardData,
+  validateStoryBoulderData,
+} from "./storyObjects";
 import { pressureBuildMessages } from "./lawProgress";
 import { classifyObserverInput } from "./observerInput";
 import { explainHalo, explainMeter } from "./explanations";
@@ -15,10 +24,12 @@ import {
   calculateRealityMetrics,
   deriveHaloState,
 } from "./realityMetrics";
-import type { AgentData, RealityMetricSnapshot, RulesData, SeedKey } from "./types";
+import type { AgentData, LayerCard, RealityMetricSnapshot, RulesData, SeedKey, StoryBoulder } from "./types";
 
 const agents = agentsJson as AgentData[];
+const layerCards = layerCardsJson as LayerCard[];
 const rules = rulesJson as RulesData;
+const storyBoulders = storyBouldersJson as StoryBoulder[];
 const seedKeys: SeedKey[] = ["A", "B", "C"];
 
 function selectedSeeds(seed: SeedKey = "A"): Record<string, SeedKey> {
@@ -32,7 +43,28 @@ function newRun(seed: SeedKey = "A") {
   return createRunState(agents, { mode: "experimental", selectedSeeds: selectedSeeds(seed) });
 }
 
-describe("Boulder Build v0.6", () => {
+describe("Boulder Build v0.7", () => {
+  it("loads source-derived story Boulder data", () => {
+    expect(validateStoryBoulderData(storyBoulders)).toBe(true);
+    expect(storyBoulders.length).toBeGreaterThanOrEqual(8);
+    expect(storyBoulders.length).toBeLessThanOrEqual(15);
+    expect(storyBoulders.some((boulder) => boulder.sourceFile === "INTERVENTION ARG/Chapter 03.md")).toBe(true);
+  });
+
+  it("loads source-derived layer card data", () => {
+    expect(validateLayerCardData(layerCards)).toBe(true);
+    expect(layerCards.some((card) => card.id === "boundary")).toBe(true);
+    expect(layerCards.some((card) => card.sourceFile === "NOTES/WEATHER_LAYER.md")).toBe(true);
+  });
+
+  it("loads source-linked character story profiles", () => {
+    expect(validateAgentStoryProfiles(agents, storyBoulders, layerCards)).toBe(true);
+    expect(agents.find((agent) => agent.id === "mara")?.associatedBoulders).toContain(
+      "trigger-is-not-instruction",
+    );
+    expect(agents.find((agent) => agent.id === "dev")?.preferredLayers).toContain("geometry-as-consequence");
+  });
+
   it("classifies Artifact Name observer input", () => {
     expect(classifyObserverInput("Stone Anchor", 1).classification).toBe("Artifact Name");
   });
@@ -100,6 +132,42 @@ describe("Boulder Build v0.6", () => {
     const next = advanceTurn(state, "observe", rules);
 
     expect(next.pressures.witness).toBeGreaterThan(state.pressures.witness);
+  });
+
+  it("selecting a story Boulder changes turn output", () => {
+    const state = newRun();
+    const boulder = storyBoulderById(storyBoulders, "complete-consequence");
+    expect(boulder).toBeDefined();
+
+    const next = introduceStoryBoulder(state, boulder!, layerCards, rules, "jamal");
+
+    expect(next.lastTurnFeedback?.processedAction).toBe("Introduce Complete Consequence");
+    expect(next.events.some((event) => event.text.includes("Complete Consequence"))).toBe(true);
+    expect(next.lastTurnFeedback?.interpretation.roomInterpretation).toContain("architecture");
+  });
+
+  it("selected character affects story reaction text", () => {
+    const state = newRun("C");
+    const boulder = storyBoulderById(storyBoulders, "decorative-door");
+    expect(boulder).toBeDefined();
+
+    const next = introduceStoryBoulder(state, boulder!, layerCards, rules, "dev");
+
+    expect(next.lastTurnFeedback?.agentReactions.some((reaction) => reaction.includes("Dev"))).toBe(true);
+    expect(next.lastTurnFeedback?.agentReactions.some((reaction) => reaction.includes("door can exist"))).toBe(true);
+    expect(next.interpretationHistory[0].targetCharacterId).toBe("dev");
+  });
+
+  it("story-derived Boulder creates meter changes", () => {
+    const state = newRun();
+    const boulder = storyBoulderById(storyBoulders, "echo-faster-than-context");
+    expect(boulder).toBeDefined();
+
+    const next = introduceStoryBoulder(state, boulder!, layerCards, rules, "maren");
+
+    expect(next.pressures.witness).toBeGreaterThan(state.pressures.witness);
+    expect(next.pressures.namedWeight).toBeGreaterThan(state.pressures.namedWeight);
+    expect(next.meterHistory.slice(-1)[0].rufs).toBeGreaterThan(state.meterHistory.slice(-1)[0].rufs);
   });
 
   it("records clear turn feedback after advancing a ripple", () => {
@@ -299,5 +367,18 @@ describe("Boulder Build v0.6", () => {
     expect(markdown).toContain("## Final Reality Layers");
     expect(markdown).toContain("## Laws Formed");
     expect(markdown).toContain("[Base]");
+  });
+
+  it("Markdown export includes Story Objects Used", () => {
+    const boulder = storyBoulderById(storyBoulders, "trigger-is-not-instruction");
+    expect(boulder).toBeDefined();
+    const state = introduceStoryBoulder(newRun(), boulder!, layerCards, rules, "mara");
+    const markdown = buildMarkdownRunLog(state);
+
+    expect(markdown).toContain("## Story Objects Used");
+    expect(markdown).toContain("Turn 1: Trigger Is Not Instruction");
+    expect(markdown).toContain("Source: INTERVENTION ARG/Chapter 02.md");
+    expect(markdown).toContain("Target: Mara");
+    expect(markdown).toContain("Feeling activated is real");
   });
 });

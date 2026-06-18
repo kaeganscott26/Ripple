@@ -111,6 +111,11 @@ p {
   outline-offset: -2px;
 }
 
+.primary-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
 .seed-table {
   display: grid;
   gap: 10px;
@@ -498,6 +503,11 @@ p {
   font-weight: 700;
 }
 
+.selected-agent-piece .agent-token-mark {
+  border-color: rgba(240, 221, 130, 0.92);
+  box-shadow: 0 0 0 5px rgba(215, 196, 106, 0.16);
+}
+
 .state-halo {
   position: absolute;
   top: 23px;
@@ -737,6 +747,110 @@ dd {
 .action-grid {
   display: grid;
   gap: 8px;
+}
+
+.target-button-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.target-button-row button {
+  min-height: 36px;
+  border: 1px solid rgba(214, 221, 202, 0.14);
+  border-radius: 999px;
+  background: #202621;
+  padding: 6px 10px;
+  font-weight: 800;
+}
+
+.selected-fit {
+  border-left: 3px solid rgba(94, 186, 197, 0.78);
+  color: #d2d7ca;
+  padding-left: 10px;
+}
+
+.target-boulder-list {
+  display: grid;
+  gap: 8px;
+}
+
+.target-boulder-list button {
+  display: grid;
+  gap: 4px;
+  border: 1px solid rgba(214, 221, 202, 0.12);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.035);
+  padding: 9px;
+  text-align: left;
+}
+
+.target-boulder-list span {
+  color: #c9cebd;
+  font-size: 0.82rem;
+}
+
+.story-card-list,
+.layer-object-list {
+  display: grid;
+  gap: 8px;
+  max-height: 360px;
+  overflow: auto;
+}
+
+.story-card {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  border: 1px solid rgba(214, 221, 202, 0.12);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.035);
+  padding: 8px;
+}
+
+.story-card.selected {
+  border-color: rgba(215, 196, 106, 0.58);
+  background: rgba(215, 196, 106, 0.09);
+}
+
+.story-card > button:first-child,
+.layer-object-card {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+}
+
+.story-card span,
+.layer-object-card span {
+  color: #a9b99a;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.story-card small,
+.layer-object-card small {
+  color: #d2d7ca;
+  font-size: 0.82rem;
+}
+
+.layer-object-card {
+  border: 1px solid rgba(214, 221, 202, 0.12);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.035);
+  padding: 10px;
+}
+
+.layer-object-card.locked {
+  opacity: 0.72;
+}
+
+.story-object-panel h3 {
+  color: #f0dd82;
+  font-size: 0.95rem;
 }
 
 .action-grid button {
@@ -1036,6 +1150,11 @@ summary {
   display: grid;
   gap: 8px;
   padding: 12px;
+}
+
+.selected-agent-card {
+  border-color: rgba(240, 221, 130, 0.56);
+  background: rgba(31, 34, 24, 0.9);
 }
 
 .agent-card-header {

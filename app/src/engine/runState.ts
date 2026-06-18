@@ -19,6 +19,7 @@ export function createRunState(agents: AgentData[], selection: SetupSelection): 
     interpretationHistory: [],
     meterHistory: [],
     boulderPosition: "center",
+    storyObjectUses: [],
   };
   const initialMetrics = calculateRealityMetrics(state);
 

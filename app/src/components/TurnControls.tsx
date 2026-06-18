@@ -24,7 +24,8 @@ export function TurnControls({
   return (
     <section className="panel turn-panel">
       <p className="eyebrow">Turn</p>
-      <h2>Boulder Action</h2>
+      <h2>Legacy Boulder Actions</h2>
+      <p className="quiet-line">Use these when you want to observe, move, name, or refuse the general room weight.</p>
       <div className="action-grid">
         {actions.map((action) => (
           <button

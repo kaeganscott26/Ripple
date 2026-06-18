@@ -1,0 +1,344 @@
+[
+  {
+    "id": "trigger-is-not-instruction",
+    "name": "Trigger Is Not Instruction",
+    "sourceType": "chapter",
+    "sourceFile": "INTERVENTION ARG/Chapter 02.md",
+    "sourceChapter": "Chapter 02 - Trigger",
+    "sourceNote": "Gas station delay / safe witness call / trigger gap",
+    "shortDescription": "A craving, fear, or impulse enters the room, but it does not get to choose the next action by itself.",
+    "plainLanguageMeaning": "Feeling activated is real, but the feeling is not a command. A small pause can keep an old loop from running.",
+    "symbolicFunction": "Creates a delay between pressure and action.",
+    "relatedCharacters": ["mara", "maren", "teodor-scott"],
+    "relatedLayers": ["clinical-reality", "self-awareness", "boundary"],
+    "pressureProfile": { "witness": 2, "namedWeight": 2, "institution": 0, "concern": 2 },
+    "possibleInterpretations": [
+      "The room treats the pause as an intervention point.",
+      "The agents ask whether the feeling is information or instruction.",
+      "The old loop is still present, but it has to pass through witness first."
+    ],
+    "unlockCondition": "Available at start",
+    "inspectorCopy": [
+      "From Chapter 02, where a trigger becomes visible before it becomes action.",
+      "Mechanically this raises Witness and Concern because the room notices pressure before anyone obeys it.",
+      "This is a safety object: the player is not rewarded for escalation, only for making the gap visible."
+    ],
+    "triggerTags": ["trigger", "pressure", "witness", "safety"],
+    "targetFit": {
+      "mara": "Mara reads this as the gap she needs before impulse becomes action.",
+      "maren": "Maren reads this as a boundary sentence that keeps theory from becoming pressure.",
+      "teodor-scott": "Teodor / Scott reads this as proof that an old loop can be seen before it chooses for him."
+    }
+  },
+  {
+    "id": "complete-consequence",
+    "name": "Complete Consequence",
+    "sourceType": "chapter",
+    "sourceFile": "INTERVENTION ARG/Chapter 03.md",
+    "sourceChapter": "Chapter 03 - The Room",
+    "sourceNote": "Jamal / hallway / action plus architecture",
+    "shortDescription": "The room has to count both the action and the conditions that helped produce it.",
+    "plainLanguageMeaning": "Accountability gets more accurate when the room is included instead of blaming only the person at the center.",
+    "symbolicFunction": "Turns environment into evidence without erasing personal responsibility.",
+    "relatedCharacters": ["jamal", "mara", "maren"],
+    "relatedLayers": ["theory", "geometry-as-consequence", "clinical-reality"],
+    "pressureProfile": { "witness": 2, "namedWeight": 1, "institution": 2, "concern": 2 },
+    "possibleInterpretations": [
+      "The room starts asking what the architecture contributed.",
+      "The agents distinguish repair from excuse.",
+      "Institutional pressure rises because the account now includes structure."
+    ],
+    "unlockCondition": "Available at start",
+    "inspectorCopy": [
+      "From Chapter 03, where a narrow hallway changes how consequence should be recorded.",
+      "Mechanically this raises Institutional pressure because the board begins turning context into procedure.",
+      "It must not be used as an excuse. The point is fuller repair, not avoiding responsibility."
+    ],
+    "triggerTags": ["context", "path", "institution", "law"],
+    "targetFit": {
+      "jamal": "Jamal reads this as the sentence he needed: what he did matters, and what the room did also matters.",
+      "mara": "Mara reads this as a threshold question about who controlled the available path.",
+      "maren": "Maren watches for whether context becomes repair or a new way to avoid safety."
+    }
+  },
+  {
+    "id": "missed-layer",
+    "name": "The Missed Layer",
+    "sourceType": "chapter",
+    "sourceFile": "INTERVENTION ARG/Chapter 04.md",
+    "sourceChapter": "Chapter 04 - The Missed Layer",
+    "sourceNote": "Visible complaint / hidden grief / absence with weight",
+    "shortDescription": "The visible conflict is not always the whole event.",
+    "plainLanguageMeaning": "Sometimes the object people are arguing about is where a hidden grief or pressure finally becomes visible.",
+    "symbolicFunction": "Makes hidden context inspectable without making it spectacle.",
+    "relatedCharacters": ["maren", "jamal", "teodor-scott"],
+    "relatedLayers": ["theory", "unexplained", "boundary"],
+    "pressureProfile": { "witness": 2, "namedWeight": 1, "institution": 0, "concern": 1 },
+    "possibleInterpretations": [
+      "The room asks what else entered through the object.",
+      "Visible irritation stops being the only layer.",
+      "Meaning rises without forcing the hidden layer into public proof."
+    ],
+    "unlockCondition": "Available at start",
+    "inspectorCopy": [
+      "From Chapter 04, where the visible layer is a complaint and the missed layer is grief, ritual, fatigue, and specificity.",
+      "Mechanically this raises Witness and Meaning more than law.",
+      "The object asks for care, not extraction."
+    ],
+    "triggerTags": ["witness", "layer", "archive", "correction"],
+    "targetFit": {
+      "maren": "Maren reads this as a chance to protect the hidden layer without turning it into a cage.",
+      "jamal": "Jamal reads this as context entering before the room writes the wrong record.",
+      "teodor-scott": "Teodor / Scott reads this as a reminder that a theory can miss the actual wound underneath it."
+    }
+  },
+  {
+    "id": "false-world",
+    "name": "The False World",
+    "sourceType": "chapter",
+    "sourceFile": "INTERVENTION ARG/Chapter 06.md",
+    "sourceChapter": "Chapter 06 - The False World",
+    "sourceNote": "Framework language hardening into control",
+    "shortDescription": "Helpful language becomes dangerous when one person uses it to control the room.",
+    "plainLanguageMeaning": "A framework should increase agency. If it makes disagreement unsafe, it has become a cage.",
+    "symbolicFunction": "Tests whether the room can correct language that starts governing people.",
+    "relatedCharacters": ["maren", "mara", "teodor-scott"],
+    "relatedLayers": ["clinical-reality", "boundary", "power-governance"],
+    "pressureProfile": { "witness": 2, "namedWeight": 2, "institution": 3, "concern": 3 },
+    "possibleInterpretations": [
+      "The room asks who benefits when language becomes authority.",
+      "Boundary pressure rises before theory can claim the person.",
+      "The correction becomes the intervention."
+    ],
+    "unlockCondition": "Available at start",
+    "inspectorCopy": [
+      "From Chapter 06, the warning chapter about framework misuse.",
+      "Mechanically this is heavy: it can push law pressure and concern quickly.",
+      "Use it as a correction object. It is not a reward for control."
+    ],
+    "triggerTags": ["boundary", "law", "correction", "institution"],
+    "targetFit": {
+      "maren": "Maren reads this as the room's safety test: no theory gets to outrank consent.",
+      "mara": "Mara reads this as a command disguised as comfort and checks the threshold.",
+      "teodor-scott": "Teodor / Scott reads this as a warning about building a tool too heavy for the people it meant to help."
+    }
+  },
+  {
+    "id": "closed-door-saved-life",
+    "name": "The Closed Door",
+    "sourceType": "chapter",
+    "sourceFile": "INTERVENTION ARG/Chapter 07.md",
+    "sourceChapter": "Chapter 07 - Observer",
+    "sourceNote": "Closed gate door / observer event / survival without knowing",
+    "shortDescription": "A blocked path can be harm, mercy, or uncertainty before anyone knows which.",
+    "plainLanguageMeaning": "The same closed door can feel like rejection in one moment and become an intervention in another.",
+    "symbolicFunction": "Adds uncertainty around access, fate, and witness pressure.",
+    "relatedCharacters": ["dev", "mara", "teodor-scott"],
+    "relatedLayers": ["media-communication", "geometry-as-consequence", "theory"],
+    "pressureProfile": { "witness": 3, "namedWeight": 1, "institution": 1, "concern": 3 },
+    "possibleInterpretations": [
+      "The room refuses to decide too quickly what the closed path means.",
+      "Witness rises because survival and delay entered the same object.",
+      "The agents ask what can be known before the room has finished changing."
+    ],
+    "unlockCondition": "Available at start",
+    "inspectorCopy": [
+      "From Chapter 07, where a closed door is resented before its consequence is understood.",
+      "Mechanically this raises Witness and Concern because meaning is unstable while the event is still unfolding.",
+      "The guardrail is humility: the door is not proof of destiny."
+    ],
+    "triggerTags": ["access", "door", "witness", "observer"],
+    "targetFit": {
+      "dev": "Dev reads this as a door that might not be addressed to him, but might still change the map.",
+      "mara": "Mara reads this as threshold power and asks who gets to reopen the door.",
+      "teodor-scott": "Teodor / Scott reads this as a delayed consequence that cannot be understood from the first feeling."
+    }
+  },
+  {
+    "id": "signal-released-no-receipt",
+    "name": "Signal Released, No Receipt Required",
+    "sourceType": "fieldnote",
+    "sourceFile": "INTERVENTION ARG/ARTIFACTS/FIELDNOTE_ROOM_LOG_0826.md",
+    "sourceChapter": "Chapter 08 / Chapter 16 / Chapter 17 current",
+    "sourceNote": "Fatherhood boundary / message release / no receipt required",
+    "shortDescription": "A message can be honest without making the receiver carry the sender's need for proof.",
+    "plainLanguageMeaning": "The sender can release care without turning the other person into an intervention point.",
+    "symbolicFunction": "Separates honest signal from demand.",
+    "relatedCharacters": ["teodor-scott", "maren", "mara"],
+    "relatedLayers": ["clinical-reality", "boundary", "cultural"],
+    "pressureProfile": { "witness": 2, "namedWeight": 2, "institution": 0, "concern": -1 },
+    "possibleInterpretations": [
+      "The room treats restraint as the intervention.",
+      "The signal enters without demanding proof of arrival.",
+      "Trust can rise because the receiver is not forced to carry the sender's hunger."
+    ],
+    "unlockCondition": "Available at start",
+    "inspectorCopy": [
+      "From FIELDNOTE_ROOM_LOG_0826, tied to fatherhood, inheritance, and message boundaries.",
+      "Mechanically this raises Witness and Meaning while easing Concern.",
+      "This is deliberately not a pressure tool. The receiver does not owe proof."
+    ],
+    "triggerTags": ["signal", "boundary", "father", "witness"],
+    "targetFit": {
+      "teodor-scott": "Teodor / Scott reads this as restraint: the father is the intervention point, not the child.",
+      "maren": "Maren reads this as consent language entering the room before longing becomes pressure.",
+      "mara": "Mara reads this as care that does not pretend to be command."
+    }
+  },
+  {
+    "id": "loop-breakpoint",
+    "name": "The Loop Breakpoint",
+    "sourceType": "chapter",
+    "sourceFile": "INTERVENTION ARG/Chapter 11.md",
+    "sourceChapter": "Chapter 11 - The Loop",
+    "sourceNote": "Input / reaction / output / shame / reset",
+    "shortDescription": "A repeated pattern becomes interruptible once the observer can see where it runs.",
+    "plainLanguageMeaning": "Naming a loop does not fix it, but it creates the first possible breakpoint.",
+    "symbolicFunction": "Turns repeated failure into a visible system path.",
+    "relatedCharacters": ["mara", "teodor-scott", "maren"],
+    "relatedLayers": ["clinical-reality", "self-awareness", "theory"],
+    "pressureProfile": { "witness": 2, "namedWeight": 2, "institution": 1, "concern": 1 },
+    "possibleInterpretations": [
+      "The room watches the pattern before the pattern runs.",
+      "The agents treat visibility as the first repair condition.",
+      "The old reset loses some authority because the board can name its steps."
+    ],
+    "unlockCondition": "Available at start",
+    "inspectorCopy": [
+      "From Chapter 11, where the self becomes a system that can be debugged.",
+      "Mechanically this supports Witness, Named Weight, and later law formation.",
+      "It is not a cure button. It only opens a breakpoint."
+    ],
+    "triggerTags": ["loop", "observer", "named", "pressure"],
+    "targetFit": {
+      "mara": "Mara reads this as a pause before scarcity turns into automatic action.",
+      "teodor-scott": "Teodor / Scott reads this as a map of a pattern he can stop feeding.",
+      "maren": "Maren reads this as useful only if safety stays above theory."
+    }
+  },
+  {
+    "id": "decorative-door",
+    "name": "The Decorative Door",
+    "sourceType": "chapter",
+    "sourceFile": "INTERVENTION ARG/Chapter 12.md",
+    "sourceChapter": "Chapter 12 - The Door",
+    "sourceNote": "Available option hidden by observer reality",
+    "shortDescription": "An option can exist in base reality without feeling available to the person who needs it.",
+    "plainLanguageMeaning": "Access requires more than a door. It has to become visible, reachable, and believable.",
+    "symbolicFunction": "Tests perceived access against actual room structure.",
+    "relatedCharacters": ["dev", "jamal", "mara"],
+    "relatedLayers": ["geometry-as-consequence", "clinical-reality", "power-governance"],
+    "pressureProfile": { "witness": 2, "namedWeight": 1, "institution": 2, "concern": 2 },
+    "possibleInterpretations": [
+      "The room asks whether the door is real for this character.",
+      "Institutional pressure rises because access depends on forms, maps, money, timing, and permission.",
+      "The selected character may discover the option without being shamed for missing it."
+    ],
+    "unlockCondition": "Available at start",
+    "inspectorCopy": [
+      "From Chapter 12 and `door_render_failure.txt`: base reality says a door existed; observer reality says not your door.",
+      "Mechanically this raises Institutional pressure because access is structural, not only personal.",
+      "The point is not blaming the person for missing the door. It is changing the map."
+    ],
+    "triggerTags": ["access", "door", "institution", "observer"],
+    "targetFit": {
+      "dev": "Dev reads this directly: a door can exist while the room has trained him not to enter.",
+      "jamal": "Jamal reads this as architecture deciding whose movement looks reasonable.",
+      "mara": "Mara reads this as a threshold controlled by more than a handle."
+    }
+  },
+  {
+    "id": "echo-faster-than-context",
+    "name": "The Echo Outruns Context",
+    "sourceType": "fieldnote",
+    "sourceFile": "INTERVENTION ARG/ARTIFACTS/FIELDNOTE_ECHO_WARNING.md",
+    "sourceChapter": "Chapter 13 - The Echo",
+    "sourceNote": "Phrase mutation / algorithmic room / context as slower signal",
+    "shortDescription": "A useful phrase changes shape when crowds, platforms, jokes, and arguments repeat it.",
+    "plainLanguageMeaning": "Reach is not the same as understanding. The room may reward the fastest version, not the truest one.",
+    "symbolicFunction": "Turns public attention into a pressure source.",
+    "relatedCharacters": ["maren", "teodor-scott", "mara"],
+    "relatedLayers": ["media-communication", "attention-collapse", "software-systems"],
+    "pressureProfile": { "witness": 3, "namedWeight": 3, "institution": 1, "concern": 2 },
+    "possibleInterpretations": [
+      "The room asks what the platform is rewarding.",
+      "The signal becomes repeatable before it stays accurate.",
+      "Context enters as a slower but necessary counterweight."
+    ],
+    "unlockCondition": "Available at start",
+    "inspectorCopy": [
+      "From FIELDNOTE_ECHO_WARNING and Chapter 13.",
+      "Mechanically this strongly raises Witness and Named Weight because repeatability can outrun context.",
+      "The guardrail: speak with care, but do not confuse reaction with comprehension."
+    ],
+    "triggerTags": ["signal", "archive", "media", "attention"],
+    "targetFit": {
+      "maren": "Maren reads this as the moment useful language needs correction before it becomes a weapon.",
+      "teodor-scott": "Teodor / Scott reads this as the cost of releasing a signal he cannot control.",
+      "mara": "Mara reads this as testimony becoming dangerous when the crowd wants certainty."
+    }
+  },
+  {
+    "id": "boulder-protocol",
+    "name": "Boulder Protocol",
+    "sourceType": "fieldnote",
+    "sourceFile": "INTERVENTION ARG/ARTIFACTS/FIELDNOTE_BOULDER_PROTOCOL.md",
+    "sourceChapter": "Chapter 15 - Boulder",
+    "sourceNote": "Action guardrail / smallest useful action / leave a door not a cage",
+    "shortDescription": "A responsible throw checks the room before releasing weight into it.",
+    "plainLanguageMeaning": "You cannot control every wave after action, but you can check safety, impact, motive, and repair before you throw.",
+    "symbolicFunction": "Makes responsible action playable without pretending control is total.",
+    "relatedCharacters": ["teodor-scott", "maren", "mara", "jamal", "dev"],
+    "relatedLayers": ["theory", "boundary", "power-governance"],
+    "pressureProfile": { "witness": 2, "namedWeight": 2, "institution": 1, "concern": -1 },
+    "possibleInterpretations": [
+      "The room treats the smallest useful action as stronger than spectacle.",
+      "The agents ask who may be affected before the weight is released.",
+      "The throw becomes accountable without chasing every wave."
+    ],
+    "unlockCondition": "Available at start",
+    "inspectorCopy": [
+      "From FIELDNOTE_BOULDER_PROTOCOL, the action guardrail for Ripple Theory.",
+      "Mechanically this raises Witness and Meaning while lowering Concern when the room receives it as care.",
+      "The core rule is responsibility: leave a door, not a cage."
+    ],
+    "triggerTags": ["boulder", "boundary", "law", "witness"],
+    "targetFit": {
+      "teodor-scott": "Teodor / Scott reads this as the ethical question under the whole board: what are you throwing?",
+      "maren": "Maren reads this as safety before theory.",
+      "mara": "Mara reads this as checking pressure before impulse.",
+      "jamal": "Jamal reads this as changing conditions before blaming outputs.",
+      "dev": "Dev reads this as leaving an actual door, not a decorative one."
+    }
+  },
+  {
+    "id": "storm-not-proof",
+    "name": "Storm Is Not a Command",
+    "sourceType": "note",
+    "sourceFile": "NOTES/WEATHER_LAYER.md",
+    "sourceNote": "Weather changes rooms before humans assign meaning",
+    "shortDescription": "Atmosphere changes the room, but weather does not become an instruction.",
+    "plainLanguageMeaning": "A storm can change safety, mood, attention, and memory without becoming a personal message.",
+    "symbolicFunction": "Grounds meaning in base reality before interpretation runs away.",
+    "relatedCharacters": ["mara", "maren", "teodor-scott"],
+    "relatedLayers": ["weather", "natural", "clinical-reality"],
+    "pressureProfile": { "witness": 1, "namedWeight": 1, "institution": 0, "concern": 2 },
+    "possibleInterpretations": [
+      "The room changes before anyone explains the sky.",
+      "The agents separate real atmospheric pressure from unsafe certainty.",
+      "Safety becomes the correct response to scale."
+    ],
+    "unlockCondition": "Available at start",
+    "inspectorCopy": [
+      "From NOTES/WEATHER_LAYER.md.",
+      "Mechanically this raises Concern and Witness because the room is physically affected.",
+      "It carries a guardrail: no storm outranks safety."
+    ],
+    "triggerTags": ["weather", "safety", "pressure", "natural"],
+    "targetFit": {
+      "mara": "Mara reads the changed atmosphere as pressure that needs a pause before action.",
+      "maren": "Maren reads this as a safety check: weather can matter without becoming a command.",
+      "teodor-scott": "Teodor / Scott reads this as consequence before story."
+    }
+  }
+]
