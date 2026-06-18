@@ -19,10 +19,23 @@ function startsWithAny(input: string, words: string[]): boolean {
 const rules: ClassificationRule[] = [
   {
     type: "Myth Seed",
-    explanation: "It frames a past event as an origin story the room can repeat.",
+    explanation: "It frames a beginning, cause, creation point, or past event as an origin story the room can repeat.",
     interpretationNote: "The Observer is giving the room a story about where the pattern began.",
     matches: (input) =>
-      hasAny(input, [" first ", " origin ", " created ", " became ", " gave rise ", " was born ", " myth ", " legend "]),
+      hasAny(input, [
+        " big bang ",
+        " beginning ",
+        " creation point ",
+        " first light ",
+        " first ",
+        " origin ",
+        " created ",
+        " became ",
+        " gave rise ",
+        " was born ",
+        " myth ",
+        " legend ",
+      ]),
   },
   {
     type: "Policy Proposal",

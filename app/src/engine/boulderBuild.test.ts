@@ -7,6 +7,8 @@ import { createRunState } from "./runState";
 import { buildMarkdownRunLog } from "./runLog";
 import { pressureBuildMessages } from "./lawProgress";
 import { classifyObserverInput } from "./observerInput";
+import { explainHalo, explainMeter } from "./explanations";
+import { createTurnInterpretation } from "./interpretationEngine";
 import {
   appendMetricSnapshot,
   buildSocietySummary,
@@ -30,7 +32,7 @@ function newRun(seed: SeedKey = "A") {
   return createRunState(agents, { mode: "experimental", selectedSeeds: selectedSeeds(seed) });
 }
 
-describe("Boulder Build v0.5", () => {
+describe("Boulder Build v0.6", () => {
   it("classifies Artifact Name observer input", () => {
     expect(classifyObserverInput("Stone Anchor", 1).classification).toBe("Artifact Name");
   });
@@ -58,6 +60,13 @@ describe("Boulder Build v0.5", () => {
 
   it("classifies Myth Seed observer input", () => {
     expect(classifyObserverInput("The first theft created the Watchers", 1).classification).toBe("Myth Seed");
+  });
+
+  it("classifies origin phrases as Myth Seed", () => {
+    expect(classifyObserverInput("BIG BANG", 1).classification).toBe("Myth Seed");
+    expect(classifyObserverInput("The Beginning", 1).classification).toBe("Myth Seed");
+    expect(classifyObserverInput("Origin Event", 1).classification).toBe("Myth Seed");
+    expect(classifyObserverInput("First Light", 1).classification).toBe("Myth Seed");
   });
 
   it("Mystery mode assigns valid A/B/C seeds", () => {
@@ -102,6 +111,7 @@ describe("Boulder Build v0.5", () => {
     expect(next.lastTurnFeedback?.agentReactionCount).toBe(agents.length);
     expect(next.lastTurnFeedback?.lawProgress.length).toBeGreaterThan(0);
     expect(next.lastTurnFeedback?.metrics.rufs).toBeGreaterThan(0);
+    expect(next.lastTurnFeedback?.interpretation.roomInterpretation).toContain("Attention");
   });
 
   it("Naming the Boulder increases named weight pressure", () => {
@@ -122,6 +132,7 @@ describe("Boulder Build v0.5", () => {
     expect(next.lastTurnFeedback?.observerInput?.classification).toBe("Policy Proposal");
     expect(next.lastTurnFeedback?.observerInput?.interpretationNote).toContain("trying to govern the room");
     expect(next.events.some((event) => event.type === "observer" && event.text.includes("Policy Proposal"))).toBe(true);
+    expect(next.events.some((event) => event.type === "social" && event.text.includes("safety, control, or enforcement"))).toBe(true);
   });
 
   it("Moving the Boulder changes Boulder position", () => {
@@ -183,6 +194,67 @@ describe("Boulder Build v0.5", () => {
     expect(deriveHaloState({ witness: 1, namedWeight: 1, institution: 0, concern: 6 })).toBe("clipped");
   });
 
+  it("explains meters in plain language with recent change context", () => {
+    const state = advanceTurn(newRun(), "move", rules);
+    const explanation = explainMeter(
+      "concern",
+      state.meterHistory,
+      state.lastTurnFeedback?.interpretation.roomInterpretation,
+    );
+
+    expect(explanation.title).toBe("Concern");
+    expect(explanation.summary).toContain("Concern is");
+    expect(explanation.details.join(" ")).toContain("risky or unstable");
+    expect(explanation.details.join(" ")).toContain("changed path");
+  });
+
+  it("explains halo states in plain language", () => {
+    const explanation = explainHalo("clipped");
+
+    expect(explanation.title).toContain("Perception overload");
+    expect(explanation.summary).toContain("unstable or too loud");
+  });
+
+  it("creates contextual interpretation for Artifact Name", () => {
+    const observerInput = classifyObserverInput("Stone Anchor", 1);
+    const interpretation = createTurnInterpretation(newRun(), "name", 1, observerInput);
+
+    expect(interpretation.roomInterpretation).toContain("label or a handle");
+  });
+
+  it("creates contextual interpretation for Crisis Label", () => {
+    const observerInput = classifyObserverInput("Crop Thief", 1);
+    const interpretation = createTurnInterpretation(newRun(), "name", 1, observerInput);
+
+    expect(interpretation.roomInterpretation).toContain("threat, a warning, or a scapegoat");
+  });
+
+  it("creates contextual interpretation for Policy Proposal", () => {
+    const observerInput = classifyObserverInput("Add Security agents to crop fields to prevent theft", 1);
+    const interpretation = createTurnInterpretation(newRun(), "name", 1, observerInput);
+
+    expect(interpretation.roomInterpretation).toContain("safety, control, or enforcement");
+  });
+
+  it("creates contextual interpretation for Myth Seed and Era Marker", () => {
+    const mythInput = classifyObserverInput("BIG BANG", 1);
+    const eraInput = classifyObserverInput("Scientific Breakthrough in science and technology", 1);
+
+    expect(createTurnInterpretation(newRun(), "name", 1, mythInput).roomInterpretation).toContain("origin");
+    expect(createTurnInterpretation(newRun(), "name", 1, eraInput).roomInterpretation).toContain("new period");
+  });
+
+  it("progresses interpretation across related turns", () => {
+    const first = advanceTurn(newRun(), "name", rules, { boulderName: "BIG BANG" });
+    const second = advanceTurn(first, "name", rules, { boulderName: "Origin Event" });
+    const third = advanceTurn(second, "name", rules, { boulderName: "Creation Point" });
+
+    expect(first.interpretationHistory[0].stage).toBe("opens");
+    expect(second.interpretationHistory[1].stage).toBe("narrows");
+    expect(third.interpretationHistory[2].stage).toBe("stabilizes");
+    expect(third.interpretationHistory[2].roomInterpretation).toContain("origin story");
+  });
+
   it("keeps compact metric history for trend strips", () => {
     const history = Array.from({ length: 10 }, (_, index): RealityMetricSnapshot => ({
       ...calculateRealityMetrics(newRun()),
@@ -217,6 +289,8 @@ describe("Boulder Build v0.5", () => {
     expect(markdown).toContain("## Observer Inputs");
     expect(markdown).toContain('Turn 1: "Anchor"');
     expect(markdown).toContain("Classification: Artifact Name");
+    expect(markdown).toContain("## Interpretation History");
+    expect(markdown).toContain("label or a handle");
     expect(markdown).toContain("## Event Log");
     expect(markdown).toContain("## Final Meters");
     expect(markdown).toContain("Named Weight:");

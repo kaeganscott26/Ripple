@@ -8,6 +8,7 @@ import type {
   RulesData,
   RunState,
 } from "./types";
+import { createTurnInterpretation } from "./interpretationEngine";
 import { lawProgressMessages } from "./lawProgress";
 import { classifyObserverInput } from "./observerInput";
 import { pressureChanges } from "./pressure";
@@ -153,9 +154,14 @@ export function advanceTurn(
   const newLaws = checkLaws(partialState, rules, nextTurn);
   const laws = [...state.laws, ...newLaws];
   const withLaws = { ...partialState, laws };
-  const metrics = calculateRealityMetrics(withLaws);
+  const interpretation = createTurnInterpretation(state, action, nextTurn, observerInput);
+  const withInterpretation = {
+    ...withLaws,
+    interpretationHistory: [...(state.interpretationHistory ?? []), interpretation],
+  };
+  const metrics = calculateRealityMetrics(withInterpretation);
   const meterHistory = appendMetricSnapshot(state.meterHistory ?? [], metrics);
-  const layers = summarizeLayerShift(withLaws, action);
+  const layers = summarizeLayerShift(withInterpretation, action);
 
   const baseEvent =
     action === "name" && boulderName
@@ -172,7 +178,7 @@ export function advanceTurn(
         ]
       : []),
     { type: "base" as const, text: baseEvent },
-    { type: "social" as const, text: actionRule.socialSignal },
+    { type: "social" as const, text: interpretation.roomInterpretation },
     ...agentEvents.map((text) => ({ type: "agent" as const, text })),
     ...newLaws.map((law) => ({
       type: "law" as const,
@@ -186,7 +192,7 @@ export function advanceTurn(
   ];
 
   return {
-    ...withLaws,
+    ...withInterpretation,
     meterHistory,
     layers,
     events,
@@ -196,10 +202,11 @@ export function advanceTurn(
       pressureChanges: pressureChanges(state.pressures, partialState.pressures),
       agentReactionCount,
       agentReactions: agentEvents,
-      lawProgress: lawProgressMessages(withLaws, rules),
+      lawProgress: lawProgressMessages(withInterpretation, rules),
       formedLaws: newLaws,
       observerInput,
       metrics,
+      interpretation,
     },
   };
 }

@@ -13,6 +13,7 @@ export function createInitialLayers(): RealityLayers {
 export function summarizeLayerShift(state: RunState, action: BoulderAction): RealityLayers {
   const named = state.boulderName ?? "the Boulder";
   const metrics = calculateRealityMetrics(state);
+  const latestInterpretation = state.interpretationHistory.slice(-1)[0];
   const baseByAction: Record<BoulderAction, string> = {
     observe: `Turn ${state.turn}: The Boulder was observed in place.`,
     name: `Turn ${state.turn}: The Boulder was named "${named}".`,
@@ -28,10 +29,10 @@ export function summarizeLayerShift(state: RunState, action: BoulderAction): Rea
   };
 
   const socialByAction: Record<BoulderAction, string> = {
-    observe: "Agents begin comparing what they saw.",
-    name: "The name starts circulating as shared shorthand.",
-    move: "The room debates whether the shift was repair, trespass, or proof.",
-    ignore: "Silence around the object becomes part of the room's behavior.",
+    observe: latestInterpretation?.roomInterpretation ?? "Agents begin comparing what they saw.",
+    name: latestInterpretation?.roomInterpretation ?? "The name starts circulating as shared shorthand.",
+    move: latestInterpretation?.roomInterpretation ?? "The room debates what the changed path proves.",
+    ignore: latestInterpretation?.roomInterpretation ?? "Silence around the object becomes part of the room's behavior.",
   };
 
   const institutional =

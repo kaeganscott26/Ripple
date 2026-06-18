@@ -3,6 +3,23 @@ export type SeedKey = "A" | "B" | "C";
 export type BoulderAction = "observe" | "name" | "move" | "ignore";
 export type BoardScaleView = "room" | "society";
 export type HaloState = "dim" | "bright" | "pulsing" | "double" | "clipped";
+export type MeterKey =
+  | keyof PressureValues
+  | "rufs"
+  | "mood"
+  | "safety"
+  | "agency"
+  | "trust"
+  | "meaning";
+export type InspectorKind = "help" | "meter" | "agent" | "boulder" | "halo" | "law" | "society";
+export type SocietyNodeKey =
+  | "boulder-room"
+  | "social-reality"
+  | "institutional-reality"
+  | "laws"
+  | "observer-inputs"
+  | "rufs-mood"
+  | "nested-simulation";
 export type ObserverInputType =
   | "Artifact Name"
   | "Crisis Label"
@@ -132,6 +149,23 @@ export interface ObserverInputClassification {
   interpretationNote: string;
 }
 
+export interface InterpretationEntry {
+  turn: number;
+  action: BoulderAction;
+  observerText?: string;
+  observerClassification?: ObserverInputType;
+  stage: "opens" | "narrows" | "stabilizes" | "enters-memory";
+  roomInterpretation: string;
+}
+
+export interface InspectorItem {
+  id: string;
+  kind: InspectorKind;
+  title: string;
+  summary: string;
+  details: string[];
+}
+
 export interface TurnFeedback {
   turn: number;
   processedAction: string;
@@ -142,6 +176,7 @@ export interface TurnFeedback {
   formedLaws: LawState[];
   observerInput?: ObserverInputClassification;
   metrics: RealityMetricSnapshot;
+  interpretation: InterpretationEntry;
 }
 
 export interface RunState {
@@ -155,6 +190,7 @@ export interface RunState {
   events: EventEntry[];
   actionsTaken: Array<{ turn: number; action: BoulderAction; label: string }>;
   observerInputs: ObserverInputClassification[];
+  interpretationHistory: InterpretationEntry[];
   meterHistory: RealityMetricSnapshot[];
   lastTurnFeedback?: TurnFeedback;
   boulderName?: string;

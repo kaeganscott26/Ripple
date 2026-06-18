@@ -33,6 +33,11 @@ export function TurnFeedbackPanel({ feedback }: { feedback?: TurnFeedback }) {
           </div>
 
           <div>
+            <h3>Room Interpretation</h3>
+            <p>{feedback.interpretation.roomInterpretation}</p>
+          </div>
+
+          <div>
             <h3>Frame Readout</h3>
             <p>
               RUFS {feedback.metrics.rufs}/100. Mood {feedback.metrics.mood}/100: {feedback.metrics.label}.

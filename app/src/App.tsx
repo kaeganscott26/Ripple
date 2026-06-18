@@ -10,6 +10,7 @@ import { CurrentObjectivePanel } from "./components/CurrentObjectivePanel";
 import { EventLog } from "./components/EventLog";
 import { ExportRunButton } from "./components/ExportRunButton";
 import { HowToPlayPanel } from "./components/HowToPlayPanel";
+import { InspectorPanel } from "./components/InspectorPanel";
 import { ModeSelect } from "./components/ModeSelect";
 import { MoodSummary } from "./components/MoodSummary";
 import { ObserverInputPanel } from "./components/ObserverInputPanel";
@@ -22,11 +23,14 @@ import { TurnFeedbackPanel } from "./components/TurnFeedbackPanel";
 import { TurnControls } from "./components/TurnControls";
 import { advanceTurn } from "./engine/ruleEngine";
 import { createRunState } from "./engine/runState";
+import { defaultHelpItem, explainMeter } from "./engine/explanations";
 import type {
   AgentData,
   ArtifactData,
   BoardScaleView,
   BoulderAction,
+  InspectorItem,
+  MeterKey,
   Mode,
   RoomData,
   RulesData,
@@ -39,7 +43,7 @@ const agents = agentsJson as AgentData[];
 const rooms = roomsJson as RoomData[];
 const artifacts = artifactsJson as ArtifactData[];
 const rules = rulesJson as RulesData;
-const savedRunKey = "ripple-boulder-build-run-v0.5";
+const savedRunKey = "ripple-boulder-build-run-v0.6";
 
 const initialSeeds = agents.reduce<Record<string, SeedKey>>((acc, agent) => {
   acc[agent.id] = "A";
@@ -63,6 +67,7 @@ export default function App() {
   const [selectedAction, setSelectedAction] = useState<BoulderAction>("observe");
   const [boulderNameInput, setBoulderNameInput] = useState("");
   const [boardScale, setBoardScale] = useState<BoardScaleView>("room");
+  const [inspectorItem, setInspectorItem] = useState<InspectorItem>(() => defaultHelpItem());
   const [runState, setRunState] = useState<RunState | null>(() => loadSavedRun());
 
   useEffect(() => {
@@ -92,6 +97,12 @@ export default function App() {
     setRunState(null);
     setSelectedAction("observe");
     setBoulderNameInput("");
+    setInspectorItem(defaultHelpItem());
+  }
+
+  function inspectMeter(key: MeterKey) {
+    if (!runState) return;
+    setInspectorItem(explainMeter(key, runState.meterHistory, runState.lastTurnFeedback?.interpretation.roomInterpretation));
   }
 
   function handleAdvance() {
@@ -123,7 +134,7 @@ export default function App() {
     <main className="app game-layout">
       <header className="topbar">
         <div>
-          <p className="eyebrow">Ripple v0.5</p>
+          <p className="eyebrow">Ripple v0.6</p>
           <h1>The Boulder Build</h1>
         </div>
         <div className="topbar-actions">
@@ -139,11 +150,17 @@ export default function App() {
           <CurrentObjectivePanel />
           <BoardScaleToggle value={boardScale} onChange={setBoardScale} />
           {boardScale === "room" ? (
-            <RoomBoardView state={runState} room={currentRoom} artifact={boulder} rules={rules} />
+            <RoomBoardView
+              state={runState}
+              room={currentRoom}
+              artifact={boulder}
+              onInspect={setInspectorItem}
+              rules={rules}
+            />
           ) : (
-            <SocietyBoardView state={runState} />
+            <SocietyBoardView onInspect={setInspectorItem} state={runState} />
           )}
-          <RealityMeters history={runState.meterHistory} />
+          <RealityMeters history={runState.meterHistory} onSelectMeter={inspectMeter} />
           <RealityLayerPanel layers={runState.layers} />
         </div>
 
@@ -158,7 +175,8 @@ export default function App() {
             onAdvance={handleAdvance}
           />
           <TurnFeedbackPanel feedback={runState.lastTurnFeedback} />
-          <MoodSummary metrics={latestMetrics} />
+          <InspectorPanel item={inspectorItem} onHelp={() => setInspectorItem(defaultHelpItem())} />
+          <MoodSummary metrics={latestMetrics} onSelectMeter={inspectMeter} />
           <ObserverInputPanel input={latestObserverInput} />
           <RoomPanel room={currentRoom} />
           <ArtifactPanel artifact={boulder} state={runState} />
@@ -166,7 +184,7 @@ export default function App() {
       </section>
 
       <section className="lower-grid">
-        <AgentPanel agents={runState.agents} mode={runState.mode} />
+        <AgentPanel agents={runState.agents} mode={runState.mode} onInspect={setInspectorItem} />
         <EventLog events={runState.events} />
       </section>
     </main>

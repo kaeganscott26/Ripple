@@ -1,8 +1,13 @@
 import type { CSSProperties } from "react";
-import type { RealityMetricSnapshot } from "../engine/types";
+import type { MeterKey, RealityMetricSnapshot } from "../engine/types";
 import { pressureKeys, pressureLabels } from "../engine/pressure";
 
-export function RealityMeters({ history }: { history: RealityMetricSnapshot[] }) {
+interface RealityMetersProps {
+  history: RealityMetricSnapshot[];
+  onSelectMeter: (key: MeterKey) => void;
+}
+
+export function RealityMeters({ history, onSelectMeter }: RealityMetersProps) {
   const latest = history.slice(-1)[0];
 
   return (
@@ -15,14 +20,18 @@ export function RealityMeters({ history }: { history: RealityMetricSnapshot[] })
         {pressureKeys.map((key) => (
           <TrendMeter
             key={key}
+            meterKey={key}
             label={pressureLabels[key]}
+            onSelect={onSelectMeter}
             values={history.map((snapshot) => snapshot.pressures[key])}
             value={latest?.pressures[key] ?? 0}
           />
         ))}
         <TrendMeter
+          meterKey="rufs"
           label="RUFS"
           note="how loudly the room treats this event as real"
+          onSelect={onSelectMeter}
           values={history.map((snapshot) => snapshot.rufs)}
           value={latest?.rufs ?? 0}
         />
@@ -31,13 +40,27 @@ export function RealityMeters({ history }: { history: RealityMetricSnapshot[] })
   );
 }
 
-function TrendMeter({ label, note, value, values }: { label: string; note?: string; value: number; values: number[] }) {
+function TrendMeter({
+  label,
+  meterKey,
+  note,
+  onSelect,
+  value,
+  values,
+}: {
+  label: string;
+  meterKey: MeterKey;
+  note?: string;
+  onSelect: (key: MeterKey) => void;
+  value: number;
+  values: number[];
+}) {
   const max = Math.max(...values, 1);
   const previous = values.length > 1 ? values[values.length - 2] : value;
   const delta = value - previous;
 
   return (
-    <article className="trend-meter">
+    <button className="trend-meter" onClick={() => onSelect(meterKey)} type="button">
       <div className="trend-meter-header">
         <span>{label}</span>
         <strong>{value}</strong>
@@ -52,6 +75,6 @@ function TrendMeter({ label, note, value, values }: { label: string; note?: stri
       </div>
       <p>{delta === 0 ? "steady" : delta > 0 ? `+${delta} this turn` : `${delta} this turn`}</p>
       {note && <p className="meter-note">{note}</p>}
-    </article>
+    </button>
   );
 }

@@ -169,6 +169,11 @@ p {
   background: transparent;
 }
 
+.compact-action {
+  min-height: 34px;
+  padding: 6px 10px;
+}
+
 .game-layout {
   display: grid;
   gap: 18px;
@@ -392,6 +397,16 @@ p {
   text-align: center;
 }
 
+.boulder-piece:hover,
+.agent-token-mark:hover,
+.trend-meter:hover,
+.driver-meter:hover,
+.society-node:hover,
+.law-badges button:hover,
+.inspect-link:hover {
+  border-color: rgba(240, 221, 130, 0.72);
+}
+
 .boulder-piece.shifted {
   transform: translate(-22%, -50%);
 }
@@ -427,6 +442,20 @@ p {
   border: 1px solid rgba(214, 221, 202, 0.4);
   background: #202621;
   font-weight: 900;
+}
+
+.halo-button {
+  position: absolute;
+  top: 23px;
+  left: 50%;
+  width: 68px;
+  height: 68px;
+  transform: translate(-50%, -50%);
+  background: transparent;
+}
+
+.halo-button .state-halo {
+  top: 50%;
 }
 
 .agent-piece.lens .agent-token-mark {
@@ -565,6 +594,7 @@ p {
   border-radius: 8px;
   background: rgba(18, 23, 21, 0.94);
   padding: 10px;
+  text-align: left;
 }
 
 .society-node strong {
@@ -619,6 +649,7 @@ p {
   padding: 6px 10px;
   font-size: 0.78rem;
   font-weight: 800;
+  background: rgba(18, 23, 21, 0.88);
 }
 
 .society-summary {
@@ -657,9 +688,10 @@ p {
   margin-top: 12px;
 }
 
-.law-badges span {
+.law-badges button {
   border-radius: 999px;
   background: rgba(215, 196, 106, 0.15);
+  border: 1px solid rgba(215, 196, 106, 0.24);
   color: #f0dd82;
   padding: 6px 10px;
 }
@@ -858,6 +890,8 @@ li {
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.035);
   padding: 10px;
+  color: inherit;
+  text-align: left;
 }
 
 .trend-meter-header {
@@ -904,13 +938,19 @@ li {
   border-color: rgba(215, 196, 106, 0.28);
 }
 
-.mood-panel h2 {
+.mood-heading {
   display: flex;
   justify-content: space-between;
   gap: 10px;
+  width: 100%;
+  background: transparent;
+  color: inherit;
+  font-size: 1.35rem;
+  font-weight: 700;
+  text-align: left;
 }
 
-.mood-panel h2 span {
+.mood-heading span {
   color: #f0dd82;
 }
 
@@ -926,6 +966,7 @@ li {
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.035);
   padding: 8px;
+  text-align: left;
 }
 
 .driver-meter span {
@@ -944,6 +985,17 @@ li {
   height: 5px;
   border-radius: 999px;
   background: #d7c46a;
+}
+
+.inspector-panel {
+  border-color: rgba(240, 221, 130, 0.36);
+}
+
+.inspector-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: start;
 }
 
 .feedback-summary {
@@ -1012,7 +1064,14 @@ summary {
   align-items: center;
 }
 
-.halo-readout .state-halo {
+.inline-halo-button {
+  position: relative;
+  width: 22px;
+  height: 22px;
+  background: transparent;
+}
+
+.inline-halo-button .state-halo {
   position: static;
   width: 18px;
   height: 18px;
@@ -1027,6 +1086,17 @@ summary {
 .last-reaction {
   border-left: 3px solid #d7c46a;
   padding-left: 10px;
+}
+
+.inspect-link {
+  justify-self: start;
+  border: 1px solid rgba(214, 221, 202, 0.16);
+  border-radius: 999px;
+  background: transparent;
+  color: #f0dd82;
+  padding: 5px 9px;
+  font-size: 0.78rem;
+  font-weight: 800;
 }
 
 .event-entry {

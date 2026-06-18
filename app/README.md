@@ -2,7 +2,7 @@
 
 This is the first local playable prototype for Ripple. It is a small 2D turn loop centered on the Boulder Room, memory-seeded agents, pressure changes, reality layers, law formation, and Markdown run export.
 
-It is not an AI system, backend service, Minecraft build, Docker app, or direct rewrite of the source archive. v0.5 keeps the Boulder Build loop local and deterministic while adding board-scale switching, symbolic agent pieces, halo states, RUFS/mood readouts, trend meters, and Observer Input export.
+It is not an AI system, backend service, Minecraft build, Docker app, or direct rewrite of the source archive. v0.6 keeps the Boulder Build loop local and deterministic while adding clickable explanations and context-aware interpretation history.
 
 ## Install
 

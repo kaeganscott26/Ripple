@@ -16,6 +16,7 @@ export function createRunState(agents: AgentData[], selection: SetupSelection): 
     events: [],
     actionsTaken: [],
     observerInputs: [],
+    interpretationHistory: [],
     meterHistory: [],
     boulderPosition: "center",
   };

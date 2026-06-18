@@ -1,14 +1,16 @@
-import type { ActiveAgent, Mode } from "../engine/types";
+import type { ActiveAgent, InspectorItem, Mode } from "../engine/types";
 import { agentPresentation } from "../engine/agentPresentation";
+import { explainAgent, explainHalo } from "../engine/explanations";
 import { seedDisplay } from "../engine/memorySystem";
 import { StateHalo } from "./StateHalo";
 
 interface AgentPanelProps {
   agents: ActiveAgent[];
   mode: Mode;
+  onInspect: (item: InspectorItem) => void;
 }
 
-export function AgentPanel({ agents, mode }: AgentPanelProps) {
+export function AgentPanel({ agents, mode, onInspect }: AgentPanelProps) {
   return (
     <section className="panel agent-panel">
       <p className="eyebrow">Active Agents</p>
@@ -34,7 +36,14 @@ export function AgentPanel({ agents, mode }: AgentPanelProps) {
               <dl className="agent-memory-grid">
                 <dt>Halo</dt>
                 <dd className="halo-readout">
-                  <StateHalo state={presentation.haloState} />
+                  <button
+                    aria-label={`${agent.name} halo explanation`}
+                    className="inline-halo-button"
+                    onClick={() => onInspect(explainHalo(presentation.haloState))}
+                    type="button"
+                  >
+                    <StateHalo state={presentation.haloState} />
+                  </button>
                   {presentation.haloLabel}
                 </dd>
                 <dt>Memory</dt>
@@ -45,6 +54,9 @@ export function AgentPanel({ agents, mode }: AgentPanelProps) {
                 <dd>{behaviorDetail}</dd>
               </dl>
               {agent.lastReaction && <p className="last-reaction">{agent.lastReaction}</p>}
+              <button className="inspect-link" onClick={() => onInspect(explainAgent(agent, mode))} type="button">
+                Inspect piece
+              </button>
             </article>
           );
         })}
