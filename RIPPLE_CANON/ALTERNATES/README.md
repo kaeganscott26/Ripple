@@ -66,9 +66,13 @@ canonical chapter → alternate mirror → board space → dice event → artifa
 - [[ALTERNATE_06_THE_FALSE_WORLD_THAT_FAILED]] — Branch 06A / authority surrender before cage formation
 - [[ALTERNATE_06B_THE_CORRECTION_THAT_LEFT]] — Branch 06B / exit before explanation
 
-### Chapter 07 onward
+### [[Chapter 07]] — Observer
 
-7. [[ALTERNATE_07_THE_OBSERVER_WHO_ACTED]] — mirrors [[Chapter 07]]
+- [[ALTERNATE_07_THE_OBSERVER_WHO_ACTED]] — Branch 07A / survival without reclassification
+- [[ALTERNATE_07B_THE_CLASSROOM_THAT_CLOSED_THE_SCREEN]] — Branch 07B / care before broadcast repetition
+
+### Chapter 08 onward
+
 8. [[ALTERNATE_08_THE_DATE_THAT_ANSWERED]] — mirrors [[Chapter 08]]
 9. [[ALTERNATE_09_THE_KITCHEN_THAT_HELD]] — mirrors [[Chapter 09]]
 10. [[ALTERNATE_10_THE_SIGNAL_THAT_ARRIVED]] — mirrors [[Chapter 10]]
