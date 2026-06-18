@@ -61,9 +61,13 @@ canonical chapter → alternate mirror → board space → dice event → artifa
 - [[ALTERNATE_05_THE_SHARED_REALITY_THAT_SPLIT]] — Branch 05A / private narrative becoming official record
 - [[ALTERNATE_05B_THE_ROOM_THAT_MOVED_WITHOUT_HER]] — Branch 05B / community signal without self-inclusion
 
-### Chapter 06 onward
+### [[Chapter 06]] — The False World
 
-6. [[ALTERNATE_06_THE_FALSE_WORLD_THAT_FAILED]] — mirrors [[Chapter 06]]
+- [[ALTERNATE_06_THE_FALSE_WORLD_THAT_FAILED]] — Branch 06A / authority surrender before cage formation
+- [[ALTERNATE_06B_THE_CORRECTION_THAT_LEFT]] — Branch 06B / exit before explanation
+
+### Chapter 07 onward
+
 7. [[ALTERNATE_07_THE_OBSERVER_WHO_ACTED]] — mirrors [[Chapter 07]]
 8. [[ALTERNATE_08_THE_DATE_THAT_ANSWERED]] — mirrors [[Chapter 08]]
 9. [[ALTERNATE_09_THE_KITCHEN_THAT_HELD]] — mirrors [[Chapter 09]]
