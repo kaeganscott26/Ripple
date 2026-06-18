@@ -1,6 +1,7 @@
 import type { BoardLanding, BoardSpacePreview, InspectorItem, RunState, StorySpace } from "../engine/types";
 import { formatMetricDelta, formatMetricValue } from "../engine/formatting";
 import { normalizeBoardTurnState, possibleLandingSpaces, nestedSimulationProgress } from "../engine/boardTurnEngine";
+import { revealSectionsForMode } from "../data/canon/moveResolution";
 
 interface BoardGameControlsProps {
   state: RunState;
@@ -196,6 +197,7 @@ function LandingReveal({
   storySpaces: StorySpace[];
 }) {
   const space = storySpaces.find((entry) => entry.id === landing.spaceId);
+  const revealSections = revealSectionsForMode(state.mode, landing);
 
   return (
     <div className="landing-reveal">
@@ -205,14 +207,12 @@ function LandingReveal({
       </h3>
       <h2>{landing.spaceTitle}</h2>
       <dl>
-        <dt>Source</dt>
-        <dd>{landing.sourceTitle} · {landing.sourceFile}</dd>
-        <dt>What this means</dt>
-        <dd>{landing.plainMeaning}</dd>
-        <dt>{landing.agentName}'s reading</dt>
-        <dd>{landing.characterReading}</dd>
-        <dt>Room response</dt>
-        <dd>{landing.roomResponse}</dd>
+        {revealSections.map((section) => (
+          <div key={section.label}>
+            <dt>{section.label}</dt>
+            <dd>{section.value}</dd>
+          </div>
+        ))}
       </dl>
       <div className="meter-change-grid">
         {Object.entries(landing.meterEffects).map(([key, value]) => (

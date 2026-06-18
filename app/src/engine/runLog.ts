@@ -43,6 +43,8 @@ export function buildMarkdownRunLog(state: RunState): string {
 
   boardTurn.landings.forEach((landing) => {
     lines.push(`### Turn ${landing.turn} - ${landing.agentName}`, "");
+    lines.push("Branch:");
+    lines.push(`${landing.activeBranchId ?? "unmapped"} - ${landing.activeBranchTitle ?? landing.alternateTitle ?? "Existing alternate data"}`, "");
     lines.push("Movement dice:");
     lines.push(`${landing.dice.dieA} + ${landing.dice.dieB} = ${landing.dice.total}`, "");
     lines.push("Reality die:");
@@ -56,14 +58,24 @@ export function buildMarkdownRunLog(state: RunState): string {
     );
     lines.push(`Mirrors: ${landing.mirrorsChapter ?? landing.sourceTitle}`);
     lines.push(`Source: ${landing.sourceFile}`, "");
-    lines.push("What the board reveals:");
-    lines.push(landing.plainMeaning, "");
+    lines.push("Scene:");
+    lines.push(landing.sceneConsequence ?? landing.plainMeaning, "");
+    lines.push("Branch context:");
+    lines.push(landing.branchContext ?? landing.branchText, "");
     lines.push(`${landing.agentName}'s branch:`);
     lines.push(landing.branchText, "");
     lines.push("Artifact effect:");
     lines.push(landing.artifactEffect, "");
     lines.push("Result:");
     lines.push(landing.resultText, "");
+    lines.push("Opened path:");
+    lines.push(landing.openedPath ?? "No branch-specific opened path recorded.", "");
+    lines.push("Closed path:");
+    lines.push(landing.closedPath ?? "No branch-specific closed path recorded.", "");
+    lines.push("Character state changes:");
+    lines.push(...linesForList(landing.characterStateChanges ?? []), "");
+    lines.push("Branch mechanics triggered:");
+    lines.push(...linesForList(landing.branchMechanicsTriggered ?? []), "");
     lines.push("Room effect:");
     lines.push(landing.roomResponse, "");
     lines.push("Society effect:");

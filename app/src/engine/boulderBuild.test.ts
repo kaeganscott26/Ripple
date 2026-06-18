@@ -5,6 +5,10 @@ import rulesJson from "../data/rules.json";
 import storyBouldersJson from "../data/storyBoulders.json";
 import { archiveDocumentBySourceFile, archiveDocuments, nextArchiveDocument } from "../data/archiveDocuments";
 import { buildStorySpaces } from "../data/boardSpaces";
+import { branchForSourceFile, branchesForChapter, chapterBranches } from "../data/canon/chapterBranches";
+import { createInitialBranchRunState } from "../data/canon/characterStates";
+import { kaeganAvailabilityFor } from "../data/canon/kaegan";
+import { revealSectionsForMode } from "../data/canon/moveResolution";
 import { ActiveInspectionSummary } from "../components/ActiveInspectionSummary";
 import { howToPlaySteps } from "../components/HowToPlayPanel";
 import { createElement } from "react";
@@ -60,6 +64,10 @@ function newRun(seed: SeedKey = "A") {
   return createRunState(agents, { mode: "experimental", selectedSeeds: selectedSeeds(seed) });
 }
 
+function newRunForMode(mode: "mystery" | "vague" | "experimental") {
+  return createRunState(agents, { mode, selectedSeeds: selectedSeeds("A") });
+}
+
 function testRoll(dieA: number, dieB: number, realityDie = 1, artifactDie = 1): DiceRoll {
   return {
     dieA,
@@ -77,7 +85,126 @@ function testRoll(dieA: number, dieB: number, realityDie = 1, artifactDie = 1): 
   };
 }
 
+function landOnSource(sourceFile: string, realityDie = 1, artifactDie = 1, mode: "mystery" | "vague" | "experimental" = "experimental") {
+  const targetIndex = storySpaces.findIndex((space) => space.sourceFile === sourceFile);
+  expect(targetIndex).toBeGreaterThanOrEqual(0);
+  const fromPosition = (targetIndex - 2 + storySpaces.length) % storySpaces.length;
+  const state = newRunForMode(mode);
+
+  return resolveBoardTurn(
+    {
+      ...state,
+      boardTurn: {
+        ...state.boardTurn,
+        boardPositions: { ...state.boardTurn.boardPositions, mara: fromPosition },
+        characterPaths: {
+          ...state.boardTurn.characterPaths,
+          mara: { ...state.boardTurn.characterPaths.mara, currentPosition: fromPosition },
+        },
+      },
+    },
+    storySpaces,
+    rules,
+    testRoll(1, 1, realityDie, artifactDie),
+  );
+}
+
 describe("Boulder Build v0.8.1", () => {
+  it("loads branch causality data for chapters 1-8", () => {
+    expect(chapterBranches).toHaveLength(24);
+
+    for (let chapterId = 1; chapterId <= 8; chapterId += 1) {
+      const branches = branchesForChapter(chapterId);
+
+      expect(branches).toHaveLength(3);
+      expect(branches.map((branch) => branch.branchLabel).sort()).toEqual(["alternate-a", "alternate-b", "canon"]);
+      expect(branches.every((branch) => branch.moveLogicRules.length === 3)).toBe(true);
+      expect(branches.every((branch) => branch.sourceFile.length > 0)).toBe(true);
+    }
+  });
+
+  it("Chapter 1 branch 01A locks Kaegan", () => {
+    const state = landOnSource("RIPPLE_CANON/ALTERNATES/ALTERNATE_01_THE_UNADOPTED_ROOM.md");
+
+    expect(state.boardTurn.branchState.originBranchId).toBe("chapter-01-a");
+    expect(state.boardTurn.branchState.kaeganAvailability.status).toBe("locked");
+    expect(state.boardTurn.branchState.kaeganAvailability.reason).toContain("lineage path");
+  });
+
+  it("Chapter 1 canon allows Kaegan", () => {
+    const state = createInitialBranchRunState();
+
+    expect(state.originBranchId).toBe("chapter-01-canon");
+    expect(state.kaeganAvailability.status).toBe("unlocked");
+    expect(kaeganAvailabilityFor("chapter-01-canon", true).label).toContain("Player 0826");
+  });
+
+  it("Chapter 1 branch 01B conditionally allows Kaegan if Builder Path remains open", () => {
+    const state = landOnSource("RIPPLE_CANON/ALTERNATES/ALTERNATE_01B_THE_BROADCAST_THAT_NEVER_REACHED.md");
+
+    expect(state.boardTurn.branchState.originBranchId).toBe("chapter-01-b");
+    expect(state.boardTurn.branchState.builderPathOpen).toBe(true);
+    expect(state.boardTurn.branchState.kaeganAvailability.status).toBe("conditional");
+    expect(kaeganAvailabilityFor("chapter-01-b", true).rule).toContain("never as the father's cure");
+  });
+
+  it("Chapter 8 branch 08A activates Love As Load and Boundary State", () => {
+    const state = landOnSource("RIPPLE_CANON/ALTERNATES/ALTERNATE_08_THE_DATE_THAT_ANSWERED.md", 3, 2);
+    const landing = state.boardTurn.landings[0];
+
+    expect(landing.activeBranchId).toBe("chapter-08-a");
+    expect(landing.branchMechanicsTriggered).toEqual(expect.arrayContaining(["Love As Load", "Boundary State"]));
+    expect(state.boardTurn.branchState.characterStates.kaegan).toEqual(expect.arrayContaining(["Boundary State", "Love As Load"]));
+    expect(landing.sceneConsequence).toContain("love and load");
+  });
+
+  it("Chapter 8 branch 08B unlocks Player 0826 and Safe Invitation", () => {
+    const state = landOnSource("RIPPLE_CANON/ALTERNATES/ALTERNATE_08B_THE_GAME_THAT_REACHED_HIM.md", 3, 2);
+    const landing = state.boardTurn.landings[0];
+
+    expect(landing.activeBranchId).toBe("chapter-08-b");
+    expect(landing.branchMechanicsTriggered).toEqual(expect.arrayContaining(["Player 0826", "Safe Invitation"]));
+    expect(state.boardTurn.branchState.kaeganAvailability.status).toBe("unlocked");
+    expect(state.agents.some((agent) => agent.id === "kaegan")).toBe(true);
+    expect(landing.sceneConsequence).toContain("lets Kaegan leave");
+  });
+
+  it("does not use generic reveal text when branch-specific move lore exists", () => {
+    const state = landOnSource("RIPPLE_CANON/ALTERNATES/ALTERNATE_03B_THE_STUDENT_WHO_MAPPED_THE_ROOM.md");
+    const landing = state.boardTurn.landings[0];
+    const revealText = [landing.sceneConsequence, landing.characterEffect, landing.resultText].join(" ");
+
+    expect(branchForSourceFile(landing.sourceFile)?.id).toBe("chapter-03-b");
+    expect(revealText).not.toContain("This alternate teaches the board");
+    expect(revealText).not.toContain("reads as form pressure");
+    expect(revealText).toContain("Jamal");
+    expect(revealText).toContain("records the gap");
+  });
+
+  it("run log includes branch id and source file", () => {
+    const state = landOnSource("RIPPLE_CANON/ALTERNATES/ALTERNATE_08B_THE_GAME_THAT_REACHED_HIM.md", 1, 3);
+    const markdown = buildMarkdownRunLog(state);
+
+    expect(markdown).toContain("chapter-08-b - 08B - The Game That Reached Him");
+    expect(markdown).toContain("RIPPLE_CANON/ALTERNATES/ALTERNATE_08B_THE_GAME_THAT_REACHED_HIM.md");
+    expect(markdown).toContain("Branch mechanics triggered:");
+    expect(markdown).toContain("Safe Invitation");
+  });
+
+  it("Mystery, Vague, and Experimental modes expose the right amount of branch info", () => {
+    const state = landOnSource("RIPPLE_CANON/ALTERNATES/ALTERNATE_08B_THE_GAME_THAT_REACHED_HIM.md", 1, 3);
+    const landing = state.boardTurn.landings[0];
+    const mysteryLabels = revealSectionsForMode("mystery", landing).map((section) => section.label);
+    const vagueLabels = revealSectionsForMode("vague", landing).map((section) => section.label);
+    const experimentalLabels = revealSectionsForMode("experimental", landing).map((section) => section.label);
+
+    expect(mysteryLabels).toEqual(["Turn Summary", "Landing Space", "Scene Consequence", "Result", "Read Source"]);
+    expect(vagueLabels).toContain("Branch Context");
+    expect(vagueLabels).not.toContain("Hidden Checks");
+    expect(experimentalLabels).toContain("Hidden Checks");
+    expect(experimentalLabels).toContain("Kaegan Availability");
+  });
+
   it("rollDice returns valid four-dice data", () => {
     const values = [0, 0.999, 0.34, 0.84];
     const dice = rollDice(() => values.shift() ?? 0.5);
@@ -92,7 +219,8 @@ describe("Boulder Build v0.8.1", () => {
   });
 
   it("board movement resolves a valid landing space", () => {
-    expect(storySpaces).toHaveLength(204);
+    expect(storySpaces.length).toBeGreaterThanOrEqual(204);
+    expect(storySpaces.some((space) => space.sourceFile === "RIPPLE_CANON/ALTERNATES/ALTERNATE_08B_THE_GAME_THAT_REACHED_HIM.md")).toBe(true);
     expect(landingPosition(0, 7, storySpaces)).toBe(7);
 
     const next = resolveBoardTurn(newRun(), storySpaces, rules, testRoll(3, 4));

@@ -22,7 +22,10 @@ import { pressureChanges } from "./pressure";
 import { appendMetricSnapshot, calculateRealityMetrics } from "./realityMetrics";
 import { artifactDieResult } from "../data/canon/artifacts";
 import { initialCharacterPath } from "../data/canon/characters";
+import { branchStateAfterLanding, createInitialBranchRunState } from "../data/canon/characterStates";
 import { realityOutcomeForDie, rollCanonDice } from "../data/canon/dice";
+import { kaeganAgent } from "../data/canon/kaegan";
+import { resolveBranchMove } from "../data/canon/moveResolution";
 import { branchTextFor, updateCharacterPath } from "../data/canon/pathBranches";
 
 const emptyPressure: PressureValues = { witness: 0, namedWeight: 0, institution: 0, concern: 0 };
@@ -185,6 +188,7 @@ export function createInitialBoardTurnState(agents: ActiveAgent[], boardLength =
     societyState: "Society state is quiet until a landing becomes shared reality.",
     sourceContact: [],
     artifactsUsed: [],
+    branchState: createInitialBranchRunState(),
     completedTurns: [],
     landings: [],
     roundSummaries: [],
@@ -209,6 +213,7 @@ export function normalizeBoardTurnState(state: RunState): BoardTurnState {
     societyState: existing.societyState ?? fallback.societyState,
     sourceContact: existing.sourceContact ?? [],
     artifactsUsed: existing.artifactsUsed ?? [],
+    branchState: existing.branchState ?? fallback.branchState,
   };
 }
 
@@ -329,15 +334,25 @@ export function resolveBoardTurn(
   const landingSpace = spaces[toPosition];
   const nextTurn = state.turn + 1;
   const revealedOutcome = dice.artifact.modifiedRealityOutcome ?? dice.realityOutcome;
-  const reading = readingFor(agent, landingSpace, revealedOutcome);
-  const roomResponse = roomResponseFor(landingSpace, revealedOutcome);
-  const societyResponse = societyResponseFor(landingSpace, revealedOutcome, dice.artifact.artifactName);
+  const branchResolution = resolveBranchMove({
+    agent,
+    branchState: boardTurn.branchState,
+    space: landingSpace,
+    dice,
+    revealedOutcome,
+    activeArtifacts: boardTurn.artifactsUsed,
+    runHistory: boardTurn.landings,
+  });
+  const reading = branchResolution?.characterEffect ?? readingFor(agent, landingSpace, revealedOutcome);
+  const roomResponse = branchResolution?.roomResponse ?? roomResponseFor(landingSpace, revealedOutcome);
+  const societyResponse =
+    branchResolution?.societyResponse ?? societyResponseFor(landingSpace, revealedOutcome, dice.artifact.artifactName);
   const meterEffects = effectsForOutcome(landingSpace, revealedOutcome);
   const agentPressure = scalePressure(meterEffects, revealedOutcome === "Missed Intervention Point" ? 0.75 : 0.55);
   const pressureDelta = addPressure(meterEffects, agentPressure);
   const previousPath = boardTurn.characterPaths[agent.id] ?? initialCharacterPath(agent.id, fromPosition);
   const characterPath = updateCharacterPath(previousPath, toPosition, landingSpace, revealedOutcome, dice.artifact.artifactName);
-  const branchText = branchTextFor(agent.name, landingSpace, revealedOutcome);
+  const branchText = branchResolution?.branchText ?? branchTextFor(agent.name, landingSpace, revealedOutcome);
 
   const agents = state.agents.map((entry) =>
     entry.id === agent.id
@@ -365,7 +380,7 @@ export function resolveBoardTurn(
     turn: nextTurn,
     action: "dice-space" as const,
     stage: "opens" as const,
-    roomInterpretation: `${agent.name} landed on ${landingSpace.title}. ${textForOutcome(landingSpace, revealedOutcome)}`,
+    roomInterpretation: `${agent.name} landed on ${landingSpace.title}. ${branchResolution?.sceneConsequence ?? textForOutcome(landingSpace, revealedOutcome)}`,
     storyObjectId: landingSpace.id,
     targetCharacterId: agent.id,
   };
@@ -379,7 +394,7 @@ export function resolveBoardTurn(
     targetCharacterId: agent.id,
     targetName: agent.name,
     plainLanguageMeaning: landingSpace.plainMeaning,
-    resultingInterpretation: reading,
+    resultingInterpretation: branchResolution?.sceneConsequence ?? reading,
   };
   const landing: BoardLanding = {
     turn: nextTurn,
@@ -408,15 +423,48 @@ export function resolveBoardTurn(
     characterReading: reading,
     roomResponse,
     societyResponse,
-    resultText: resultTextFor(revealedOutcome, agent.name),
+    resultText: branchResolution?.resultText ?? resultTextFor(revealedOutcome, agent.name),
     artifactName: dice.artifact.artifactName,
-    artifactEffect: dice.artifact.effectText,
+    artifactEffect: branchResolution?.artifactEffect ?? dice.artifact.effectText,
     branchText,
+    activeBranchId: branchResolution?.branch.id,
+    activeBranchTitle: branchResolution?.branch.title,
+    branchLabel: branchResolution?.branch.branchLabel,
+    branchContext: branchResolution?.branchContext,
+    turnSummary: branchResolution?.turnSummary,
+    landingSpaceText: branchResolution?.landingSpaceText,
+    sceneConsequence: branchResolution?.sceneConsequence,
+    characterEffect: branchResolution?.characterEffect,
+    openedPath: branchResolution?.openedPath,
+    closedPath: branchResolution?.closedPath,
+    sourceReadLinks: branchResolution?.sourceReadLinks,
+    characterStateChanges: branchResolution?.characterStateChanges,
+    branchMechanicsTriggered: branchResolution?.mechanicsTriggered,
+    hiddenChecks: branchResolution?.hiddenChecks,
+    futureChapterImpact: branchResolution?.futureChapterImpact,
+    kaeganAvailability: boardTurn.branchState.kaeganAvailability,
     characterPath,
     meterEffects,
     affectedLayers: affectedLayers(landingSpace),
     lawsFormed: newLaws,
   };
+  const nextBranchState = branchStateAfterLanding(boardTurn.branchState, landing);
+  landing.kaeganAvailability = nextBranchState.kaeganAvailability;
+  const shouldAddKaegan =
+    nextBranchState.kaeganAvailability.status === "unlocked" &&
+    branchResolution?.branch.id === "chapter-08-b" &&
+    !state.agents.some((entry) => entry.id === "kaegan");
+  const agentsWithConditionalKaegan: ActiveAgent[] = shouldAddKaegan
+    ? [
+        ...agents,
+        {
+          ...kaeganAgent,
+          activeSeed: "B",
+          revealed: state.mode !== "mystery",
+          pressure: { witness: 0, namedWeight: 0, institution: 0, concern: 0 },
+        },
+      ]
+    : agents;
   const completedTurns = [...boardTurn.completedTurns, agent.id];
   const roundComplete = completedTurns.length >= state.agents.length;
   const nextAgentIndex = roundComplete ? 0 : (boardTurn.currentAgentIndex + 1) % state.agents.length;
@@ -429,23 +477,33 @@ export function resolveBoardTurn(
     ...boardTurn,
     currentTurn: boardTurn.currentTurn + 1,
     currentRound: roundComplete ? boardTurn.currentRound + 1 : boardTurn.currentRound,
-    currentAgentId: state.agents[nextAgentIndex]?.id ?? agent.id,
+    currentAgentId: agentsWithConditionalKaegan[nextAgentIndex]?.id ?? agent.id,
     currentAgentIndex: nextAgentIndex,
     hasRolledThisTurn: false,
     lastDiceRoll: dice,
     lastLandingSpaceId: landingSpace.id,
-    boardPositions: { ...boardTurn.boardPositions, [agent.id]: toPosition },
-    characterPaths: { ...boardTurn.characterPaths, [agent.id]: characterPath },
+    boardPositions: {
+      ...boardTurn.boardPositions,
+      [agent.id]: toPosition,
+      ...(shouldAddKaegan ? { kaegan: toPosition } : {}),
+    },
+    characterPaths: {
+      ...boardTurn.characterPaths,
+      [agent.id]: characterPath,
+      ...(shouldAddKaegan ? { kaegan: initialCharacterPath("kaegan", toPosition) } : {}),
+    },
     roomState: roomResponse,
     societyState: societyResponse,
     sourceContact,
     artifactsUsed,
+    branchState: nextBranchState,
     completedTurns: roundComplete ? [] : completedTurns,
     landings: [...boardTurn.landings, landing],
   };
 
   const withInterpretation: RunState = {
     ...withLaws,
+    agents: agentsWithConditionalKaegan,
     interpretationHistory: [...(state.interpretationHistory ?? []), interpretation],
     storyObjectUses: [...(state.storyObjectUses ?? []), use],
     boardTurn: boardWithLanding,
@@ -488,7 +546,10 @@ export function resolveBoardTurn(
       type: "base" as const,
       text: `${agent.name} rolled ${landing.movementText}; reality die ${dice.realityDie} rendered ${dice.realityOutcome}; artifact die ${dice.artifactDie} rendered ${dice.artifact.artifactName}.`,
     },
-    { type: "social" as const, text: `${agent.name} lands on ${landingSpace.title}: ${textForOutcome(landingSpace, revealedOutcome)}` },
+    {
+      type: "social" as const,
+      text: `${agent.name} lands on ${landingSpace.title}: ${branchResolution?.sceneConsequence ?? textForOutcome(landingSpace, revealedOutcome)}`,
+    },
     { type: "agent" as const, text: branchText },
     { type: "institutional" as const, text: societyResponse },
     ...(roundSummary ? [{ type: "social" as const, text: `Round ${roundSummary.round} ended. ${roundSummary.societyEffect}` }] : []),

@@ -11,8 +11,10 @@ import {
 import { buildStorySpaces } from "./data/boardSpaces";
 import { canonAlternates } from "./data/canon/alternates";
 import { canonArtifacts } from "./data/canon/artifacts";
+import { chapterBranches } from "./data/canon/chapterBranches";
 import { canonCharacters } from "./data/canon/characters";
 import { diceRuleSummary } from "./data/canon/dice";
+import { revealSectionsForMode } from "./data/canon/moveResolution";
 import { ArchiveView } from "./components/ArchiveView";
 import { ExportRunButton } from "./components/ExportRunButton";
 import { ModeSelect } from "./components/ModeSelect";
@@ -158,7 +160,7 @@ export default function App() {
             <button className="primary-action roll-action" onClick={rollTurn} type="button">
               {lastLanding ? `Next Turn: Roll for ${currentAgent.name}` : `Roll for ${currentAgent.name}`}
             </button>
-            <RevealCard landing={lastLanding} space={lastSpace} onReadSource={readSource} />
+            <RevealCard landing={lastLanding} mode={runState.mode} space={lastSpace} onReadSource={readSource} />
             {progress && <NestedGoal progressRemaining={progress.remaining} unlocked={progress.unlocked} />}
           </aside>
         </section>
@@ -226,7 +228,14 @@ function LivingBoard({ onReadSource, spaces, state }: { onReadSource: (sourceFil
       <div className="center-glass">
         <p className="eyebrow">Center Glass</p>
         <h2>{boardTurn.landings.slice(-1)[0]?.spaceTitle ?? "The glass is waiting."}</h2>
-        <p>{boardTurn.landings.slice(-1)[0]?.resultText ?? "Roll the dice. The board will render the next reality."}</p>
+        {boardTurn.landings.slice(-1)[0] ? (
+          <>
+            <p>{boardTurn.landings.slice(-1)[0]?.sceneConsequence ?? boardTurn.landings.slice(-1)[0]?.resultText}</p>
+            <p className="quiet-line">{boardTurn.landings.slice(-1)[0]?.resultText}</p>
+          </>
+        ) : (
+          <p>Roll the dice. The board will render the next reality.</p>
+        )}
       </div>
 
       <div className="character-paths" aria-label="Character paths">
@@ -242,6 +251,11 @@ function LivingBoard({ onReadSource, spaces, state }: { onReadSource: (sourceFil
             </article>
           );
         })}
+        <article className={`kaegan-state ${boardTurn.branchState.kaeganAvailability.status}`}>
+          <strong>Kaegan</strong>
+          <span>{boardTurn.branchState.kaeganAvailability.label}</span>
+          <small>{boardTurn.branchState.kaeganAvailability.reason}</small>
+        </article>
       </div>
     </section>
   );
@@ -284,10 +298,12 @@ function Die({ detail, label, value }: { detail?: string; label: string; value?:
 
 function RevealCard({
   landing,
+  mode,
   onReadSource,
   space,
 }: {
   landing?: BoardLanding;
+  mode: Mode;
   onReadSource: (sourceFile?: string) => void;
   space?: StorySpace;
 }) {
@@ -301,33 +317,51 @@ function RevealCard({
     );
   }
 
+  const revealSections = revealSectionsForMode(mode, landing);
+  const sourceLinks = landing.sourceReadLinks?.length
+    ? landing.sourceReadLinks
+    : [
+        { label: "Read Source", sourceFile: landing.sourceFile },
+        ...(space?.sourceLinks?.[1] ? [{ label: "Read Chapter", sourceFile: space.sourceLinks[1] }] : []),
+      ];
+
   return (
     <section className="console-card reveal-card">
       <p className="eyebrow">Landing Reveal</p>
       <h2>{landing.agentName} lands on {landing.spaceTitle}</h2>
+      {landing.activeBranchTitle && (
+        <div className="branch-badge-row">
+          <span>{landing.activeBranchTitle}</span>
+          <span>{landing.revealedOutcome}</span>
+          {landing.kaeganAvailability && <span>{landing.kaeganAvailability.label}</span>}
+        </div>
+      )}
       <dl>
-        <dt>Movement</dt>
-        <dd>{landing.movementText}</dd>
-        <dt>Mirrors</dt>
-        <dd>{landing.mirrorsChapter} - {space?.chapterTitle}</dd>
-        <dt>Reality die</dt>
-        <dd>{landing.revealedOutcome}</dd>
-        <dt>What the board reveals</dt>
-        <dd>{landing.plainMeaning}</dd>
-        <dt>{landing.agentName}'s reading</dt>
-        <dd>{landing.characterReading}</dd>
-        <dt>Artifact effect</dt>
-        <dd>{landing.artifactEffect}</dd>
-        <dt>Result</dt>
-        <dd>{landing.resultText}</dd>
+        {revealSections.map((section) => (
+          <div key={section.label}>
+            <dt>{section.label}</dt>
+            <dd>{section.value}</dd>
+          </div>
+        ))}
       </dl>
+      {landing.characterStateChanges && landing.characterStateChanges.length > 0 && (
+        <div className="state-chip-row" aria-label="Character state changes">
+          {landing.characterStateChanges.slice(0, 5).map((change) => (
+            <span key={change}>{change}</span>
+          ))}
+        </div>
+      )}
       <div className="reveal-actions">
-        <button className="secondary-action compact-action" onClick={() => onReadSource(landing.sourceFile)} type="button">
-          Read Source
-        </button>
-        <button className="ghost-action compact-action" onClick={() => onReadSource(space?.sourceLinks?.[1])} type="button">
-          Read Chapter
-        </button>
+        {sourceLinks.slice(0, 4).map((link, index) => (
+          <button
+            className={`${index === 0 ? "secondary-action" : "ghost-action"} compact-action`}
+            key={`${link.label}-${link.sourceFile}`}
+            onClick={() => onReadSource(link.sourceFile)}
+            type="button"
+          >
+            {link.label}
+          </button>
+        ))}
       </div>
     </section>
   );
@@ -444,6 +478,22 @@ function ExperimentalView({
               </li>
             ))}
           </ul>
+        </article>
+        <article className="panel">
+          <h3>Branch Causality</h3>
+          <ul className="compact-list">
+            {chapterBranches.map((branch) => (
+              <li key={branch.id}>
+                <strong>{branch.title}:</strong> {branch.unlockedMechanics.join(", ") || "canon branch"}.
+              </li>
+            ))}
+          </ul>
+        </article>
+        <article className="panel">
+          <h3>Kaegan State</h3>
+          <p>{state.boardTurn.branchState.kaeganAvailability.label}</p>
+          <p>{state.boardTurn.branchState.kaeganAvailability.reason}</p>
+          <p>{state.boardTurn.branchState.kaeganAvailability.rule}</p>
         </article>
       </div>
     </section>

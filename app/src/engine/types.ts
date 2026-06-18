@@ -315,6 +315,72 @@ export interface StoryObjectUse {
 
 export type RealityOutcome = "Intervention Point" | "Ripple Event" | "Missed Intervention Point";
 
+export type BranchId =
+  | "chapter-01-canon"
+  | "chapter-01-a"
+  | "chapter-01-b"
+  | "chapter-02-canon"
+  | "chapter-02-a"
+  | "chapter-02-b"
+  | "chapter-03-canon"
+  | "chapter-03-a"
+  | "chapter-03-b"
+  | "chapter-04-canon"
+  | "chapter-04-a"
+  | "chapter-04-b"
+  | "chapter-05-canon"
+  | "chapter-05-a"
+  | "chapter-05-b"
+  | "chapter-06-canon"
+  | "chapter-06-a"
+  | "chapter-06-b"
+  | "chapter-07-canon"
+  | "chapter-07-a"
+  | "chapter-07-b"
+  | "chapter-08-canon"
+  | "chapter-08-a"
+  | "chapter-08-b";
+
+export type BranchMechanic =
+  | "Origin Branch"
+  | "Builder Path"
+  | "Player 0826"
+  | "Love As Load"
+  | "Boundary State"
+  | "Safe Invitation"
+  | "Witness Before Command"
+  | "Room Mapping"
+  | "Temporary Witness Token"
+  | "Exit Groove"
+  | "Maybe State"
+  | "Authority Surrender"
+  | "Exit Trail"
+  | "Observer Debt"
+  | "Ordinary Door Check"
+  | "Broadcast Handrail"
+  | "Form Resistance"
+  | "Masking Pressure"
+  | "Surface Logic"
+  | "Triage Authority";
+
+export type KaeganAvailabilityStatus = "locked" | "conditional" | "unlocked";
+
+export interface KaeganAvailability {
+  status: KaeganAvailabilityStatus;
+  label: string;
+  reason: string;
+  rule: string;
+}
+
+export interface BranchRunState {
+  activeBranchesByChapter: Partial<Record<number, BranchId>>;
+  originBranchId: BranchId;
+  builderPathOpen: boolean;
+  activeMechanics: BranchMechanic[];
+  characterStates: Record<string, string[]>;
+  kaeganAvailability: KaeganAvailability;
+}
+
 export type ArtifactEffectType =
   | "none"
   | "protect"
@@ -400,6 +466,22 @@ export interface BoardLanding {
   artifactName: string;
   artifactEffect: string;
   branchText: string;
+  activeBranchId?: BranchId;
+  activeBranchTitle?: string;
+  branchLabel?: string;
+  branchContext?: string;
+  turnSummary?: string;
+  landingSpaceText?: string;
+  sceneConsequence?: string;
+  characterEffect?: string;
+  openedPath?: string;
+  closedPath?: string;
+  sourceReadLinks?: Array<{ label: string; sourceFile: string }>;
+  characterStateChanges?: string[];
+  branchMechanicsTriggered?: BranchMechanic[];
+  hiddenChecks?: string[];
+  futureChapterImpact?: string;
+  kaeganAvailability?: KaeganAvailability;
   characterPath: CharacterPathState;
   meterEffects: PressureValues;
   affectedLayers: string[];
@@ -420,6 +502,7 @@ export interface BoardTurnState {
   societyState: string;
   sourceContact: string[];
   artifactsUsed: string[];
+  branchState: BranchRunState;
   completedTurns: string[];
   landings: BoardLanding[];
   roundSummaries: RoundSummary[];

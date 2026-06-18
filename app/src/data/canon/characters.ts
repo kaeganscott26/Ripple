@@ -44,6 +44,13 @@ export const canonCharacters: CanonCharacter[] = [
     startingBranch: "design witness",
     boardRole: "Reads the board as a system that must stay playable and accountable.",
   },
+  {
+    id: "kaegan",
+    name: "Kaegan",
+    pathName: "Player 0826",
+    startingBranch: "safe invitation",
+    boardRole: "Enters only as a player with agency, never as the father's cure.",
+  },
 ];
 
 export function initialCharacterPath(characterId: string, position: number): CharacterPathState {
