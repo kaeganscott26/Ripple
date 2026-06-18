@@ -1,18 +1,26 @@
-# ALTERNATE 14 — THE COSMIC ROOM WITH A FLOOR
+# 🪞 ALTERNATE 14 — THE COSMIC ROOM WITH A FLOOR
 
-_Mirrors: Chapter 14 — The Cosmic Room_
+_Mirrors: [[Chapter 14]] — The Cosmic Room_
 
 _Status: Ripple Canon | Alternate Path | Natural / Geometry / Theory Current_
 
-## Core Mirror
+Layer links: [[NATURAL_LAYER]], [[GEOMETRY_AS_CONSEQUENCE]], [[THEORY_LAYER]]
 
-Chapter 14 opens the cosmic room: scale, physics, pattern, and the danger of making the universe too personal.
+Artifact echoes: [[NATURAL_RIPPLE_MAP]], [[CHANGELOG]]
+
+---
+
+## 🧭 Core Mirror
+
+[[Chapter 14]] opens the cosmic room: scale, physics, pattern, and the danger of making the universe too personal.
 
 This alternate asks what happens when the cosmic room keeps its floor.
 
-The opposite ripple is grounded scale.
+The opposite ripple is **grounded scale**.
 
-## Alternate Story
+---
+
+## 📖 Alternate Story
 
 The room looks up.
 
@@ -22,44 +30,54 @@ The old path tries to make scale into destiny. If the pattern is big enough, may
 
 But this alternate refuses to lose the floor.
 
-Mara reads the cosmic room as witness humility. The universe can be meaningful without becoming testimony for every private conclusion.
+[[Mara]] reads the cosmic room as witness humility. The universe can be meaningful without becoming testimony for every private conclusion.
 
-Jamal reads the cosmic room as form discipline. A model is useful when it names limits, not when it consumes them.
+[[Jamal]] reads the cosmic room as form discipline. A model is useful when it names limits, not when it consumes them.
 
-Maren reads the cosmic room as mood regulation. Wonder should expand the room, not erase the body standing in it.
+[[Maren]] reads the cosmic room as mood regulation. Wonder should expand the room, not erase the body standing in it.
 
-Dev reads the cosmic room as access to scale. The sky is visible, but it does not replace the door in front of him.
+[[Dev]] reads the cosmic room as access to scale. The sky is visible, but it does not replace the door in front of him.
 
-Teodor / Scott reads the cosmic room as a design warning. Geometry can show consequence, but it should not become a cage for everything unknown.
+[[Teodor / Scott]] reads the cosmic room as a design warning. Geometry can show consequence, but it should not become a cage for everything unknown.
 
-## Intervention Point
+---
+
+## 🟢 Intervention Point
 
 Someone says:
 
-“Scale can help us think, but it does not remove the room we are actually standing in.”
+> Scale can help us think, but it does not remove the room we are actually standing in.
 
 The floor returns.
 
-## Missed Intervention Point
+---
+
+## 🔴 Missed Intervention Point
 
 The room turns scale into proof.
 
 If missed, cosmic language becomes a shortcut around ordinary responsibility.
 
-## Ripple Event
+---
+
+## 🌊 Ripple Event
 
 The board adds grounded scale:
 
-Any cosmic reading must also name the local room it affects.
+> Any cosmic reading must also name the local room it affects.
 
-## Artifact Pulls
+---
 
-- Natural Layer keeps physical consequence primary.
-- Geometry as Consequence shows shape without overclaiming proof.
-- Theory Layer defines limits.
-- Weather Layer reminds the room that atmosphere acts before meaning.
+## 🧩 Artifact Pulls
 
-## Board Spaces
+- [[NATURAL_LAYER]] keeps physical consequence primary.
+- [[GEOMETRY_AS_CONSEQUENCE]] shows shape without overclaiming proof.
+- [[THEORY_LAYER]] defines limits.
+- [[WEATHER_LAYER]] reminds the room that atmosphere acts before meaning.
+
+---
+
+## 🎲 Board Spaces
 
 1. Look Up
 2. Pattern Appears
@@ -74,20 +92,24 @@ Any cosmic reading must also name the local room it affects.
 11. Cosmic Room Grounded
 12. Scale Serves Care
 
-## End States
+---
 
-### Intervention Ending
+## 🧬 End States
+
+### 🟢 Intervention Ending
 
 The character uses cosmic scale to think more clearly without leaving the actual room.
 
-### Ripple Ending
+### 🌊 Ripple Ending
 
 Large-scale patterns become tools, not verdicts.
 
-### Missed Ending
+### 🔴 Missed Ending
 
 The room hides ordinary responsibility behind cosmic language.
 
-## Game Meaning
+---
+
+## 🎮 Game Meaning
 
 This alternate teaches the board that scale should widen perception without replacing the ground.
