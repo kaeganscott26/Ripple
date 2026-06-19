@@ -1,514 +1,292 @@
-import { useEffect, useMemo, useState } from "react";
-import agentsJson from "./data/agents.json";
+import { useEffect, useState } from "react";
 import layerCardsJson from "./data/layerCards.json";
-import rulesJson from "./data/rules.json";
-import {
-  archiveDocumentById,
-  archiveDocumentBySourceFile,
-  archiveDocuments,
-  nextArchiveDocument,
-} from "./data/archiveDocuments";
-import { buildStorySpaces } from "./data/boardSpaces";
-import { canonAlternates } from "./data/canon/alternates";
-import { canonArtifacts } from "./data/canon/artifacts";
-import { chapterBranches } from "./data/canon/chapterBranches";
-import { canonCharacters } from "./data/canon/characters";
-import { diceRuleSummary } from "./data/canon/dice";
-import { revealSectionsForMode } from "./data/canon/moveResolution";
-import { ArchiveView } from "./components/ArchiveView";
-import { ExportRunButton } from "./components/ExportRunButton";
-import { ModeSelect } from "./components/ModeSelect";
-import { RealityMeters } from "./components/RealityMeters";
-import { resolveBoardTurn, normalizeBoardTurnState, possibleLandingSpaces, nestedSimulationProgress } from "./engine/boardTurnEngine";
-import { createRunState } from "./engine/runState";
-import type { AgentData, BoardLanding, LayerCard, Mode, RulesData, RunState, SeedKey, SetupSelection, StorySpace } from "./engine/types";
+import { characterConfig, characterConfigs, gameModes, modeConfig } from "./data/gameConfig";
+import { boardSpaces, liveBoard, realityLayerLabels } from "./data/liveBoard";
+import { advanceWithRoll, collectArtifact, createRippleGame, ignoreArtifact } from "./engine/rippleGame";
+import type { ArtifactState, GameModeId, RippleGameState } from "./engine/gameTypes";
+import type { LayerCard } from "./engine/types";
 
-const agents = agentsJson as AgentData[];
+const savedRunKey = "ripple-canonical-run-v1";
 const layerCards = layerCardsJson as LayerCard[];
-const rules = rulesJson as RulesData;
-const storySpaces = buildStorySpaces();
-const savedRunKey = "ripple-living-board-run-v0.9";
+type View = "board" | "inventory" | "reference";
 
-type SecondaryView = "board" | "archive" | "glossary" | "meters" | "society" | "experimental";
-
-const initialSeeds = agents.reduce<Record<string, SeedKey>>((acc, agent) => {
-  acc[agent.id] = "A";
-  return acc;
-}, {});
-
-function loadSavedRun(): RunState | null {
+function loadRun(): RippleGameState | null {
   try {
-    const saved = window.localStorage.getItem(savedRunKey);
-    if (!saved) return null;
-    const parsed = JSON.parse(saved) as RunState;
-    return parsed?.mode && Array.isArray(parsed.events) ? parsed : null;
+    const parsed = JSON.parse(window.localStorage.getItem(savedRunKey) ?? "null") as RippleGameState | null;
+    return parsed?.version === 1 && characterConfigs.some((character) => character.id === parsed.characterId) ? parsed : null;
   } catch {
     return null;
   }
 }
 
-function spaceByLanding(landing?: BoardLanding): StorySpace | undefined {
-  if (!landing) return undefined;
-  return storySpaces.find((space) => space.id === landing.spaceId);
-}
-
 export default function App() {
-  const [selectedMode, setSelectedMode] = useState<Mode>("vague");
-  const [selectedSeeds, setSelectedSeeds] = useState<Record<string, SeedKey>>(initialSeeds);
-  const [runState, setRunState] = useState<RunState | null>(() => loadSavedRun());
-  const [activeView, setActiveView] = useState<SecondaryView>("board");
-  const [selectedArchiveDocumentId, setSelectedArchiveDocumentId] = useState(archiveDocuments[0]?.id ?? "");
+  const [selectedMode, setSelectedMode] = useState<GameModeId>("vague");
+  const [selectedCharacter, setSelectedCharacter] = useState(characterConfigs[0].id);
+  const [game, setGame] = useState<RippleGameState | null>(() => loadRun());
+  const [view, setView] = useState<View>("board");
 
   useEffect(() => {
-    if (runState) window.localStorage.setItem(savedRunKey, JSON.stringify(runState));
-  }, [runState]);
+    if (game) window.localStorage.setItem(savedRunKey, JSON.stringify(game));
+  }, [game]);
 
-  const boardTurn = runState ? normalizeBoardTurnState(runState) : undefined;
-  const currentAgent = runState && boardTurn ? runState.agents[boardTurn.currentAgentIndex] ?? runState.agents[0] : undefined;
-  const lastLanding = boardTurn?.landings.slice(-1)[0];
-  const lastSpace = spaceByLanding(lastLanding);
-  const selectedArchiveDocument = archiveDocumentById(selectedArchiveDocumentId) ?? archiveDocuments[0];
-  const progress = runState ? nestedSimulationProgress(runState) : undefined;
-
-  function updateSeed(agentId: string, seed: SeedKey) {
-    setSelectedSeeds((current) => ({ ...current, [agentId]: seed }));
-  }
-
-  function startRun(selection: SetupSelection) {
-    setRunState(createRunState(agents, selection));
-    setActiveView("board");
-  }
-
-  function resetRun() {
+  function reset() {
     window.localStorage.removeItem(savedRunKey);
-    setRunState(null);
-    setActiveView("board");
+    setGame(null);
+    setView("board");
   }
 
-  function rollTurn() {
-    setRunState((current) => (current ? resolveBoardTurn(current, storySpaces, rules) : current));
-    setActiveView("board");
-  }
-
-  function readSource(sourceFile?: string) {
-    const document = archiveDocumentBySourceFile(sourceFile);
-    if (!document) return;
-    setSelectedArchiveDocumentId(document.id);
-    setActiveView("archive");
-  }
-
-  if (!runState) {
+  if (!game) {
     return (
-      <main className="app">
-        <ModeSelect
-          agents={agents}
-          selectedMode={selectedMode}
-          selectedSeeds={selectedSeeds}
-          onModeChange={setSelectedMode}
-          onSeedChange={updateSeed}
-          onStart={startRun}
-        />
+      <main className="app canonical-app">
+        <section className="canonical-setup">
+          <div className="setup-copy">
+            <p className="eyebrow">Ripple / New Canon</p>
+            <h1>Enter the living board.</h1>
+            <p>Choose a mode, choose one character, then cross the board through riddles, artifacts, and consequences.</p>
+            <p className="setup-disclaimer">
+              Fictional and symbolic. The glass offers story material—not diagnosis, prophecy, proof, or instruction.
+            </p>
+          </div>
+
+          <section className="setup-step">
+            <p className="step-number">01 / Select mode</p>
+            <div className="mode-grid">
+              {gameModes.map((mode) => (
+                <button
+                  className={`mode-card ${selectedMode === mode.id ? "selected" : ""}`}
+                  key={mode.id}
+                  onClick={() => setSelectedMode(mode.id)}
+                  type="button"
+                >
+                  <strong>{mode.name}</strong>
+                  <span>{mode.summary}</span>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          <section className="setup-step">
+            <p className="step-number">02 / Select one character</p>
+            <div className="character-select-grid">
+              {characterConfigs.map((character) => (
+                <button
+                  className={`character-select-card ${selectedCharacter === character.id ? "selected" : ""}`}
+                  key={character.id}
+                  onClick={() => setSelectedCharacter(character.id)}
+                  type="button"
+                >
+                  <span>{character.role}</span>
+                  <strong>{character.name}</strong>
+                  <small>{character.question}</small>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          <button
+            className="primary-action begin-run"
+            onClick={() => setGame(createRippleGame({ modeId: selectedMode, characterId: selectedCharacter }))}
+            type="button"
+          >
+            Begin as {characterConfig(selectedCharacter).name}
+          </button>
+        </section>
       </main>
     );
   }
 
+  const character = characterConfig(game.characterId);
+  const mode = modeConfig(game.modeId);
+  const currentSpace = boardSpaces[game.position];
+
   return (
-    <main className="app living-board-app">
-      <header className="board-topbar">
+    <main className="app canonical-app">
+      <header className="canonical-topbar">
         <div>
-          <p className="eyebrow">Ripple Living Board</p>
-          <h1>Roll. Move. Reveal. Remember.</h1>
-          <p className="safety-line">
-            Fictional, symbolic board game. Not proof of simulation, not diagnosis, not command, not replacement care.
-          </p>
+          <p className="eyebrow">Ripple / {mode.name}</p>
+          <h1>{character.name}'s run</h1>
+          <p>{character.role} · {character.question}</p>
         </div>
         <div className="topbar-actions">
-          <ExportRunButton state={runState} onExport={() => setRunState((current) => (current ? { ...current, exportedRun: true } : current))} />
-          <button className="ghost-action" onClick={resetRun} type="button">
-            New Run
-          </button>
+          <button className="ghost-action" onClick={reset} type="button">New run</button>
         </div>
       </header>
 
-      <nav className="secondary-nav" aria-label="Ripple views">
-        {(["board", "archive", "glossary", "meters", "society"] as SecondaryView[]).map((view) => (
-          <button className={activeView === view ? "selected" : ""} key={view} onClick={() => setActiveView(view)} type="button">
-            {view}
+      <nav className="secondary-nav" aria-label="Game views">
+        {(["board", "inventory"] as View[]).map((item) => (
+          <button className={view === item ? "selected" : ""} key={item} onClick={() => setView(item)} type="button">
+            {item}
           </button>
         ))}
-        {runState.mode === "experimental" && (
-          <button className={activeView === "experimental" ? "selected" : ""} onClick={() => setActiveView("experimental")} type="button">
-            experimental
+        {mode.referenceAccess !== "hidden" && (
+          <button className={view === "reference" ? "selected" : ""} onClick={() => setView("reference")} type="button">
+            optional reference
           </button>
         )}
       </nav>
 
-      {activeView === "board" && boardTurn && currentAgent && (
-        <section className={`board-main mode-${runState.mode}`}>
-          <div className="board-status-strip">
-            <span>Mode: {runState.mode}</span>
-            <span>Round: {boardTurn.currentRound}</span>
-            <span>Turn: {runState.turn}</span>
-            <span>Current: {currentAgent.name}</span>
-          </div>
+      {view === "board" && game.phase !== "complete" && (
+        <section className="canonical-board-layout">
+          <BoardTrack game={game} />
+          <aside className="glass-console">
+            <section className="center-glass-v1" aria-live="polite">
+              <p className="eyebrow">Center Glass</p>
+              <div className="glass-symbol">{currentSpace.symbol}</div>
+              <h2>{game.pendingChoice?.glassPrompt.output ?? "The glass is waiting."}</h2>
+              <p className="glass-space-name">
+                {currentSpace.name}
+                {mode.revealsLayer ? ` · ${realityLayerLabels[currentSpace.realityLayer]}` : ""}
+              </p>
+            </section>
 
-          <LivingBoard state={runState} spaces={storySpaces} onReadSource={readSource} />
+            <DiceConsole game={game} onRoll={() => setGame((state) => state ? advanceWithRoll(state) : state)} />
 
-          <aside className="turn-console">
-            <CurrentTurnCard currentAgentName={currentAgent.name} round={boardTurn.currentRound} />
-            <DicePanel landing={lastLanding} />
-            <button className="primary-action roll-action" onClick={rollTurn} type="button">
-              {lastLanding ? `Next Turn: Roll for ${currentAgent.name}` : `Roll for ${currentAgent.name}`}
-            </button>
-            <RevealCard landing={lastLanding} mode={runState.mode} space={lastSpace} onReadSource={readSource} />
-            {progress && <NestedGoal progressRemaining={progress.remaining} unlocked={progress.unlocked} />}
+            {game.pendingChoice && (
+              <section className="artifact-choice">
+                <p className="eyebrow">Artifact offered</p>
+                <h3>{game.pendingChoice.artifact.artifactName}</h3>
+                <p>Collect it, or ignore it and move back one space to receive that space's consequence.</p>
+                <div className="choice-actions">
+                  <button className="primary-action" onClick={() => setGame(collectArtifact(game))} type="button">Collect</button>
+                  <button className="secondary-action" onClick={() => setGame(ignoreArtifact(game))} type="button">Ignore</button>
+                </div>
+              </section>
+            )}
+
+            {game.modeId === "experimental" && game.pendingChoice && (
+              <details className="prompt-inspector">
+                <summary>Inspect glass prompt</summary>
+                <pre>{game.pendingChoice.glassPrompt.user}</pre>
+                <ul>{game.pendingChoice.glassPrompt.constraints.map((rule) => <li key={rule}>{rule}</li>)}</ul>
+              </details>
+            )}
           </aside>
         </section>
       )}
 
-      {activeView === "archive" && selectedArchiveDocument && (
-        <ArchiveView
-          agents={agents}
-          documents={archiveDocuments}
-          layerCards={layerCards}
-          onNext={() => setSelectedArchiveDocumentId(nextArchiveDocument(selectedArchiveDocument.id, 1).id)}
-          onPrevious={() => setSelectedArchiveDocumentId(nextArchiveDocument(selectedArchiveDocument.id, -1).id)}
-          onReturnToRoom={() => setActiveView("board")}
-          onSelectDocument={setSelectedArchiveDocumentId}
-          selectedDocument={selectedArchiveDocument}
-          storyBoulders={[]}
-        />
+      {view === "board" && game.phase === "complete" && game.finalStory && (
+        <EndingStory game={game} />
       )}
 
-      {activeView === "glossary" && <GlossaryView />}
-      {activeView === "meters" && <MetersView state={runState} />}
-      {activeView === "society" && boardTurn && <SocietyView roomState={boardTurn.roomState} societyState={boardTurn.societyState} />}
-      {activeView === "experimental" && <ExperimentalView state={runState} spaces={storySpaces} onReadSource={readSource} />}
+      {view === "inventory" && <InventoryView game={game} />}
+      {view === "reference" && mode.referenceAccess !== "hidden" && <ReferenceView expanded={mode.referenceAccess === "expanded"} />}
     </main>
   );
 }
 
-function LivingBoard({ onReadSource, spaces, state }: { onReadSource: (sourceFile?: string) => void; spaces: StorySpace[]; state: RunState }) {
-  const boardTurn = normalizeBoardTurnState(state);
-  const currentAgentId = boardTurn.currentAgentId;
-  const visibleStart = Math.max(0, (boardTurn.boardPositions[currentAgentId] ?? 0) - 12);
-  const visibleSpaces = spaces.slice(visibleStart, visibleStart + 36);
-
+function BoardTrack({ game }: { game: RippleGameState }) {
   return (
-    <section className="board-table" aria-label="Living board">
-      <div className="outer-track" aria-label="Character path spaces">
-        {visibleSpaces.map((space, localIndex) => {
-          const absoluteIndex = visibleStart + localIndex;
-          const agentsHere = state.agents.filter((agent) => boardTurn.boardPositions[agent.id] === absoluteIndex);
-          const landed = boardTurn.lastLandingSpaceId === space.id;
-          const hidden = state.mode === "mystery" && !landed;
-
-          return (
-            <button
-              className={`board-space-tile ${landed ? "landed" : ""}`}
-              key={space.id}
-              onClick={() => onReadSource(space.sourceFile)}
-              type="button"
-            >
-              <span>{absoluteIndex + 1}</span>
-              <strong>{hidden ? "Hidden Space" : space.title}</strong>
-              <small>{state.mode === "experimental" ? `${space.alternateTitle} / ${space.spaceIndex}` : space.mirrorsChapter}</small>
-              <div className="token-row">
-                {agentsHere.map((agent) => (
-                  <i className={agent.id === currentAgentId ? "current" : ""} key={agent.id}>
-                    {agent.name.slice(0, 1)}
-                  </i>
-                ))}
-              </div>
-            </button>
-          );
-        })}
+    <section className="canonical-board" aria-label="Ripple board">
+      <div className="board-dataset-line">
+        <span>Board {liveBoard.revision}</span>
+        <span>{game.position + 1} / {boardSpaces.length}</span>
       </div>
-
-      <div className="center-glass">
-        <p className="eyebrow">Center Glass</p>
-        <h2>{boardTurn.landings.slice(-1)[0]?.spaceTitle ?? "The glass is waiting."}</h2>
-        {boardTurn.landings.slice(-1)[0] ? (
-          <>
-            <p>{boardTurn.landings.slice(-1)[0]?.sceneConsequence ?? boardTurn.landings.slice(-1)[0]?.resultText}</p>
-            <p className="quiet-line">{boardTurn.landings.slice(-1)[0]?.resultText}</p>
-          </>
-        ) : (
-          <p>Roll the dice. The board will render the next reality.</p>
-        )}
-      </div>
-
-      <div className="character-paths" aria-label="Character paths">
-        {state.agents.map((agent) => {
-          const path = boardTurn.characterPaths[agent.id];
-          const canon = canonCharacters.find((entry) => entry.id === agent.id);
-
+      <div className="canonical-space-grid">
+        {boardSpaces.map((space, index) => {
+          const current = index === game.position;
+          const passed = index < game.position;
           return (
-            <article className={agent.id === currentAgentId ? "current" : ""} key={agent.id}>
-              <strong>{agent.name}</strong>
-              <span>{canon?.pathName}</span>
-              <small>{path?.currentBranch ?? canon?.startingBranch}</small>
+            <article className={`canonical-space ${current ? "current" : ""} ${passed ? "passed" : ""}`} key={space.id}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <i>{space.symbol}</i>
+              <strong>{game.modeId === "mystery" && !current && !passed ? "Unrevealed" : space.name}</strong>
+              {game.modeId === "experimental" && <small>{realityLayerLabels[space.realityLayer]}</small>}
+              {current && <b aria-label={`${characterConfig(game.characterId).name} is here`}>{characterConfig(game.characterId).name.slice(0, 1)}</b>}
             </article>
           );
         })}
-        <article className={`kaegan-state ${boardTurn.branchState.kaeganAvailability.status}`}>
-          <strong>Kaegan</strong>
-          <span>{boardTurn.branchState.kaeganAvailability.label}</span>
-          <small>{boardTurn.branchState.kaeganAvailability.reason}</small>
-        </article>
       </div>
     </section>
   );
 }
 
-function CurrentTurnCard({ currentAgentName, round }: { currentAgentName: string; round: number }) {
+function DiceConsole({ game, onRoll }: { game: RippleGameState; onRoll: () => void }) {
+  const roll = game.lastRoll;
   return (
-    <section className="console-card">
-      <p className="eyebrow">Current Turn</p>
-      <h2>{currentAgentName}</h2>
-      <p>Round {round}. Roll movement, render reality, check artifact, reveal the landing.</p>
-    </section>
-  );
-}
-
-function DicePanel({ landing }: { landing?: BoardLanding }) {
-  return (
-    <section className="console-card dice-panel">
-      <p className="eyebrow">Four Dice</p>
-      <div className="dice-grid">
-        <Die label="Move 1" value={landing?.dice.dieA} />
-        <Die label="Move 2" value={landing?.dice.dieB} />
-        <Die label="Reality" value={landing?.dice.realityDie} detail={landing?.dice.realityOutcome} />
-        <Die label="Artifact" value={landing?.dice.artifactDie} detail={landing?.artifactName} />
+    <section className="dice-console-v1">
+      <div>
+        <p className="eyebrow">Three dice</p>
+        <div className="dice-row-v1">
+          <Die label="Move" value={roll?.movement[0]} />
+          <Die label="Move" value={roll?.movement[1]} />
+          <Die label="Ripple" value={roll?.ripple} />
+        </div>
       </div>
-      <p>{landing ? `Movement: ${landing.movementText}` : diceRuleSummary.join(" ")}</p>
+      {roll && <p>{roll.total} spaces · {roll.influence}{roll.doubles ? " · doubles: extra turn earned" : ""}</p>}
+      <button className="primary-action" disabled={game.phase !== "playing"} onClick={onRoll} type="button">
+        {game.extraTurnPending ? "Take extra turn" : game.turn === 0 ? "Roll three dice" : "Roll again"}
+      </button>
     </section>
   );
 }
 
-function Die({ detail, label, value }: { detail?: string; label: string; value?: number }) {
-  return (
-    <div className="die-face">
-      <span>{label}</span>
-      <strong>{value ?? "-"}</strong>
-      {detail && <small>{detail}</small>}
-    </div>
-  );
+function Die({ label, value }: { label: string; value?: number }) {
+  return <div className="die-v1"><span>{label}</span><strong>{value ?? "–"}</strong></div>;
 }
 
-function RevealCard({
-  landing,
-  mode,
-  onReadSource,
-  space,
-}: {
-  landing?: BoardLanding;
-  mode: Mode;
-  onReadSource: (sourceFile?: string) => void;
-  space?: StorySpace;
-}) {
-  if (!landing) {
-    return (
-      <section className="console-card reveal-card empty">
-        <p className="eyebrow">Landing Reveal</p>
-        <h2>Roll to reveal the first space.</h2>
-        <p>The same board space can become an intervention, ripple, or missed intervention depending on the reality die.</p>
-      </section>
-    );
-  }
+const inventoryLabels: Record<ArtifactState, string> = {
+  missed: "Missed while moving",
+  collected: "Collected",
+  ignored: "Ignored",
+  forced: "Forced consequences",
+};
 
-  const revealSections = revealSectionsForMode(mode, landing);
-  const sourceLinks = landing.sourceReadLinks?.length
-    ? landing.sourceReadLinks
-    : [
-        { label: "Read Source", sourceFile: landing.sourceFile },
-        ...(space?.sourceLinks?.[1] ? [{ label: "Read Chapter", sourceFile: space.sourceLinks[1] }] : []),
-      ];
-
+function InventoryView({ game }: { game: RippleGameState }) {
   return (
-    <section className="console-card reveal-card">
-      <p className="eyebrow">Landing Reveal</p>
-      <h2>{landing.agentName} lands on {landing.spaceTitle}</h2>
-      {landing.activeBranchTitle && (
-        <div className="branch-badge-row">
-          <span>{landing.activeBranchTitle}</span>
-          <span>{landing.revealedOutcome}</span>
-          {landing.kaeganAvailability && <span>{landing.kaeganAvailability.label}</span>}
-        </div>
-      )}
-      <dl>
-        {revealSections.map((section) => (
-          <div key={section.label}>
-            <dt>{section.label}</dt>
-            <dd>{section.value}</dd>
-          </div>
-        ))}
-      </dl>
-      {landing.characterStateChanges && landing.characterStateChanges.length > 0 && (
-        <div className="state-chip-row" aria-label="Character state changes">
-          {landing.characterStateChanges.slice(0, 5).map((change) => (
-            <span key={change}>{change}</span>
-          ))}
-        </div>
-      )}
-      <div className="reveal-actions">
-        {sourceLinks.slice(0, 4).map((link, index) => (
-          <button
-            className={`${index === 0 ? "secondary-action" : "ghost-action"} compact-action`}
-            key={`${link.label}-${link.sourceFile}`}
-            onClick={() => onReadSource(link.sourceFile)}
-            type="button"
-          >
-            {link.label}
-          </button>
+    <section className="secondary-view inventory-view-v1">
+      <div className="view-header"><p className="eyebrow">Run memory</p><h2>Artifact states</h2></div>
+      <div className="inventory-state-grid">
+        {(Object.keys(inventoryLabels) as ArtifactState[]).map((state) => (
+          <article className={`inventory-column state-${state}`} key={state}>
+            <h3>{inventoryLabels[state]} <span>{game.inventory[state].length}</span></h3>
+            {game.inventory[state].length === 0 && <p className="quiet-line">Nothing recorded.</p>}
+            {game.inventory[state].map((artifact) => (
+              <div className="artifact-record" key={artifact.id}>
+                <strong>{artifact.artifactName}</strong>
+                <span>{artifact.spaceName}</span>
+                <small>{artifact.glassFragment}</small>
+                {artifact.consequence && <p>{artifact.consequence}</p>}
+              </div>
+            ))}
+          </article>
         ))}
       </div>
     </section>
   );
 }
 
-function NestedGoal({ progressRemaining, unlocked }: { progressRemaining: string[]; unlocked: boolean }) {
-  return (
-    <section className="console-card nested-goal">
-      <p className="eyebrow">Locked Goal</p>
-      <h2>Create the room that creates the next room.</h2>
-      <p>{unlocked ? "Nested Simulation is ready to open." : `Locked: ${progressRemaining.slice(0, 3).join("; ")}`}</p>
-    </section>
-  );
-}
-
-function GlossaryView() {
+function ReferenceView({ expanded }: { expanded: boolean }) {
   return (
     <section className="secondary-view">
       <div className="view-header">
-        <p className="eyebrow">Glossary</p>
-        <h2>Plain Terms</h2>
+        <p className="eyebrow">Optional reference</p>
+        <h2>Glossary & reality layers</h2>
+        <p>You do not need this material to play. It supplies vocabulary and guardrails, not direct game events.</p>
       </div>
       <div className="glossary-grid">
         {layerCards.map((card) => (
           <article className="panel" key={card.id}>
             <h3>{card.name}</h3>
             <p>{card.plainLanguageMeaning}</p>
-            <small>{card.sourceFile}</small>
+            {expanded && <><p>{card.inspectorExplanation}</p><small>{card.sourceFile}</small></>}
           </article>
         ))}
       </div>
-      <BoundaryPanel />
     </section>
   );
 }
 
-function MetersView({ state }: { state: RunState }) {
+function EndingStory({ game }: { game: RippleGameState }) {
+  const story = game.finalStory;
+  if (!story) return null;
   return (
-    <section className="secondary-view">
-      <div className="view-header">
-        <p className="eyebrow">Diagnostics</p>
-        <h2>Meters</h2>
-      </div>
-      <RealityMeters history={state.meterHistory} onSelectMeter={() => undefined} />
+    <section className="ending-story">
+      <p className="eyebrow">The glass opens / A complete fiction</p>
+      <h2>{story.title}</h2>
+      <div className="story-prose">{story.story.split("\n\n").map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>
+      {game.modeId === "experimental" && (
+        <details className="prompt-inspector"><summary>Inspect final story prompt</summary><pre>{story.prompt.user}</pre></details>
+      )}
     </section>
-  );
-}
-
-function SocietyView({ roomState, societyState }: { roomState: string; societyState: string }) {
-  return (
-    <section className="secondary-view society-view">
-      <div className="view-header">
-        <p className="eyebrow">Society</p>
-        <h2>Shared Reality State</h2>
-      </div>
-      <article className="panel">
-        <h3>Room State</h3>
-        <p>{roomState}</p>
-      </article>
-      <article className="panel">
-        <h3>Society State</h3>
-        <p>{societyState}</p>
-      </article>
-    </section>
-  );
-}
-
-function ExperimentalView({
-  onReadSource,
-  spaces,
-  state,
-}: {
-  onReadSource: (sourceFile?: string) => void;
-  spaces: StorySpace[];
-  state: RunState;
-}) {
-  const previews = useMemo(() => possibleLandingSpaces(state, spaces), [spaces, state]);
-
-  return (
-    <section className="secondary-view experimental-view">
-      <div className="view-header">
-        <p className="eyebrow">Experimental</p>
-        <h2>Engine Room</h2>
-      </div>
-      <div className="experimental-grid">
-        <article className="panel">
-          <h3>Possible Landings</h3>
-          <div className="preview-list">
-            {previews.map((preview) => (
-              <button key={`${preview.rollTotal}-${preview.space.id}`} onClick={() => onReadSource(preview.space.sourceFile)} type="button">
-                <span>Roll {preview.rollTotal}</span>
-                <strong>{preview.label}</strong>
-                <small>{preview.detail}</small>
-              </button>
-            ))}
-          </div>
-        </article>
-        <article className="panel">
-          <h3>Artifact Logic</h3>
-          <ul className="compact-list">
-            {canonArtifacts.map((artifact) => (
-              <li key={artifact.id}>
-                <strong>{artifact.name}:</strong> {artifact.effectText}
-              </li>
-            ))}
-          </ul>
-        </article>
-        <article className="panel">
-          <h3>Alternate Route</h3>
-          <ul className="compact-list">
-            {canonAlternates.map((alternate) => (
-              <li key={alternate.id}>
-                {alternate.order}. {alternate.title} / {alternate.mirrorsChapter}
-              </li>
-            ))}
-          </ul>
-        </article>
-        <article className="panel">
-          <h3>Branch Causality</h3>
-          <ul className="compact-list">
-            {chapterBranches.map((branch) => (
-              <li key={branch.id}>
-                <strong>{branch.title}:</strong> {branch.unlockedMechanics.join(", ") || "canon branch"}.
-              </li>
-            ))}
-          </ul>
-        </article>
-        <article className="panel">
-          <h3>Kaegan State</h3>
-          <p>{state.boardTurn.branchState.kaeganAvailability.label}</p>
-          <p>{state.boardTurn.branchState.kaeganAvailability.reason}</p>
-          <p>{state.boardTurn.branchState.kaeganAvailability.rule}</p>
-        </article>
-      </div>
-    </section>
-  );
-}
-
-function BoundaryPanel() {
-  return (
-    <article className="panel boundary-panel">
-      <h3>Boundary</h3>
-      <p>
-        Ripple is fictional and symbolic. It is not proof that fiction is secretly real, not a diagnosis tool, not a command
-        system, and not a replacement for treatment, community, rest, food, medication, therapy, sleep, sobriety, or
-        emergency help.
-      </p>
-    </article>
   );
 }

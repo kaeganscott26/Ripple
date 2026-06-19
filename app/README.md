@@ -1,85 +1,46 @@
-# Ripple: The Living Board
+# Ripple: Canonical Board Loop
 
-Ripple v0.8.1 is the Living Board refactor. It keeps the v0.8 archive, Story Weight, layer card, meter, inspector, Society View, and Markdown export systems, but reorganizes play around a turn-based board loop.
+Ripple is a local, fictional symbolic board game. The current game selects one of five characters, rolls three dice, moves across a finite board, and asks the player to collect or ignore a short artifact offered by the center glass.
 
-Ripple is local, offline once served or bundled, deterministic, and source-backed. It is not an AI system, backend service, Cloudflare deployment, R2 storage layer, source ingestion pipeline, diagnosis tool, or proof system.
+## Game loop
 
-## v0.8.1 Board Loop
+1. Select Mystery, Vague, or Experimental / Master mode.
+2. Select Mara, Jamal, Maren, Dev, or Teodor / Scott.
+3. Roll three dice. The first two move; the third influences the glass output. Doubles earn an extra turn.
+4. Crossed spaces enter the missed ledger. The landing offers one artifact.
+5. Collect the artifact, or ignore it and move back one space to receive that space's forced artifact and consequence.
+6. Reach the final space and collect its offer to generate a complete fictional story from the run.
 
-1. Choose Mystery, Vague, or Experimental mode.
-2. The current character takes a turn.
-3. Roll 2d6.
-4. Move the character piece around the 12-space Room Board.
-5. Land on a Story Space built from the INTERVENTION archive.
-6. Read the landing reveal, source, plain meaning, character reading, meter changes, and room response.
-7. Move to the next character.
-8. After every character acts, read the round summary and Society View.
-9. Keep playing until the room forms enough memory, source trace, and law to approach Nested Simulation.
-10. Export the run as a Markdown artifact.
+Missed, collected, ignored, and forced artifacts are separate state collections.
 
-## Dice And Turn Order
+## Source boundary
 
-- Dice use 2d6, stored as individual dice plus total.
-- Each active character gets one board turn per round: Mara, Jamal, Maren, Dev, and Teodor / Scott.
-- Board positions are tracked per character.
-- The first board is a readable 12-space loop using curated v0.8 Story Weights plus a locked Nested Simulation Gate.
+The playable board does not load INTERVENTION chapters or use chapter scenes as game events. Existing archive, story-reference, artifact, glossary, and component files remain in the repository. The new board uses source vocabulary, reality-layer concepts, and safety boundaries only. Optional glossary material is available outside Mystery mode and expands in Experimental / Master mode.
 
-## Mode Behavior
+## AI glass
 
-- Mystery: possible spaces stay hidden before the roll. The board reveals meaning after landing.
-- Vague: possible spaces show names and short meanings. This is the default public feel.
-- Experimental: possible landings are inspectable before rolling, including source, layer pull, trigger pattern, likely effects, and related Story Weights.
+`src/engine/aiGlass.ts` builds constrained prompt envelopes for in-turn Ripple Riddles and the ending story. In-turn outputs must be one fragment of two to eight words. Ending prompts require a full fiction rather than a mechanics recap. The checked-in build uses a deterministic local output so the board remains playable without a service; the prompt envelope is the integration seam for a model provider.
 
-## Archive View
+## Data and state
 
-Archive View remains the source layer. It still includes the document list, reader, Read Source behavior, related Story Weights, related Layer Cards, related characters, and return-to-board flow. Story Spaces and landing reveals link back to source documents through the Inspector and Read Source path.
+- `src/data/liveBoard.ts`: versioned, revisioned board dataset with stable remote keys for optional live updates.
+- `src/data/gameConfig.ts`: mode and five-character configurations.
+- `src/engine/gameTypes.ts`: canonical data contracts.
+- `src/engine/rippleGame.ts`: dice, movement, choice, rollback, ledgers, and completion.
+- `src/engine/aiGlass.ts`: riddle and final-story prompt contracts plus local outputs.
 
-## Manual Story Weight Mode
+Runs persist in browser `localStorage` under `ripple-canonical-run-v1`.
 
-The v0.8 manual Story Weight loop remains available as a secondary/experimental tool. It is useful for direct archive play, testing a specific Story Weight against a target character, and inspecting source-linked behavior without waiting for dice.
-
-## Nested Simulation Goal
-
-Nested Simulation is still locked, but now has visible progress:
-
-- complete rounds
-- land characters on Story Spaces
-- form laws
-- use source documents
-- export a run log
-- generate a Simulation Seed
-
-The direction is: create the room that creates the next room.
-
-## Language And Inspection
-
-Player-facing copy now favors plain language first and Ripple terms second. Board turns use Story Space language. The legacy Name the Boulder action can still use naming language.
-
-The Active Inspection Summary is compact and collapsible. It defaults collapsed in Archive View so it does not dominate the reader.
-
-## Local Use
+## Local use
 
 ```bash
 npm install
 npm run dev
 ```
 
-## Build
+Validate with:
 
 ```bash
+npm run test:run
 npm run build
 ```
-
-## Test
-
-```bash
-CI=1 npm run test
-npm run test:run
-```
-
-## Current Limits
-
-- Nested Simulation progress exists, but full nested simulation mechanics are not built yet.
-- Real-world evidence cards are intentionally not added yet.
-- Source ingestion remains curated static app data for this pass.
-- Runs persist in browser localStorage, not a backend.
