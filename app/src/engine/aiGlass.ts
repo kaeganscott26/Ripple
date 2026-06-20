@@ -8,7 +8,7 @@ import type {
   GlassPrompt,
   RippleLens,
   RippleGameState,
-  ThreeDiceRoll,
+  DiceRoll,
 } from "./gameTypes";
 
 const rippleLenses: Record<number, RippleLens> = {
@@ -40,11 +40,11 @@ function hashText(value: string): number {
 export function buildRippleRiddlePrompt(
   state: Pick<RippleGameState, "characterId" | "modeId" | "turn">,
   space: BoardSpaceConfig,
-  roll: ThreeDiceRoll,
+  roll: DiceRoll,
 ): GlassPrompt {
   const character = characterConfig(state.characterId);
   const mode = modeConfig(state.modeId);
-  const seedKey = `${character.id}:${mode.id}:${space.id}:${roll.movement.join("-")}:${roll.ripple}:${state.turn}`;
+  const seedKey = `${character.id}:${mode.id}:${space.id}:${roll.movementDie}:${roll.rippleDie}:${state.turn}`;
   const output = space.glassSeeds[hashText(seedKey) % space.glassSeeds.length];
 
   return {
@@ -54,8 +54,9 @@ export function buildRippleRiddlePrompt(
       `Character: ${character.name} (${character.lens}; asks: ${character.question})`,
       `Mode tone: ${mode.glassTone}`,
       `Space: ${space.name}; symbol: ${space.symbol}; vocabulary: ${space.artifactVocabulary.join(", ")}`,
-      `Movement: ${roll.movement[0]} + ${roll.movement[1]} = ${roll.total}`,
-      `Ripple Die: ${roll.ripple} — ${roll.lens}`,
+      `Movement Die: ${roll.movementDie}`,
+      `Ripple Die: ${roll.rippleDie} — ${roll.lens}`,
+      `Move: ${roll.total} spaces`,
       `Lens effect: ${rippleLensExplanations[roll.lens]}`,
       `Reality layer: ${realityLayerLabels[space.realityLayer]}`,
     ].join("\n"),
@@ -156,16 +157,33 @@ function buildTeodorScottFinalStory(state: RippleGameState): FinalStoryResult {
   const mode = modeConfig(state.modeId);
   const collected = names(state.inventory.collected, "Adoption Paper");
   const ignored = names(state.inventory.ignored, "an unanswered room");
-  const forced = names(state.inventory.forced, "the chair that would not stay empty");
-  const missed = names(state.inventory.missed, "a call heard too late");
-  const branchFuel = state.boardRun.resolved_branch_pairs
-    .slice(0, 4)
-    .flatMap((pair) => pair.dominantSpaces.slice(0, pair.kind === "contradiction" ? 2 : 1).map((number) => {
-      const space = authored.spaces[number - 1];
-      const source = pair.kind === "pressure" ? space?.ignoreMeaning : space?.storySeed;
-      return source?.split(/(?<=[.!?])\s+/)[0] ?? "";
-    }))
-    .filter(Boolean);
+  const artifactNumber = (record: ArtifactRecord) => board.spaces.findIndex((space) => space.id === record.spaceId) + 1;
+  const stateWeight: Record<ArtifactRecord["state"], number> = { collected: 4, forced: 3, ignored: 2, missed: 1 };
+  const strongestArtifacts = [...state.inventory.collected, ...state.inventory.forced, ...state.inventory.ignored, ...state.inventory.missed]
+    .sort((left, right) => {
+      const score = (record: ArtifactRecord) => {
+        const number = artifactNumber(record);
+        return stateWeight[record.state]
+          + (state.boardRun.amplified_spaces.includes(number) ? 6 : 0)
+          + (authored.fixedAnchors.includes(number) ? 5 : 0);
+      };
+      return score(right) - score(left) || left.turn - right.turn;
+    })
+    .filter((record, index, records) => records.findIndex((candidate) => candidate.artifactName === record.artifactName) === index)
+    .slice(0, 4);
+  const sceneMaterial = strongestArtifacts.map((record) => {
+    const artifact = record.artifactName.toLowerCase();
+    if (record.state === "collected") {
+      return `At ${record.spaceName}, he set the ${artifact} where everyone in the room could see it, then stayed long enough for the conversation it opened.`;
+    }
+    if (record.state === "ignored") {
+      return `The ${artifact} remained at ${record.spaceName}; by evening, his silence around it had become pressure other people had to carry.`;
+    }
+    if (record.state === "forced") {
+      return `At ${record.spaceName}, the ${artifact} blocked the doorway, unavoidable and ordinary, until he named what it required of him.`;
+    }
+    return `The missing ${artifact} left ${record.spaceName} oddly bare, an absence that followed him as a faint sound in the next room.`;
+  });
   const contradiction = state.boardRun.resolved_branch_pairs.some((pair) => pair.kind === "contradiction");
   const accountability = state.boardRun.final_response.includes("accountability");
   const dominantLens = dominantLensFor(state);
@@ -174,7 +192,7 @@ function buildTeodorScottFinalStory(state: RippleGameState): FinalStoryResult {
   const story = [
     `The ${collected[0].toLowerCase()} waited on the kitchen table beneath a water ring. Teodor had been adopted before he could name the first door, and Scott was the name his father later gave him. The new name made a roof, not an erasure. When he signed the note beside the artifact, both names remained visible in the wet ink.`,
     `His father had been funny, stubborn, practical, flawed—human before memory made him larger. At the piano, Scott found that music could hold a room steady without explaining it. After his father died, the empty chair kept its ordinary scratches and the office kept its smell. Grief did not make him wise. It changed the pressure in the house, and some of what he did under that pressure still belonged to him.`,
-    `The rooms refused a clean verdict. ${branchFuel.length > 0 ? branchFuel.join(" ") : "Warmth and distance occupied the same hallway."} ${contradiction ? "Two opposed memories stayed true without cancelling each other." : "One version spoke louder, but the quieter one did not disappear."} ${dominantLens ? lensFiction[dominantLens] : "The rooms kept their details without agreeing on a verdict."} What he had left alone returned wearing ${forced[0].toLowerCase()}; what he had passed without seeing sounded like ${missed[0].toLowerCase()} beyond the wall.`,
+    `The rooms refused a clean verdict. ${sceneMaterial.length > 0 ? sceneMaterial.join(" ") : "Warmth and distance occupied the same hallway."} ${contradiction ? "Two opposed memories stayed true without cancelling each other." : "One version spoke louder, but the quieter one did not disappear."} ${dominantLens ? lensFiction[dominantLens] : "The rooms kept their details without agreeing on a verdict."}`,
     `Kaegan called with plans and irritation of his own, a son with the right to answer, refuse, leave, and return. He mattered, but he was not assigned the work of saving his father. Scott carried that fact into the kitchen rush, where timing, broken stations, and one calm voice taught him how pressure moved through a room. AIFRED began as an audio tool, a practical comparison between a current sound and a target. INTERVENTION became the archive where loose pages could be arranged without being mistaken for healing. Ripple was only the name Scott gave the movement he noticed—not fate, not proof, and not a theory guaranteed to be right.`,
     accountability
       ? `At Last Glass, he chose accountability before monument. He put ${ignored[0].toLowerCase()} on the table and named the damage without asking the naming to count as repair. Then he made one specific promise small enough to be tested by another person. The glass offered this as a fictional variation, never a direct autobiography, and left him with the harder opening: what would this consequence build next?`
@@ -217,6 +235,8 @@ function buildTeodorScottFinalStory(state: RippleGameState): FinalStoryResult {
         "Keep the father and Kaegan human; neither is a symbol, cure, or automatic source of wisdom.",
         "Treat Ripple as accountable observation, never fate, prophecy, cosmic certainty, or automatic proof.",
         "Transform collected, ignored, missed, forced, and branch resolution data into concrete scenes.",
+        "Choose two to four of the strongest artifacts as concrete scene material; do not list raw storySeed fragments.",
+        "Turn ignored spaces into delayed pressure, forced spaces into unavoidable moments, and missed spaces into atmosphere, absence, or unresolved echo.",
         "Translate lens history into fiction: sensory recall, returning pressure, linked rooms, alternate possibilities, mercy, or amplified consequence. Never name the die or lens mechanic.",
       ],
       output: story,

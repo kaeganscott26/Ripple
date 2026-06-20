@@ -2,11 +2,11 @@ import { describe, expect, it } from "vitest";
 import { boardSpaces, liveBoard } from "../data/liveBoard";
 import { boardForCharacter, teodorScottBoard } from "../data/boards";
 import { buildRippleRiddlePrompt, influenceFor } from "./aiGlass";
-import { advanceWithRoll, collectArtifact, createRippleGame, ignoreArtifact, rollThreeDice } from "./rippleGame";
-import type { ThreeDiceRoll } from "./gameTypes";
+import { advanceWithRoll, collectArtifact, createRippleGame, ignoreArtifact, rollDice } from "./rippleGame";
+import type { DiceRoll } from "./gameTypes";
 
-function roll(a: number, b: number, ripple = 3): ThreeDiceRoll {
-  return { movement: [a, b], ripple, total: a + b, doubles: a === b, lens: influenceFor(ripple) };
+function roll(movementDie: number, rippleDie = 3): DiceRoll {
+  return { movementDie, rippleDie, total: movementDie, lens: influenceFor(rippleDie) };
 }
 
 describe("canonical Ripple loop", () => {
@@ -50,14 +50,12 @@ describe("canonical Ripple loop", () => {
     expect(JSON.stringify(boardSpaces)).not.toContain("INTERVENTION ARG/Chapter");
   });
 
-  it("rolls exactly three dice and identifies doubles", () => {
-    const values = [0.2, 0.2, 0.99];
-    const result = rollThreeDice(() => values.shift() ?? 0);
+  it("rolls exactly one Movement Die and one Ripple Die", () => {
+    const values = [0.2, 0.99];
+    const result = rollDice(() => values.shift() ?? 0);
 
-    expect(result.movement).toEqual([2, 2]);
-    expect(result.ripple).toBe(6);
-    expect(result.total).toBe(4);
-    expect(result.doubles).toBe(true);
+    expect(result).toEqual({ movementDie: 2, rippleDie: 6, total: 2, lens: "Ripple" });
+    expect(Object.keys(result)).toEqual(["movementDie", "rippleDie", "total", "lens"]);
     expect(result.lens).toBe("Ripple");
   });
 
@@ -65,38 +63,45 @@ describe("canonical Ripple loop", () => {
     expect([1, 2, 3, 4, 5, 6].map(influenceFor)).toEqual([
       "Memory", "Pressure", "Echo", "Fork", "Intervention", "Ripple",
     ]);
-    const low = rollThreeDice(() => 0);
-    const high = rollThreeDice(() => 0.999);
-    expect(low.ripple).toBe(1);
-    expect(high.ripple).toBe(6);
+    const low = rollDice(() => 0);
+    const high = rollDice(() => 0.999);
+    expect(low.movementDie).toBe(1);
+    expect(low.rippleDie).toBe(1);
+    expect(high.movementDie).toBe(6);
+    expect(high.rippleDie).toBe(6);
   });
 
-  it("moves with two dice, uses the third for the glass, and tracks crossed spaces as missed", () => {
+  it("moves with only the Movement Die and tracks crossed spaces as missed", () => {
     const initial = createRippleGame({ modeId: "experimental", characterId: "mara" });
-    const next = advanceWithRoll(initial, roll(2, 3, 3));
+    const next = advanceWithRoll(initial, roll(5, 3));
 
     expect(next.position).toBe(5);
     expect(next.phase).toBe("awaiting-choice");
     expect(next.inventory.missed).toHaveLength(4);
+    expect(next.pendingChoice?.glassPrompt.user).toContain("Movement Die: 5");
+    expect(next.pendingChoice?.glassPrompt.user).toContain("Move: 5 spaces");
     expect(next.pendingChoice?.glassPrompt.user).toContain("Ripple Die: 3 — Echo");
     expect(next.pendingChoice?.glassPrompt.user).toContain("Mara");
     expect(next.boardRun.ripple_lens_history).toEqual(["Echo"]);
   });
 
-  it("recomputes movement total and doubles from only the first two dice", () => {
+  it("recomputes total from the Movement Die and never lets the Ripple Die move the piece", () => {
     const initial = createRippleGame({ modeId: "vague", characterId: "mara" });
-    const supplied = { ...roll(2, 4, 6), total: 12, doubles: true };
-    const next = advanceWithRoll(initial, supplied);
+    const lowRipple = advanceWithRoll(initial, { ...roll(2, 1), total: 12 });
+    const highRipple = advanceWithRoll(initial, { ...roll(2, 6), total: 12 });
 
-    expect(next.position).toBe(6);
-    expect(next.lastRoll?.total).toBe(6);
-    expect(next.lastRoll?.doubles).toBe(false);
-    expect(next.lastRoll?.ripple).toBe(6);
+    expect(lowRipple.position).toBe(2);
+    expect(highRipple.position).toBe(2);
+    expect(lowRipple.lastRoll?.total).toBe(2);
+    expect(highRipple.lastRoll?.total).toBe(2);
+    expect("doubles" in (highRipple.lastRoll ?? {})).toBe(false);
+    expect("extraTurnPending" in highRipple).toBe(false);
+    expect("extraTurnsEarned" in highRipple).toBe(false);
   });
 
   it("keeps center-glass output within two to eight words", () => {
     const state = createRippleGame({ modeId: "mystery", characterId: "dev" });
-    const prompt = buildRippleRiddlePrompt(state, boardSpaces[3], roll(1, 2, 5));
+    const prompt = buildRippleRiddlePrompt(state, boardSpaces[3], roll(1, 5));
     const words = prompt.output.trim().split(/\s+/);
 
     expect(words.length).toBeGreaterThanOrEqual(2);
@@ -110,7 +115,6 @@ describe("canonical Ripple loop", () => {
     const ignored = ignoreArtifact(secondOffer);
 
     expect(first.inventory.collected).toHaveLength(1);
-    expect(first.extraTurnsEarned).toBe(1);
     expect(ignored.inventory.collected).toHaveLength(1);
     expect(ignored.inventory.ignored).toHaveLength(1);
     expect(ignored.inventory.forced).toHaveLength(1);
@@ -120,7 +124,7 @@ describe("canonical Ripple loop", () => {
 
   it("uses Intervention to ignore without moving back or forcing a space", () => {
     const initial = createRippleGame({ modeId: "vague", characterId: "jamal" });
-    const offer = advanceWithRoll(initial, roll(2, 3, 5));
+    const offer = advanceWithRoll(initial, roll(2, 5));
     const ignored = ignoreArtifact(offer);
 
     expect(ignored.position).toBe(offer.position);
@@ -131,11 +135,11 @@ describe("canonical Ripple loop", () => {
 
   it("uses Ripple to amplify the landed space", () => {
     const initial = createRippleGame({ modeId: "vague", characterId: "mara" });
-    const offer = advanceWithRoll(initial, roll(2, 3, 6));
+    const offer = advanceWithRoll(initial, roll(2, 6));
 
     expect(offer.boardRun.active_lens).toBe("Ripple");
-    expect(offer.boardRun.amplified_spaces).toEqual([6]);
-    expect(offer.boardRun.lens_effects[0]).toMatchObject({ lens: "Ripple", space: 6 });
+    expect(offer.boardRun.amplified_spaces).toEqual([3]);
+    expect(offer.boardRun.lens_effects[0]).toMatchObject({ lens: "Ripple", space: 3 });
   });
 
   it("creates a complete fiction at the board end rather than a mechanics recap", () => {
@@ -143,7 +147,7 @@ describe("canonical Ripple loop", () => {
       ...createRippleGame({ modeId: "experimental", characterId: "maren" }),
       position: boardSpaces.length - 3,
     };
-    const complete = collectArtifact(advanceWithRoll(nearEnd, roll(1, 2, 5)));
+    const complete = collectArtifact(advanceWithRoll(nearEnd, roll(3, 5)));
 
     expect(complete.phase).toBe("complete");
     expect(complete.finalStory?.story.split("\n\n")).toHaveLength(5);
@@ -165,7 +169,7 @@ describe("canonical Ripple loop", () => {
         spaces_missed: [6, 7, 71],
       },
     };
-    const atLastGlass = advanceWithRoll(nearEnd, roll(6, 6, 5));
+    const atLastGlass = advanceWithRoll(nearEnd, roll(6, 5));
 
     expect(atLastGlass.position).toBe(71);
     expect(atLastGlass.boardRun.last_glass_reached).toBe(true);
@@ -183,5 +187,25 @@ describe("canonical Ripple loop", () => {
     expect(complete.finalStory?.story).toContain("Teodor had been adopted");
     expect(complete.finalStory?.story).toContain("AIFRED began as an audio tool");
     expect(complete.finalStory?.story).not.toMatch(/because the player|dice|inventory/i);
+    expect(complete.inventory.collected.some((record) =>
+      Boolean(record.storySeed && complete.finalStory?.story.includes(record.storySeed)),
+    )).toBe(false);
+    expect(complete.finalStory?.prompt.constraints.join(" ")).toContain("do not list raw storySeed fragments");
+  });
+
+  it("takes 18–24 turns to cross Teodor / Scott with a representative 1–6 movement cycle", () => {
+    let game = collectArtifact(createRippleGame({ modeId: "vague", characterId: "teodor-scott" }));
+    let movementDie = 1;
+
+    while (game.phase !== "complete") {
+      game = advanceWithRoll(game, roll(movementDie, ((movementDie + 1) % 6) + 1));
+      game = collectArtifact(game);
+      movementDie = (movementDie % 6) + 1;
+    }
+
+    expect(game.turn).toBeGreaterThanOrEqual(18);
+    expect(game.turn).toBeLessThanOrEqual(24);
+    expect(game.position).toBe(71);
+    expect(game.boardRun.spaces_collected.length).toBeGreaterThanOrEqual(18);
   });
 });

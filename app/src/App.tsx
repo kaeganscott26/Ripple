@@ -8,14 +8,14 @@ import { rippleLensExplanations } from "./engine/aiGlass";
 import type { ArtifactState, GameModeId, LifeBoardSpace, RippleGameState, RippleLens } from "./engine/gameTypes";
 import type { LayerCard } from "./engine/types";
 
-const savedRunKey = "ripple-canonical-run-v3";
+const savedRunKey = "ripple-canonical-run-v4";
 const layerCards = layerCardsJson as LayerCard[];
 type View = "board" | "inventory" | "reference";
 
 function loadRun(): RippleGameState | null {
   try {
     const parsed = JSON.parse(window.localStorage.getItem(savedRunKey) ?? "null") as RippleGameState | null;
-    return parsed?.version === 3 && characterConfigs.some((character) => character.id === parsed.characterId) ? parsed : null;
+    return parsed?.version === 4 && characterConfigs.some((character) => character.id === parsed.characterId) ? parsed : null;
   } catch {
     return null;
   }
@@ -230,22 +230,22 @@ function DiceConsole({ game, onRoll }: { game: RippleGameState; onRoll: () => vo
   return (
     <section className="dice-console-v1">
       <div>
-        <p className="eyebrow">Three dice</p>
+        <p className="eyebrow">Two dice · two roles</p>
         <div className="dice-row-v1">
-          <Die label="Move" value={roll?.movement[0]} />
-          <Die label="Move" value={roll?.movement[1]} />
-          <Die label="Ripple" value={roll?.ripple} />
+          <Die label="Movement" value={roll?.movementDie} />
+          <Die label="Ripple" value={roll?.rippleDie} />
         </div>
       </div>
       {roll && (
         <div className="dice-result-v1">
-          <p><strong>Movement:</strong> {roll.movement[0]} + {roll.movement[1]} = {roll.total}</p>
-          <p><strong>Ripple Die:</strong> {roll.ripple} — {roll.lens}</p>
-          <p>{rippleLensExplanations[roll.lens]}{roll.doubles ? " Doubles: extra turn earned." : ""}</p>
+          <p><strong>Movement Die:</strong> {roll.movementDie}</p>
+          <p><strong>Ripple Die:</strong> {roll.rippleDie} — {roll.lens}</p>
+          <p><strong>Move:</strong> {roll.total} spaces</p>
+          <p>{rippleLensExplanations[roll.lens]}</p>
         </div>
       )}
       <button className="primary-action" disabled={game.phase !== "playing"} onClick={onRoll} type="button">
-        {game.extraTurnPending ? "Take extra turn" : game.turn === 0 ? "Roll three dice" : "Roll again"}
+        {game.turn === 0 ? "Roll two dice" : "Roll again"}
       </button>
     </section>
   );
@@ -345,7 +345,7 @@ function RunSummary({ game }: { game: RippleGameState }) {
         <p><strong>{run.spaces_forced.length}</strong><span>forced</span></p>
       </div>
       <p><strong>Dominant zones:</strong> {run.dominant_zones.join(", ") || "No dominant zone"}</p>
-      <p><strong>Ripple Die history:</strong> {run.dice_history.map((roll) => roll.ripple).join(", ") || "No rolls"}</p>
+      <p><strong>Ripple Die history:</strong> {run.dice_history.map((roll) => roll.rippleDie).join(", ") || "No rolls"}</p>
       <p><strong>Dominant lens:</strong> {dominantLens ?? "No dominant lens"}</p>
       <p><strong>Amplified spaces:</strong> {run.amplified_spaces.join(", ") || "none"}</p>
       <p><strong>Echo links:</strong> {run.echo_links.map((link) => `${link.fromSpace} → ${link.toSpace}`).join(", ") || "none"}</p>

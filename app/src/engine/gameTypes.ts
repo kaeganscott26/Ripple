@@ -101,11 +101,10 @@ export interface LiveBoardDataset {
   spaces: BoardSpaceConfig[];
 }
 
-export interface ThreeDiceRoll {
-  movement: [number, number];
-  ripple: number;
+export interface DiceRoll {
+  movementDie: number;
+  rippleDie: number;
   total: number;
-  doubles: boolean;
   lens: RippleLens;
 }
 
@@ -150,7 +149,7 @@ export interface TurnRecord {
   turn: number;
   from: number;
   to: number;
-  roll: ThreeDiceRoll;
+  roll: DiceRoll;
   spaceId: string;
   glassFragment: string;
   decision?: "collect" | "ignore";
@@ -194,7 +193,7 @@ export interface LifeBoardRunState {
   selected_character: string;
   current_position: number;
   turn_count: number;
-  dice_history: ThreeDiceRoll[];
+  dice_history: DiceRoll[];
   ripple_lens_history: RippleLens[];
   active_lens: RippleLens | null;
   lens_effects: RippleLensEffect[];
@@ -219,16 +218,14 @@ export interface LifeBoardRunState {
 }
 
 export interface RippleGameState {
-  version: 3;
+  version: 4;
   boardId: string;
   phase: GamePhase;
   modeId: GameModeId;
   characterId: string;
   position: number;
   turn: number;
-  extraTurnsEarned: number;
-  extraTurnPending: boolean;
-  lastRoll?: ThreeDiceRoll;
+  lastRoll?: DiceRoll;
   pendingChoice?: PendingChoice;
   inventory: Record<ArtifactState, ArtifactRecord[]>;
   turns: TurnRecord[];

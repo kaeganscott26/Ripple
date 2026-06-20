@@ -10,19 +10,17 @@ import type {
   RippleGameSetup,
   RippleGameState,
   RippleLensEffect,
-  ThreeDiceRoll,
+  DiceRoll,
 } from "./gameTypes";
 
-export function rollThreeDice(random: () => number = Math.random): ThreeDiceRoll {
-  const dieA = Math.floor(random() * 6) + 1;
-  const dieB = Math.floor(random() * 6) + 1;
-  const ripple = Math.floor(random() * 6) + 1;
+export function rollDice(random: () => number = Math.random): DiceRoll {
+  const movementDie = Math.floor(random() * 6) + 1;
+  const rippleDie = Math.floor(random() * 6) + 1;
   return {
-    movement: [dieA, dieB],
-    ripple,
-    total: dieA + dieB,
-    doubles: dieA === dieB,
-    lens: influenceFor(ripple),
+    movementDie,
+    rippleDie,
+    total: movementDie,
+    lens: influenceFor(rippleDie),
   };
 }
 
@@ -70,15 +68,13 @@ function initialBoardRun(setup: RippleGameSetup, board: PlayableBoard): LifeBoar
 export function createRippleGame(setup: RippleGameSetup): RippleGameState {
   const board = boardForCharacter(setup.characterId);
   const initial: RippleGameState = {
-    version: 3,
+    version: 4,
     boardId: board.id,
     phase: "playing",
     modeId: setup.modeId,
     characterId: setup.characterId,
     position: 0,
     turn: 0,
-    extraTurnsEarned: 0,
-    extraTurnPending: false,
     inventory: { missed: [], collected: [], ignored: [], forced: [] },
     turns: [],
     boardRun: initialBoardRun(setup, board),
@@ -206,18 +202,18 @@ function updateDerivedRun(board: PlayableBoard, run: LifeBoardRunState): LifeBoa
   };
 }
 
-function normalizedRoll(roll: ThreeDiceRoll): ThreeDiceRoll {
-  const [dieA, dieB] = roll.movement;
+function normalizedRoll(roll: DiceRoll): DiceRoll {
+  const movementDie = Math.min(6, Math.max(1, Math.floor(roll.movementDie)));
+  const rippleDie = Math.min(6, Math.max(1, Math.floor(roll.rippleDie)));
   return {
-    movement: [dieA, dieB],
-    ripple: roll.ripple,
-    total: dieA + dieB,
-    doubles: dieA === dieB,
-    lens: influenceFor(roll.ripple),
+    movementDie,
+    rippleDie,
+    total: movementDie,
+    lens: influenceFor(rippleDie),
   };
 }
 
-function applyLens(board: PlayableBoard, run: LifeBoardRunState, roll: ThreeDiceRoll, space: number, turn: number): LifeBoardRunState {
+function applyLens(board: PlayableBoard, run: LifeBoardRunState, roll: DiceRoll, space: number, turn: number): LifeBoardRunState {
   const authoredSpace = asLifeSpace(board, space - 1);
   let emphasizedSpaces = run.emphasized_spaces;
   let amplifiedSpaces = run.amplified_spaces;
@@ -284,7 +280,7 @@ function applyLens(board: PlayableBoard, run: LifeBoardRunState, roll: ThreeDice
 
 function modeChoice(group: string, spaces: [number, number], run: LifeBoardRunState): number {
   const seed = [...group].reduce((sum, char) => sum + char.charCodeAt(0), 0)
-    + run.dice_history.reduce((sum, roll) => sum + roll.total + roll.ripple, 0);
+    + run.dice_history.reduce((sum, roll) => sum + roll.total + roll.rippleDie, 0);
   return spaces[seed % 2];
 }
 
@@ -318,10 +314,10 @@ function resolveBranches(board: PlayableBoard, run: LifeBoardRunState): LifeBoar
   return { ...derived, resolved_branch_pairs, final_response };
 }
 
-export function advanceWithRoll(state: RippleGameState, suppliedRoll?: ThreeDiceRoll): RippleGameState {
+export function advanceWithRoll(state: RippleGameState, suppliedRoll?: DiceRoll): RippleGameState {
   if (state.phase !== "playing") return state;
   const board = boardForCharacter(state.characterId);
-  const roll = normalizedRoll(suppliedRoll ?? rollThreeDice());
+  const roll = normalizedRoll(suppliedRoll ?? rollDice());
   const from = state.position;
   const to = Math.min(from + roll.total, board.totalSpaces - 1);
   const turn = state.turn + 1;
@@ -356,8 +352,6 @@ export function advanceWithRoll(state: RippleGameState, suppliedRoll?: ThreeDice
     position: to,
     turn,
     lastRoll: roll,
-    extraTurnsEarned: state.extraTurnsEarned + (roll.doubles ? 1 : 0),
-    extraTurnPending: roll.doubles,
     pendingChoice: { artifact: offered, glassPrompt: prompt },
     inventory: { ...state.inventory, missed: [...state.inventory.missed, ...missed] },
     boardRun,
@@ -369,7 +363,7 @@ function completeIfNeeded(state: RippleGameState): RippleGameState {
   const board = boardForCharacter(state.characterId);
   if (state.position !== board.totalSpaces - 1) return state;
   const boardRun = resolveBranches(board, { ...state.boardRun, last_glass_reached: true });
-  const complete = { ...state, boardRun, phase: "complete" as const, extraTurnPending: false };
+  const complete = { ...state, boardRun, phase: "complete" as const };
   return { ...complete, finalStory: buildFinalStory(complete) };
 }
 
