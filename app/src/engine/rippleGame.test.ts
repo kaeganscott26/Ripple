@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { boardSpaces, liveBoard } from "../data/liveBoard";
+import { boardForCharacter, teodorScottBoard } from "../data/boards";
 import { buildRippleRiddlePrompt } from "./aiGlass";
 import { advanceWithRoll, collectArtifact, createRippleGame, ignoreArtifact, rollThreeDice } from "./rippleGame";
 import type { ThreeDiceRoll } from "./gameTypes";
@@ -9,6 +10,38 @@ function roll(a: number, b: number, ripple = 3): ThreeDiceRoll {
 }
 
 describe("canonical Ripple loop", () => {
+  it("loads the authored 72-space life-board only for Teodor / Scott", () => {
+    const board = boardForCharacter("teodor-scott");
+
+    expect(board.totalSpaces).toBe(72);
+    expect(board.spaces).toHaveLength(72);
+    expect(board.spaces[0].name).toBe("Adoption");
+    expect(board.spaces[71].name).toBe("Last Glass");
+    expect(teodorScottBoard.fixedAnchors).toEqual([1, 4, 18, 25, 29, 41, 49, 57, 61, 65, 72]);
+    expect(teodorScottBoard.branchGroups).toHaveLength(17);
+    expect(boardForCharacter("mara").totalSpaces).toBe(boardSpaces.length);
+  });
+
+  it("keeps every authored Teodor / Scott card field in bundled static data", () => {
+    expect(teodorScottBoard.spaces.every((space) =>
+      space.number > 0 && space.name && space.zone && space.type && space.realityLayer &&
+      space.glassRiddle && space.artifact && space.storySeed && space.collectMeaning &&
+      space.ignoreMeaning && space.missedMeaning && space.forcedConsequence &&
+      space.booleanTags.length > 0 && space.endingInfluence,
+    )).toBe(true);
+  });
+
+  it("begins the Teodor / Scott board at Adoption and records the chosen anchor state", () => {
+    const initial = createRippleGame({ modeId: "vague", characterId: "teodor-scott" });
+    expect(initial.phase).toBe("awaiting-choice");
+    expect(initial.pendingChoice?.artifact.spaceName).toBe("Adoption");
+
+    const collected = collectArtifact(initial);
+    expect(collected.boardRun.spaces_collected).toEqual([1]);
+    expect(collected.boardRun.fixed_anchor_states[1]).toBe("collected");
+    expect(collected.phase).toBe("playing");
+  });
+
   it("publishes versioned, live-update-ready board spaces without chapter gameplay links", () => {
     expect(liveBoard.schemaVersion).toBe(1);
     expect(boardSpaces.length).toBeGreaterThan(12);
@@ -75,5 +108,36 @@ describe("canonical Ripple loop", () => {
     expect(complete.finalStory?.story).not.toMatch(/\bdice\b|\bturns\b|inventory|clicked/i);
     expect(complete.finalStory?.prompt.constraints.join(" ")).toContain("never recap dice");
   });
-});
 
+  it("clamps Teodor / Scott movement to Last Glass and resolves branches by mode", () => {
+    const started = collectArtifact(createRippleGame({ modeId: "experimental", characterId: "teodor-scott" }));
+    const nearEnd = {
+      ...started,
+      position: 68,
+      boardRun: {
+        ...started.boardRun,
+        current_position: 69,
+        spaces_collected: [1, 2, 3, 70],
+        spaces_missed: [6, 7, 71],
+      },
+    };
+    const atLastGlass = advanceWithRoll(nearEnd, roll(6, 6, 5));
+
+    expect(atLastGlass.position).toBe(71);
+    expect(atLastGlass.boardRun.last_glass_reached).toBe(true);
+    expect(atLastGlass.phase).toBe("awaiting-choice");
+
+    const complete = collectArtifact(atLastGlass);
+    const childhood = complete.boardRun.resolved_branch_pairs.find((pair) => pair.group === "childhood_tone");
+    const name = complete.boardRun.resolved_branch_pairs.find((pair) => pair.group === "name_relation");
+    expect(complete.phase).toBe("complete");
+    expect(complete.boardRun.current_position).toBe(72);
+    expect(childhood?.kind).toBe("contradiction");
+    expect(name?.kind).toBe("mode-resolved");
+    expect(name?.hidden).toBe(false);
+    expect(complete.boardRun.unresolved_branch_pairs).toContain("name_relation");
+    expect(complete.finalStory?.story).toContain("Teodor had been adopted");
+    expect(complete.finalStory?.story).toContain("AIFRED began as an audio tool");
+    expect(complete.finalStory?.story).not.toMatch(/because the player|dice|inventory/i);
+  });
+});

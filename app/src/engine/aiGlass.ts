@@ -1,5 +1,6 @@
 import { characterConfig, modeConfig } from "../data/gameConfig";
-import { boardSpaces, realityLayerLabels } from "../data/liveBoard";
+import { boardForCharacter } from "../data/boards";
+import { realityLayerLabels } from "../data/liveBoard";
 import type {
   ArtifactRecord,
   BoardSpaceConfig,
@@ -62,13 +63,15 @@ function names(records: ArtifactRecord[], fallback: string): string[] {
 }
 
 export function buildFinalStory(state: RippleGameState): FinalStoryResult {
+  const board = boardForCharacter(state.characterId);
+  if (board.authored) return buildTeodorScottFinalStory(state);
   const character = characterConfig(state.characterId);
   const mode = modeConfig(state.modeId);
   const collected = names(state.inventory.collected, "an unopened key");
   const forced = names(state.inventory.forced, "a borrowed warning");
   const ignored = names(state.inventory.ignored, "a darkened window");
   const missed = names(state.inventory.missed, "a distant signal");
-  const lastSpace = boardSpaces[state.position] ?? boardSpaces[boardSpaces.length - 1];
+  const lastSpace = board.spaces[state.position] ?? board.spaces[board.spaces.length - 1];
   const title = `The ${collected[0]} Beyond the Glass`;
 
   const story = [
@@ -113,3 +116,70 @@ export function buildFinalStory(state: RippleGameState): FinalStoryResult {
   };
 }
 
+function buildTeodorScottFinalStory(state: RippleGameState): FinalStoryResult {
+  const board = boardForCharacter(state.characterId);
+  const authored = board.authored;
+  if (!authored) throw new Error("Teodor / Scott ending requires the authored board.");
+  const mode = modeConfig(state.modeId);
+  const collected = names(state.inventory.collected, "Adoption Paper");
+  const ignored = names(state.inventory.ignored, "an unanswered room");
+  const forced = names(state.inventory.forced, "the chair that would not stay empty");
+  const missed = names(state.inventory.missed, "a call heard too late");
+  const branchFuel = state.boardRun.resolved_branch_pairs
+    .slice(0, 4)
+    .flatMap((pair) => pair.dominantSpaces.slice(0, pair.kind === "contradiction" ? 2 : 1).map((number) => {
+      const space = authored.spaces[number - 1];
+      const source = pair.kind === "pressure" ? space?.ignoreMeaning : space?.storySeed;
+      return source?.split(/(?<=[.!?])\s+/)[0] ?? "";
+    }))
+    .filter(Boolean);
+  const contradiction = state.boardRun.resolved_branch_pairs.some((pair) => pair.kind === "contradiction");
+  const accountability = state.boardRun.final_response.includes("accountability");
+  const title = `The ${collected[0]} at Last Glass`;
+
+  const story = [
+    `The ${collected[0].toLowerCase()} waited on the kitchen table beneath a water ring. Teodor had been adopted before he could name the first door, and Scott was the name his father later gave him. The new name made a roof, not an erasure. When he signed the note beside the artifact, both names remained visible in the wet ink.`,
+    `His father had been funny, stubborn, practical, flawed—human before memory made him larger. At the piano, Scott found that music could hold a room steady without explaining it. After his father died, the empty chair kept its ordinary scratches and the office kept its smell. Grief did not make him wise. It changed the pressure in the house, and some of what he did under that pressure still belonged to him.`,
+    `The rooms refused a clean verdict. ${branchFuel.length > 0 ? branchFuel.join(" ") : "Warmth and distance occupied the same hallway."} ${contradiction ? "Two opposed memories stayed true without cancelling each other." : "One version spoke louder, but the quieter one did not disappear."} What he had left alone returned wearing ${forced[0].toLowerCase()}; what he had passed without seeing sounded like ${missed[0].toLowerCase()} beyond the wall.`,
+    `Kaegan called with plans and irritation of his own, a son with the right to answer, refuse, leave, and return. He mattered, but he was not assigned the work of saving his father. Scott carried that fact into the kitchen rush, where timing, broken stations, and one calm voice taught him how pressure moved through a room. AIFRED began as an audio tool, a practical comparison between a current sound and a target. INTERVENTION became the archive where loose pages could be arranged without being mistaken for healing. Ripple was only the name Scott gave the movement he noticed—not fate, not proof, and not a theory guaranteed to be right.`,
+    accountability
+      ? `At Last Glass, he chose accountability before monument. He put ${ignored[0].toLowerCase()} on the table and named the damage without asking the naming to count as repair. Then he made one specific promise small enough to be tested by another person. The glass offered this as a fictional variation, never a direct autobiography, and left him with the harder opening: what would this consequence build next?`
+      : `At Last Glass, the monument looked finished until he noticed it had no door for the people named inside it. He set ${ignored[0].toLowerCase()} beside the foundation and refused to call the structure repair. The glass offered this as a fictional variation, never a direct autobiography, and left the ending open to a harder question: what would this consequence build next?`,
+  ].join("\n\n");
+
+  return {
+    title,
+    story,
+    prompt: {
+      system: "Generate a fictional, concrete, accountable Teodor / Scott variation from authored board fuel. Never produce autobiography, supernatural proof, prophecy, or a mechanics report.",
+      user: [
+        `selected_mode: ${state.boardRun.selected_mode}`,
+        `selected_character: ${state.boardRun.selected_character}`,
+        `base_story_summary: ${authored.baseStorySummary}`,
+        `fixed_truths: ${JSON.stringify(authored.fixedTruths)}`,
+        `fixed_anchor_states: ${JSON.stringify(state.boardRun.fixed_anchor_states)}`,
+        `collected_spaces: ${JSON.stringify(state.inventory.collected)}`,
+        `ignored_spaces: ${JSON.stringify(state.inventory.ignored)}`,
+        `missed_spaces: ${JSON.stringify(state.inventory.missed)}`,
+        `forced_spaces: ${JSON.stringify(state.inventory.forced)}`,
+        `resolved_branch_pairs: ${JSON.stringify(state.boardRun.resolved_branch_pairs)}`,
+        `unresolved_branch_pairs: ${JSON.stringify(state.boardRun.unresolved_branch_pairs)}`,
+        `dominant_zones: ${state.boardRun.dominant_zones.join(", ")}`,
+        `dominant_layers: ${state.boardRun.dominant_reality_layers.join(", ")}`,
+        `ending_pressure: ${state.boardRun.ending_pressure.join(", ")}`,
+        `turn_count: ${state.boardRun.turn_count}`,
+        `dice_history: ${JSON.stringify(state.boardRun.dice_history)}`,
+        `final_response: ${state.boardRun.final_response}`,
+        `tone: ${mode.glassTone}`,
+      ].join("\n"),
+      constraints: [
+        "Write fiction, not direct autobiography, a therapy worksheet, a quest log, a score, or a mechanics summary.",
+        "Preserve every fixed truth while changing how the protagonist relates to it.",
+        "Keep the father and Kaegan human; neither is a symbol, cure, or automatic source of wisdom.",
+        "Treat Ripple as accountable observation, never fate, prophecy, cosmic certainty, or automatic proof.",
+        "Transform collected, ignored, missed, forced, and branch resolution data into concrete scenes.",
+      ],
+      output: story,
+    },
+  };
+}

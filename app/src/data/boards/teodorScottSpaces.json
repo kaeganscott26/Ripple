@@ -1,0 +1,3595 @@
+[
+  {
+    "id": "teodor-scott-01-adoption",
+    "order": 0,
+    "number": 1,
+    "name": "Adoption",
+    "zone": "Origin",
+    "type": "Fixed Anchor",
+    "kind": "threshold",
+    "realityLayer": "self-awareness",
+    "realityLayers": [
+      "Cultural Layer",
+      "Identity Layer",
+      "Family Layer"
+    ],
+    "symbol": "◉",
+    "glassRiddle": "The first door opened before your hand could reach it.",
+    "artifact": "Adoption Paper",
+    "artifactName": "Adoption Paper",
+    "artifactVocabulary": [
+      "adoption",
+      "paper"
+    ],
+    "glassSeeds": [
+      "The first door opened before your hand could reach it."
+    ],
+    "storySeed": "Teodor is carried from one life into another before he has words for either. Adults call it rescue, family, paperwork, love, and beginning, but the child only knows that the room has changed.",
+    "collectMeaning": "The character accepts adoption as the first visible door of the story.\n\nAdoption becomes origin, not erasure.",
+    "ignoreMeaning": "The character refuses to look directly at the first door.\n\nAdoption remains present, but it begins to ache from underneath the rest of the story.",
+    "missedMeaning": "The origin remains unnamed.\n\nThe final story should treat identity as pressure the character feels before he understands where it came from.",
+    "forcedConsequence": "The first door returns later as a question:\n\nIf this life began before you chose it, what parts of you still belong to the place before the door?",
+    "booleanTags": [
+      "fixed_anchor = true",
+      "origin_adoption_exists = true",
+      "origin_seen = collect_state",
+      "identity_pressure += missed_or_ignored"
+    ],
+    "endingInfluence": "This space must appear in every Teodor / Scott ending.\n\nIf collected, the ending can describe adoption as a visible origin.\n\nIf ignored or missed, the ending should show the character moving through life with a buried first question he cannot fully name.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_01_ORIGIN.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-01"
+    }
+  },
+  {
+    "id": "teodor-scott-02-happy-childhood",
+    "order": 1,
+    "number": 2,
+    "name": "Happy Childhood",
+    "zone": "Origin",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Memory Layer",
+      "Family Layer"
+    ],
+    "branchGroup": "childhood_tone",
+    "oppositeSpace": 3,
+    "symbol": "◉",
+    "glassRiddle": "Warm rooms do not know they are temporary.",
+    "artifact": "Television Light",
+    "artifactName": "Television Light",
+    "artifactVocabulary": [
+      "television",
+      "light"
+    ],
+    "glassSeeds": [
+      "Warm rooms do not know they are temporary."
+    ],
+    "storySeed": "The house is warm before anything knows it will become memory. There is food, noise, carpet, ordinary family life, and the kind of happiness a child trusts because nothing has asked him not to yet.",
+    "collectMeaning": "Warmth becomes part of the character’s foundation.\n\nThe final story should allow childhood to contain safety, ordinary love, and real belonging.",
+    "ignoreMeaning": "The character distrusts warmth or treats it as unreliable.\n\nHappiness becomes something he remembers only after it has already passed.",
+    "missedMeaning": "A warm childhood possibility passes without being claimed.\n\nIf Space 03 is also missed, the board must resolve childhood tone later.",
+    "forcedConsequence": "The character finds himself reaching for warmth later but does not trust his own hand when it reaches back.",
+    "booleanTags": [
+      "branch_group = childhood_tone",
+      "childhood_happy_collected = true_if_collected",
+      "childhood_warmth_weight += collected",
+      "childhood_warmth_distorted += ignored_or_forced"
+    ],
+    "endingInfluence": "If collected, the ending should include real warmth.\n\nIf ignored, the ending should show the character struggling to believe safe rooms are allowed to stay safe.\n\nIf missed, the ending may treat childhood warmth as uncertain or reconstructed.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_01_ORIGIN.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-02"
+    }
+  },
+  {
+    "id": "teodor-scott-03-lonely-childhood",
+    "order": 2,
+    "number": 3,
+    "name": "Lonely Childhood",
+    "zone": "Origin",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "clinical",
+    "realityLayers": [
+      "Memory Layer",
+      "Clinical Reality Layer",
+      "Identity Layer"
+    ],
+    "branchGroup": "childhood_tone",
+    "oppositeSpace": 2,
+    "symbol": "◉",
+    "glassRiddle": "A child can be held and still stand far away.",
+    "artifact": "Small Distance",
+    "artifactName": "Small Distance",
+    "artifactVocabulary": [
+      "small",
+      "distance"
+    ],
+    "glassSeeds": [
+      "A child can be held and still stand far away."
+    ],
+    "storySeed": "The child is loved, but part of him watches from somewhere behind his own eyes. He belongs to the house, but still carries a question no one else in the room has to answer.",
+    "collectMeaning": "Loneliness becomes named instead of buried.\n\nThe final story should allow the character to be loved and still feel separate.",
+    "ignoreMeaning": "The character refuses to name the loneliness.\n\nIt becomes behavior later: distance, defensiveness, overthinking, or the need to be understood too urgently.",
+    "missedMeaning": "The loneliness is not seen directly.\n\nIf Space 02 is also missed, the board must resolve childhood tone later.",
+    "forcedConsequence": "The unnamed distance returns in a future relationship as the fear that love does not mean staying.",
+    "booleanTags": [
+      "branch_group = childhood_tone",
+      "childhood_lonely_collected = true_if_collected",
+      "identity_distance += collected_or_forced",
+      "unseen_loneliness += missed"
+    ],
+    "endingInfluence": "If collected, the ending should show loneliness honestly without making it the whole childhood.\n\nIf ignored, the ending should let the loneliness leak through later choices.\n\nIf both Space 02 and Space 03 are collected, the ending must hold contradiction: warm childhood and lonely childhood both remain true.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_01_ORIGIN.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-03"
+    }
+  },
+  {
+    "id": "teodor-scott-04-the-name-scott",
+    "order": 3,
+    "number": 4,
+    "name": "The Name Scott",
+    "zone": "Origin",
+    "type": "Fixed Anchor",
+    "kind": "threshold",
+    "realityLayer": "self-awareness",
+    "realityLayers": [
+      "Cultural Layer",
+      "Family Layer",
+      "Identity Layer"
+    ],
+    "symbol": "◉",
+    "glassRiddle": "A name was placed like a roof over rain.",
+    "artifact": "Given Name",
+    "artifactName": "Given Name",
+    "artifactVocabulary": [
+      "given",
+      "name"
+    ],
+    "glassSeeds": [
+      "A name was placed like a roof over rain."
+    ],
+    "storySeed": "His father gives him the name Scott. The name does not erase Teodor. It gives the new life a shape, a sound, and a place inside the house.",
+    "collectMeaning": "The character accepts Scott as a real name with real love attached to it.\n\nThe final story should show the name as something given by presence, not only paperwork.",
+    "ignoreMeaning": "The character treats Scott as a cover, a costume, or a legal convenience.\n\nThe name still functions, but it no longer feels fully inhabited.",
+    "missedMeaning": "The given name is used by the world but not examined by the character.\n\nThe final story should show a man answering to a name before understanding what it cost and what it gave him.",
+    "forcedConsequence": "The name Scott returns later through the father layer.\n\nThe board asks whether a name given in love can still carry grief after the giver is gone.",
+    "booleanTags": [
+      "fixed_anchor = true",
+      "name_scott_exists = true",
+      "father_named_scott = true",
+      "scott_integrated += collected",
+      "scott_as_mask += ignored_or_missed"
+    ],
+    "endingInfluence": "This space must influence every ending.\n\nIf collected, Scott becomes a name the character can stand inside.\n\nIf ignored or missed, Scott becomes a name that works in public but remains unstable underneath.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_01_ORIGIN.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-04"
+    }
+  },
+  {
+    "id": "teodor-scott-05-the-first-name-waits",
+    "order": 4,
+    "number": 5,
+    "name": "The First Name Waits",
+    "zone": "Origin",
+    "type": "Identity Echo",
+    "kind": "room",
+    "realityLayer": "self-awareness",
+    "realityLayers": [
+      "Identity Layer",
+      "Memory Layer"
+    ],
+    "branchGroup": "name_relation_setup",
+    "symbol": "◉",
+    "glassRiddle": "The first name did not disappear. It learned silence.",
+    "artifact": "Silent Name",
+    "artifactName": "Silent Name",
+    "artifactVocabulary": [
+      "silent",
+      "name"
+    ],
+    "glassSeeds": [
+      "The first name did not disappear. It learned silence."
+    ],
+    "storySeed": "Teodor remains underneath Scott. Not angry. Not gone. Waiting. The first name becomes a quiet room inside the second one.",
+    "collectMeaning": "The character notices that Teodor still exists.\n\nThe final story should keep both names alive.",
+    "ignoreMeaning": "The character hears the first name but turns away from it.\n\nThe old name becomes a buried pressure rather than an integrated truth.",
+    "missedMeaning": "The first name remains hidden from the character’s conscious story.\n\nThe final ending may reveal it as a late-returning echo.",
+    "forcedConsequence": "The first name returns at the wrong time, not as nostalgia, but as a demand:\n\nDo you know who you were before everyone knew who to call you?",
+    "booleanTags": [
+      "teodor_exists = true",
+      "first_name_visible += collected",
+      "first_name_buried += ignored_or_missed",
+      "identity_echo_active = true"
+    ],
+    "endingInfluence": "This space should influence whether the ending treats Teodor and Scott as integrated, split, buried, or rediscovered.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_01_ORIGIN.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-05"
+    }
+  },
+  {
+    "id": "teodor-scott-06-kept-teodor",
+    "order": 5,
+    "number": 6,
+    "name": "Kept Teodor",
+    "zone": "Origin",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "self-awareness",
+    "realityLayers": [
+      "Identity Layer",
+      "Cultural Layer"
+    ],
+    "branchGroup": "name_relation",
+    "oppositeSpace": 7,
+    "symbol": "◉",
+    "glassRiddle": "Two names can stand if the room stops choosing.",
+    "artifact": "Double Name",
+    "artifactName": "Double Name",
+    "artifactVocabulary": [
+      "double",
+      "name"
+    ],
+    "glassSeeds": [
+      "Two names can stand if the room stops choosing."
+    ],
+    "storySeed": "The old name is allowed to remain part of the character. Teodor is not treated as a mistake, a secret, or a discarded label. He becomes part of the foundation.",
+    "collectMeaning": "The character carries Teodor forward openly.\n\nThe final story should allow both names to exist without forcing one to defeat the other.",
+    "ignoreMeaning": "The character almost accepts Teodor, then steps away.\n\nThe first name becomes something he respects in theory but avoids in practice.",
+    "missedMeaning": "The chance to integrate Teodor passes.\n\nIf Space 07 is also missed, the board may resolve the name relation as unstable or delayed.",
+    "forcedConsequence": "A later room calls him by the wrong name, and both names answer.",
+    "booleanTags": [
+      "branch_group = name_relation",
+      "kept_teodor = true_if_collected",
+      "name_integration += collected",
+      "name_conflict += ignored_or_forced"
+    ],
+    "endingInfluence": "If collected, the ending should show Teodor and Scott as layered, not enemies.\n\nIf ignored, the ending should show the character intellectually knowing the truth while emotionally avoiding it.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_01_ORIGIN.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-06"
+    }
+  },
+  {
+    "id": "teodor-scott-07-buried-teodor",
+    "order": 6,
+    "number": 7,
+    "name": "Buried Teodor",
+    "zone": "Origin",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "clinical",
+    "realityLayers": [
+      "Identity Layer",
+      "Cultural Layer",
+      "Clinical Reality Layer"
+    ],
+    "branchGroup": "name_relation",
+    "oppositeSpace": 6,
+    "symbol": "◉",
+    "glassRiddle": "A buried name still learns the floorplan.",
+    "artifact": "Covered Birth Name",
+    "artifactName": "Covered Birth Name",
+    "artifactVocabulary": [
+      "covered",
+      "birth",
+      "name"
+    ],
+    "glassSeeds": [
+      "A buried name still learns the floorplan."
+    ],
+    "storySeed": "Teodor is covered by Scott because the new life needs a name that fits the new room. The old name does not vanish. It becomes harder to hear.",
+    "collectMeaning": "The character recognizes that Teodor was buried.\n\nThis does not mean he approves of the burial. It means he sees it clearly.",
+    "ignoreMeaning": "The character refuses to admit the burial happened.\n\nThe final story should show identity confusion appearing as irritability, performance, or a need to be seen.",
+    "missedMeaning": "The buried name remains buried.\n\nIf Space 06 is also missed, the board may treat name relation as unresolved.",
+    "forcedConsequence": "The buried name returns through grief, family, paperwork, or a story that will not let the character keep pretending he began at Scott.",
+    "booleanTags": [
+      "branch_group = name_relation",
+      "buried_teodor = true_if_collected",
+      "name_suppression_seen += collected",
+      "name_suppression_denied += ignored",
+      "identity_return_pressure += forced_or_missed"
+    ],
+    "endingInfluence": "If collected, the ending should show the character understanding that burial happened.\n\nIf ignored or missed, the ending should let Teodor return indirectly, as pressure beneath the Scott identity.\n\nIf Space 06 and Space 07 are both collected, the ending should show an honest contradiction: Teodor was both kept and buried in different rooms.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_01_ORIGIN.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-07"
+    }
+  },
+  {
+    "id": "teodor-scott-08-the-first-translation",
+    "order": 7,
+    "number": 8,
+    "name": "The First Translation",
+    "zone": "Origin",
+    "type": "Origin Consequence / Zone Gate",
+    "kind": "room",
+    "realityLayer": "self-awareness",
+    "realityLayers": [
+      "Cultural Layer",
+      "Family Layer",
+      "Language Layer",
+      "Identity Layer"
+    ],
+    "symbol": "◉",
+    "glassRiddle": "A child is not only received. A child is translated.",
+    "artifact": "Translated Child",
+    "artifactName": "Translated Child",
+    "artifactVocabulary": [
+      "translated",
+      "child"
+    ],
+    "glassSeeds": [
+      "A child is not only received. A child is translated."
+    ],
+    "storySeed": "Before Teodor can explain himself, other people explain him. They mean love. They mean rescue. They mean family. But every explanation changes the child slightly, because being brought into a new life also means being interpreted by it.",
+    "collectMeaning": "The character accepts that translation shaped him.\n\nThe final story should show him learning to separate love from simplification.",
+    "ignoreMeaning": "The character refuses to see how much of his early life was interpreted for him.\n\nThe final story should show him reacting strongly when others explain him too quickly.",
+    "missedMeaning": "Translation remains invisible.\n\nThe character may spend the ending believing his identity confusion came from nowhere.",
+    "forcedConsequence": "Someone tells his story for him later, and the board makes him feel the old translation happen again.",
+    "booleanTags": [
+      "origin_zone_complete = true",
+      "translation_theme_active = true",
+      "explained_by_others += collected_or_forced",
+      "resists_external_definition += ignored",
+      "identity_context_missing += missed"
+    ],
+    "endingInfluence": "This space closes the Origin zone.\n\nIf collected, the ending should show the character understanding that love and translation can happen together.\n\nIf ignored or missed, the ending should show him fighting later definitions without fully knowing why.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_01_ORIGIN.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-08"
+    }
+  },
+  {
+    "id": "teodor-scott-09-television-light",
+    "order": 8,
+    "number": 9,
+    "name": "Television Light",
+    "zone": "Childhood Rooms",
+    "type": "Memory Fragment",
+    "kind": "room",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Memory Layer",
+      "Family Layer",
+      "Cultural Layer"
+    ],
+    "symbol": "⌂",
+    "glassRiddle": "The screen glowed before the room knew it was memory.",
+    "artifact": "Television Light",
+    "artifactName": "Television Light",
+    "artifactVocabulary": [
+      "television",
+      "light"
+    ],
+    "glassSeeds": [
+      "The screen glowed before the room knew it was memory."
+    ],
+    "storySeed": "The room is ordinary. A television glows against carpet, furniture, food smells, family noise, and a child small enough to believe the evening will always return in the same shape. Nothing dramatic happens here, which is why the memory survives.",
+    "collectMeaning": "The character accepts ordinary warmth as real.\n\nThe final story should include the simple texture of childhood: television light, family noise, and rooms that felt permanent before loss taught otherwise.",
+    "ignoreMeaning": "The character dismisses ordinary warmth because it does not feel important enough to protect.\n\nLater, he may only recognize the value of quiet rooms after they are gone.",
+    "missedMeaning": "The memory passes without becoming part of the character’s carried story.\n\nThe final ending may treat early warmth as blurred, reconstructed, or hard to trust.",
+    "forcedConsequence": "Later, a screen glows in another room, and the character realizes too late that ordinary moments can become sacred without warning.",
+    "booleanTags": [
+      "childhood_memory_visible += collected",
+      "ordinary_warmth_weight += collected",
+      "ordinary_warmth_distrusted += ignored",
+      "ordinary_warmth_blurred += missed",
+      "nostalgia_trigger_active += forced"
+    ],
+    "endingInfluence": "This space gives the final story ordinary childhood texture.\n\nIf collected, the ending should feel more embodied and lived-in.\n\nIf ignored or missed, the ending should show the character struggling to remember whether warmth was real or only edited into memory later.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_02_CHILDHOOD_ROOMS.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-09"
+    }
+  },
+  {
+    "id": "teodor-scott-10-safe-house",
+    "order": 9,
+    "number": 10,
+    "name": "Safe House",
+    "zone": "Childhood Rooms",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Family Layer",
+      "Memory Layer",
+      "Environmental Layer"
+    ],
+    "branchGroup": "house_relation",
+    "oppositeSpace": 11,
+    "symbol": "⌂",
+    "glassRiddle": "Some houses hold you before you know what holding means.",
+    "artifact": "Safe Room",
+    "artifactName": "Safe Room",
+    "artifactVocabulary": [
+      "safe",
+      "room"
+    ],
+    "glassSeeds": [
+      "Some houses hold you before you know what holding means."
+    ],
+    "storySeed": "The house gives the child routine. Food appears. Doors open to familiar rooms. Family voices move through the walls. The child learns where things belong and, for a while, believes he belongs there too.",
+    "collectMeaning": "The character accepts the house as shelter.\n\nThe final story should allow the home to be a real place of safety, routine, and belonging.",
+    "ignoreMeaning": "The character distrusts the safe house or treats safety as temporary.\n\nThe final story should show him expecting comfort to disappear.",
+    "missedMeaning": "The safe version of the house is not claimed.\n\nIf Space 11 is also missed, the board must resolve the house relation later.",
+    "forcedConsequence": "The character tries to build safety later but keeps checking the exits because the old room never taught him whether safety stays.",
+    "booleanTags": [
+      "branch_group = house_relation",
+      "safe_house_collected = true_if_collected",
+      "house_as_shelter += collected",
+      "safety_distrust += ignored_or_forced",
+      "house_safety_unclaimed += missed"
+    ],
+    "endingInfluence": "If collected, the ending should include a house that genuinely holds the child.\n\nIf ignored, the ending should show safety becoming something the character doubts.\n\nIf both Safe House and Listening House are collected, the ending should hold contradiction: the house shelters him and trains him to listen.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_02_CHILDHOOD_ROOMS.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-10"
+    }
+  },
+  {
+    "id": "teodor-scott-11-listening-house",
+    "order": 10,
+    "number": 11,
+    "name": "Listening House",
+    "zone": "Childhood Rooms",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "clinical",
+    "realityLayers": [
+      "Clinical Reality Layer",
+      "Memory Layer",
+      "Unexplained Layer",
+      "Environmental Layer"
+    ],
+    "branchGroup": "house_relation",
+    "oppositeSpace": 10,
+    "symbol": "⌂",
+    "glassRiddle": "The house made sounds, and the child became a map.",
+    "artifact": "Listening Wall",
+    "artifactName": "Listening Wall",
+    "artifactVocabulary": [
+      "listening",
+      "wall"
+    ],
+    "glassSeeds": [
+      "The house made sounds, and the child became a map."
+    ],
+    "storySeed": "The house is not only shelter. It has sounds. Dishes. Footsteps. Doors. Carpet. Silence. The child learns to listen before he understands what he is listening for.",
+    "collectMeaning": "The character accepts that alertness began early.\n\nThe final story should show attention forming inside ordinary rooms.",
+    "ignoreMeaning": "The character refuses to admit the house trained his nervous system.\n\nLater, his alertness may appear as overreaction, suspicion, or the need to read every room too quickly.",
+    "missedMeaning": "The listening house is not seen clearly.\n\nIf Space 10 is also missed, the board must resolve the house relation later.",
+    "forcedConsequence": "A later room makes a small sound, and the character’s body answers before his mind can explain why.",
+    "booleanTags": [
+      "branch_group = house_relation",
+      "listening_house_collected = true_if_collected",
+      "early_alertness += collected",
+      "room_hypervigilance += ignored_or_forced",
+      "house_sounds_unprocessed += missed"
+    ],
+    "endingInfluence": "If collected, the ending should show listening as both survival skill and burden.\n\nIf ignored, the ending should show the character misreading later rooms without understanding the childhood source.\n\nIf both Safe House and Listening House are collected, the house must become both warm and watchful.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_02_CHILDHOOD_ROOMS.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-11"
+    }
+  },
+  {
+    "id": "teodor-scott-12-carpet-under-small-feet",
+    "order": 11,
+    "number": 12,
+    "name": "Carpet Under Small Feet",
+    "zone": "Childhood Rooms",
+    "type": "Memory Fragment",
+    "kind": "room",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Memory Layer",
+      "Body Layer",
+      "Family Layer"
+    ],
+    "symbol": "⌂",
+    "glassRiddle": "The body remembers rooms the mind cannot draw.",
+    "artifact": "Carpet Memory",
+    "artifactName": "Carpet Memory",
+    "artifactVocabulary": [
+      "carpet",
+      "memory"
+    ],
+    "glassSeeds": [
+      "The body remembers rooms the mind cannot draw."
+    ],
+    "storySeed": "The child remembers the house through the body first. Carpet under feet. Corners passed at running speed. The distance between rooms. The feeling of being small inside a place that seems enormous because every hallway is still a world.",
+    "collectMeaning": "The character accepts body-memory as part of the story.\n\nThe final story should include sensory memory, not just explanation.",
+    "ignoreMeaning": "The character treats memory as something that must be logical to matter.\n\nThe body keeps the memory anyway.",
+    "missedMeaning": "The body-memory remains outside the character’s conscious story.\n\nThe final ending may show the character reacting to places without knowing what they remind him of.",
+    "forcedConsequence": "A later floor, carpet, hallway, or doorway triggers a childhood feeling before the character has time to defend against it.",
+    "booleanTags": [
+      "body_memory_active += collected_or_forced",
+      "sensory_memory_weight += collected",
+      "rationalized_memory += ignored",
+      "unexplained_body_reaction += missed_or_forced"
+    ],
+    "endingInfluence": "This space grounds the ending in physical memory.\n\nIf collected, the final story should use sensory detail.\n\nIf ignored or missed, the final story should show the body remembering before the mind agrees.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_02_CHILDHOOD_ROOMS.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-12"
+    }
+  },
+  {
+    "id": "teodor-scott-13-the-room-watches-back",
+    "order": 12,
+    "number": 13,
+    "name": "The Room Watches Back",
+    "zone": "Childhood Rooms",
+    "type": "Perception Shift",
+    "kind": "room",
+    "realityLayer": "clinical",
+    "realityLayers": [
+      "Unexplained Layer",
+      "Clinical Reality Layer",
+      "Memory Layer"
+    ],
+    "symbol": "⌂",
+    "glassRiddle": "A room changes when the child believes it noticed him.",
+    "artifact": "Watching Room",
+    "artifactName": "Watching Room",
+    "artifactVocabulary": [
+      "watching",
+      "room"
+    ],
+    "glassSeeds": [
+      "A room changes when the child believes it noticed him."
+    ],
+    "storySeed": "At some point, an ordinary room stops feeling ordinary. It is still furniture, walls, doorways, and light, but the child feels watched by the space itself. The room does not have to move to become different.",
+    "collectMeaning": "The character accepts that perception changed the room.\n\nThe final story should treat fear as real experience without turning it into proof of supernatural fact.",
+    "ignoreMeaning": "The character rejects the memory because it sounds impossible.\n\nThe feeling does not disappear. It waits for another room.",
+    "missedMeaning": "The perception shift is skipped.\n\nThe final ending may show the character entering strange rooms later without understanding why they feel familiar.",
+    "forcedConsequence": "A later room watches back, and the character recognizes the childhood feeling too late to pretend it is new.",
+    "booleanTags": [
+      "room_perception_shift = true_if_collected_or_forced",
+      "unexplained_layer_active += collected",
+      "memory_denial += ignored",
+      "strange_room_echo += missed_or_forced"
+    ],
+    "endingInfluence": "This space gives the ending its first haunted-room logic.\n\nIf collected, the final story can safely explore the feeling of being watched.\n\nIf ignored or missed, the feeling should return later as atmosphere rather than direct explanation.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_02_CHILDHOOD_ROOMS.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-13"
+    }
+  },
+  {
+    "id": "teodor-scott-14-belonging",
+    "order": 13,
+    "number": 14,
+    "name": "Belonging",
+    "zone": "Childhood Rooms",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "self-awareness",
+    "realityLayers": [
+      "Family Layer",
+      "Identity Layer",
+      "Memory Layer"
+    ],
+    "branchGroup": "belonging_relation",
+    "oppositeSpace": 15,
+    "symbol": "⌂",
+    "glassRiddle": "The room said yes before the child knew he was asking.",
+    "artifact": "Family Seat",
+    "artifactName": "Family Seat",
+    "artifactVocabulary": [
+      "family",
+      "seat"
+    ],
+    "glassSeeds": [
+      "The room said yes before the child knew he was asking."
+    ],
+    "storySeed": "The child belongs at the table, in the rooms, in the family noise, in the daily habits of the house. He is not only placed there. He is included there.",
+    "collectMeaning": "The character accepts belonging as real.\n\nThe final story should allow the character to have been genuinely included, not merely assigned to a family.",
+    "ignoreMeaning": "The character distrusts belonging or treats it as something that can be revoked.\n\nThe final story should show him testing relationships, waiting for the room to change its mind.",
+    "missedMeaning": "Belonging is not claimed.\n\nIf Space 15 is also missed, the board must resolve belonging relation later.",
+    "forcedConsequence": "A later room offers him a seat, and he hesitates long enough for someone else to notice he does not trust it.",
+    "booleanTags": [
+      "branch_group = belonging_relation",
+      "belonging_collected = true_if_collected",
+      "family_inclusion_weight += collected",
+      "belonging_distrust += ignored_or_forced",
+      "belonging_unclaimed += missed"
+    ],
+    "endingInfluence": "If collected, the ending should show real inclusion.\n\nIf ignored, the ending should show the character doubting whether inclusion can last.\n\nIf both Belonging and Watching From Behind His Eyes are collected, the ending must hold both truths: he belonged and still felt separate.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_02_CHILDHOOD_ROOMS.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-14"
+    }
+  },
+  {
+    "id": "teodor-scott-15-watching-from-behind-his-eyes",
+    "order": 14,
+    "number": 15,
+    "name": "Watching From Behind His Eyes",
+    "zone": "Childhood Rooms",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "clinical",
+    "realityLayers": [
+      "Clinical Reality Layer",
+      "Identity Layer",
+      "Memory Layer"
+    ],
+    "branchGroup": "belonging_relation",
+    "oppositeSpace": 14,
+    "symbol": "⌂",
+    "glassRiddle": "He was in the room, but not all the way inside himself.",
+    "artifact": "Behind-Eyes Witness",
+    "artifactName": "Behind-Eyes Witness",
+    "artifactVocabulary": [
+      "behind",
+      "eyes",
+      "witness"
+    ],
+    "glassSeeds": [
+      "He was in the room, but not all the way inside himself."
+    ],
+    "storySeed": "The child is present, but part of him watches from a distance. He sees the room, the family, the warmth, the rules, and himself inside them, but he does not always feel fully joined to what he sees.",
+    "collectMeaning": "The character names the distance honestly.\n\nThe final story should allow dissociation, separation, or inner distance to exist without making the character less loved.",
+    "ignoreMeaning": "The character refuses to name the distance.\n\nLater, he may mistake separation for intelligence, control, superiority, or proof that nobody understands him.",
+    "missedMeaning": "The inner distance is skipped.\n\nIf Space 14 is also missed, the board must resolve belonging relation later.",
+    "forcedConsequence": "A later relationship asks him to be fully present, and the old distance steps between him and the person asking.",
+    "booleanTags": [
+      "branch_group = belonging_relation",
+      "behind_eyes_collected = true_if_collected",
+      "inner_distance_named += collected",
+      "inner_distance_denied += ignored",
+      "presence_fracture += missed_or_forced"
+    ],
+    "endingInfluence": "If collected, the ending should show the character’s inner distance clearly and compassionately.\n\nIf ignored, the ending should let that distance affect later relationships without being named early.\n\nIf both Space 14 and Space 15 are collected, the final story should make belonging complicated, not false.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_02_CHILDHOOD_ROOMS.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-15"
+    }
+  },
+  {
+    "id": "teodor-scott-16-child-with-an-echo",
+    "order": 15,
+    "number": 16,
+    "name": "Child With An Echo",
+    "zone": "Childhood Rooms",
+    "type": "Zone Gate",
+    "kind": "room",
+    "realityLayer": "clinical",
+    "realityLayers": [
+      "Memory Layer",
+      "Identity Layer",
+      "Clinical Reality Layer",
+      "Unexplained Layer"
+    ],
+    "symbol": "⌂",
+    "glassRiddle": "Before he had a theory, he had an echo.",
+    "artifact": "Child Echo",
+    "artifactName": "Child Echo",
+    "artifactVocabulary": [
+      "child",
+      "echo"
+    ],
+    "glassSeeds": [
+      "Before he had a theory, he had an echo."
+    ],
+    "storySeed": "The child carries something he cannot name yet. It is not one feeling. It is warmth, distance, fear, attention, belonging, and the suspicion that rooms hold more than adults say they hold.",
+    "collectMeaning": "The character accepts that childhood left an echo.\n\nThe final story should treat the echo as formative, not as proof or diagnosis.",
+    "ignoreMeaning": "The character refuses to admit that childhood still speaks.\n\nThe echo becomes louder later because it has no approved language.",
+    "missedMeaning": "The echo remains unrecognized.\n\nThe final story may show the character building systems later to explain something that began as a child’s feeling.",
+    "forcedConsequence": "A later pattern, project, relationship, or room repeats the childhood echo and forces the character to notice that it has been present for years.",
+    "booleanTags": [
+      "childhood_zone_complete = true",
+      "child_echo_active = true",
+      "child_echo_integrated += collected",
+      "child_echo_denied += ignored",
+      "child_echo_unrecognized += missed",
+      "future_systems_fueled_by_childhood += forced_or_missed"
+    ],
+    "endingInfluence": "This space closes the Childhood Rooms zone.\n\nIf collected, the ending should connect childhood echo to later creativity, fear, and pattern recognition.\n\nIf ignored or missed, the ending should show the adult building explanations for something the child already felt.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_02_CHILDHOOD_ROOMS.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-16"
+    }
+  },
+  {
+    "id": "teodor-scott-17-the-hallway-at-night",
+    "order": 16,
+    "number": 17,
+    "name": "The Hallway At Night",
+    "zone": "Music and Fear",
+    "type": "Fear Fragment",
+    "kind": "room",
+    "realityLayer": "clinical",
+    "realityLayers": [
+      "Memory Layer",
+      "Body Layer",
+      "Unexplained Layer",
+      "Clinical Reality Layer"
+    ],
+    "symbol": "♫",
+    "glassRiddle": "The dark hallway taught his feet to listen.",
+    "artifact": "Night Hallway",
+    "artifactName": "Night Hallway",
+    "artifactVocabulary": [
+      "night",
+      "hallway"
+    ],
+    "glassSeeds": [
+      "The dark hallway taught his feet to listen."
+    ],
+    "storySeed": "At night, the house changes. The same hallway that means nothing in daylight becomes too long, too quiet, too aware of him. The child learns the distance between rooms by fear first.",
+    "collectMeaning": "The character accepts that fear shaped his attention.\n\nThe final story should show fear becoming part of how he reads rooms.",
+    "ignoreMeaning": "The character dismisses the hallway as childish fear.\n\nThe final story should show him underestimating how much old fear still controls where he stands.",
+    "missedMeaning": "The hallway memory remains unclaimed.\n\nThe final story may show later rooms producing fear without the character knowing which childhood hallway they are repeating.",
+    "forcedConsequence": "A later hallway feels too familiar, and the character’s body slows down before his mind understands why.",
+    "booleanTags": [
+      "fear_attention_seed = true",
+      "hallway_memory_collected = true_if_collected",
+      "childhood_fear_named += collected",
+      "childhood_fear_dismissed += ignored",
+      "hallway_echo_hidden += missed",
+      "body_warning_active += forced"
+    ],
+    "endingInfluence": "If collected, the ending should connect fear to attention.\n\nIf ignored or missed, the ending should let old fear return through setting, hesitation, or the body reacting before thought.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_03_MUSICandFEAR.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-17"
+    }
+  },
+  {
+    "id": "teodor-scott-18-the-piano",
+    "order": 17,
+    "number": 18,
+    "name": "The Piano",
+    "zone": "Music and Fear",
+    "type": "Fixed Anchor",
+    "kind": "threshold",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Music Layer",
+      "Memory Layer",
+      "Family Layer",
+      "Structure Layer"
+    ],
+    "symbol": "♫",
+    "glassRiddle": "Wood, wire, and keys gave the feeling somewhere to stand.",
+    "artifact": "First Piano",
+    "artifactName": "First Piano",
+    "artifactVocabulary": [
+      "first",
+      "piano"
+    ],
+    "glassSeeds": [
+      "Wood, wire, and keys gave the feeling somewhere to stand."
+    ],
+    "storySeed": "The piano enters the house like furniture at first, but it does not stay furniture. It becomes a place where feeling can be pressed into order. A note can be wrong and still corrected. A song can repeat without becoming trapped.",
+    "collectMeaning": "The character accepts music as a real foundation.\n\nThe final story should show the piano as one of the first rooms he could control without closing the door on himself.",
+    "ignoreMeaning": "The character treats the piano as an old object instead of a turning point.\n\nThe final story should show music still mattering, but arriving later through pressure instead of wonder.",
+    "missedMeaning": "The piano remains part of the house but not part of the conscious story.\n\nThe final ending may show the character building sound later without remembering where the room began.",
+    "forcedConsequence": "A later melody, keyboard, DAW pattern, or half-remembered song forces the character back to the first place music gave him structure.",
+    "booleanTags": [
+      "fixed_anchor = true",
+      "piano_exists = true",
+      "music_foundation_active = true",
+      "music_as_structure += collected",
+      "music_origin_unseen += missed",
+      "music_reduced_to_tool += ignored",
+      "music_memory_return += forced"
+    ],
+    "endingInfluence": "This space must influence every Teodor / Scott ending.\n\nIf collected, music becomes an early survival room.\n\nIf ignored or missed, music still returns later, but the character may not understand why sound feels like home.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_03_MUSICandFEAR.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-18"
+    }
+  },
+  {
+    "id": "teodor-scott-19-first-pattern",
+    "order": 18,
+    "number": 19,
+    "name": "First Pattern",
+    "zone": "Music and Fear",
+    "type": "System Seed",
+    "kind": "room",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Music Layer",
+      "Pattern Layer",
+      "Cognitive Layer"
+    ],
+    "symbol": "♫",
+    "glassRiddle": "Repetition was the first machine that did not scare him.",
+    "artifact": "First Pattern",
+    "artifactName": "First Pattern",
+    "artifactVocabulary": [
+      "first",
+      "pattern"
+    ],
+    "glassSeeds": [
+      "Repetition was the first machine that did not scare him."
+    ],
+    "storySeed": "A repeated note, rhythm, phrase, or melody becomes more than sound. It becomes proof that something can return in the same shape. The child learns that repetition can comfort instead of trap.",
+    "collectMeaning": "The character accepts pattern as safety.\n\nThe final story should show repetition becoming structure, practice, rhythm, or a way to make feeling behave.",
+    "ignoreMeaning": "The character distrusts repetition and treats it like being stuck.\n\nThe final story should show him confusing discipline with confinement.",
+    "missedMeaning": "The first pattern is not claimed.\n\nThe final story may show him building complicated systems later while missing the small musical pattern that started it.",
+    "forcedConsequence": "A later loop repeats until the character realizes he has been trying to solve life with the same tool music gave him first.",
+    "booleanTags": [
+      "pattern_seed_active = true",
+      "repetition_as_comfort += collected",
+      "repetition_as_trap += ignored",
+      "pattern_origin_hidden += missed",
+      "loop_recognition_forced += forced"
+    ],
+    "endingInfluence": "If collected, the ending should connect music to later system-building.\n\nIf ignored or missed, the ending should show the character either fearing repetition or discovering too late that repetition can also heal.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_03_MUSICandFEAR.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-19"
+    }
+  },
+  {
+    "id": "teodor-scott-20-music-as-shelter",
+    "order": 19,
+    "number": 20,
+    "name": "Music As Shelter",
+    "zone": "Music and Fear",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Music Layer",
+      "Emotional Regulation Layer",
+      "Memory Layer"
+    ],
+    "branchGroup": "music_relation",
+    "oppositeSpace": 21,
+    "symbol": "♫",
+    "glassRiddle": "The song did not solve the room. It held him inside it.",
+    "artifact": "Shelter Song",
+    "artifactName": "Shelter Song",
+    "artifactVocabulary": [
+      "shelter",
+      "song"
+    ],
+    "glassSeeds": [
+      "The song did not solve the room. It held him inside it."
+    ],
+    "storySeed": "Music becomes a shelter. Not because it erases fear, but because it lets the character stay with feeling without being swallowed by it. The song gives him walls that breathe.",
+    "collectMeaning": "The character accepts music as a safe room.\n\nThe final story should show music helping him process grief, fear, love, and pressure without disappearing from them.",
+    "ignoreMeaning": "The character refuses the shelter because it feels too soft, too vulnerable, or too temporary.\n\nThe final story should show him looking for harder shelters that do more damage.",
+    "missedMeaning": "The sheltering side of music is not claimed.\n\nIf Space 21 is also missed, the board must resolve the music relation later.",
+    "forcedConsequence": "A later crisis leaves him with no language except a song, and the song holds him even though he did not choose it.",
+    "booleanTags": [
+      "branch_group = music_relation",
+      "music_shelter_collected = true_if_collected",
+      "music_as_shelter += collected",
+      "vulnerability_resisted += ignored",
+      "music_shelter_unclaimed += missed",
+      "song_holds_later += forced"
+    ],
+    "endingInfluence": "If collected, the ending should show music as a place of repair.\n\nIf ignored, the ending should show the character rejecting gentle forms of safety.\n\nIf both Music as Shelter and Music as Escape are collected, the ending should show music as both healing and hiding place.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_03_MUSICandFEAR.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-20"
+    }
+  },
+  {
+    "id": "teodor-scott-21-music-as-escape",
+    "order": 20,
+    "number": 21,
+    "name": "Music As Escape",
+    "zone": "Music and Fear",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Music Layer",
+      "Avoidance Layer",
+      "Emotional Regulation Layer"
+    ],
+    "branchGroup": "music_relation",
+    "oppositeSpace": 20,
+    "symbol": "♫",
+    "glassRiddle": "The song opened a door, and he learned how to vanish.",
+    "artifact": "Escape Loop",
+    "artifactName": "Escape Loop",
+    "artifactVocabulary": [
+      "escape",
+      "loop"
+    ],
+    "glassSeeds": [
+      "The song opened a door, and he learned how to vanish."
+    ],
+    "storySeed": "Music becomes escape. A place to disappear into headphones, keys, patterns, volume, loops, and private worlds. It keeps him alive sometimes, but it also teaches him how to leave a room without moving.",
+    "collectMeaning": "The character names music as escape.\n\nThe final story should show music as useful but dangerous when it replaces presence.",
+    "ignoreMeaning": "The character refuses to admit he uses music to disappear.\n\nThe final story should show avoidance disguised as creativity.",
+    "missedMeaning": "The escape function remains unseen.\n\nIf Space 20 is also missed, the board must resolve the music relation later.",
+    "forcedConsequence": "Someone needs him present, but he is inside the sound, and the board makes the absence count.",
+    "booleanTags": [
+      "branch_group = music_relation",
+      "music_escape_collected = true_if_collected",
+      "music_as_escape += collected",
+      "creative_avoidance += ignored",
+      "music_escape_unseen += missed",
+      "absence_inside_sound += forced"
+    ],
+    "endingInfluence": "If collected, the ending should show music as a way to survive and a way to avoid.\n\nIf ignored, the ending should show creativity hiding avoidance.\n\nIf both Space 20 and Space 21 are collected, music must become complicated: shelter and escape at the same time.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_03_MUSICandFEAR.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-21"
+    }
+  },
+  {
+    "id": "teodor-scott-22-the-door-is-not-just-closed",
+    "order": 21,
+    "number": 22,
+    "name": "The Door Is Not Just Closed",
+    "zone": "Music and Fear",
+    "type": "Threshold Fragment",
+    "kind": "room",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Threshold Layer",
+      "Unexplained Layer",
+      "Memory Layer"
+    ],
+    "symbol": "♫",
+    "glassRiddle": "A closed door still knows what side you are on.",
+    "artifact": "Closed Door",
+    "artifactName": "Closed Door",
+    "artifactVocabulary": [
+      "closed",
+      "door"
+    ],
+    "glassSeeds": [
+      "A closed door still knows what side you are on."
+    ],
+    "storySeed": "A door becomes more than wood and hinges. It becomes a line between known and unknown, safety and threat, room and hallway, seen and unseen. The child learns that a closed door can still change the room.",
+    "collectMeaning": "The character accepts the door as a threshold.\n\nThe final story should use doors as meaningful boundaries, not random scenery.",
+    "ignoreMeaning": "The character insists a door is only a door.\n\nThe final story should show him missing the meaning of thresholds until one closes behind him.",
+    "missedMeaning": "The door symbol remains hidden.\n\nThe final ending may use doors without explaining why they feel important.",
+    "forcedConsequence": "A later door closes, and the character understands too late that the choice was not only whether to open it.",
+    "booleanTags": [
+      "threshold_symbol_active = true",
+      "door_as_threshold += collected",
+      "threshold_denial += ignored",
+      "door_symbol_hidden += missed",
+      "door_consequence_return += forced"
+    ],
+    "endingInfluence": "If collected, the ending should use doors as active story boundaries.\n\nIf ignored or missed, the ending should make thresholds matter through consequence rather than explanation.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_03_MUSICandFEAR.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-22"
+    }
+  },
+  {
+    "id": "teodor-scott-23-mapping-the-room",
+    "order": 22,
+    "number": 23,
+    "name": "Mapping The Room",
+    "zone": "Music and Fear",
+    "type": "System Seed",
+    "kind": "room",
+    "realityLayer": "clinical",
+    "realityLayers": [
+      "Systems Layer",
+      "Clinical Reality Layer",
+      "Environmental Layer"
+    ],
+    "symbol": "♫",
+    "glassRiddle": "Before he mapped code, he mapped the room.",
+    "artifact": "Room Map",
+    "artifactName": "Room Map",
+    "artifactVocabulary": [
+      "room",
+      "map"
+    ],
+    "glassSeeds": [
+      "Before he mapped code, he mapped the room."
+    ],
+    "storySeed": "The child learns to read rooms. Where people stand. How voices change. Which silence means peace and which silence means something is about to happen. This is not theory yet. It is survival drawn in the body.",
+    "collectMeaning": "The character accepts room-mapping as an early skill.\n\nThe final story should connect childhood attention to later systems thinking.",
+    "ignoreMeaning": "The character treats his room-reading as normal or superior instead of learned.\n\nThe final story should show him misusing perception because he does not know where it came from.",
+    "missedMeaning": "The origin of room-mapping remains hidden.\n\nThe final story may show him becoming good at systems without understanding the childhood pressure underneath.",
+    "forcedConsequence": "A later room changes, and he reads it perfectly, but the accuracy costs him because he cannot stop reading.",
+    "booleanTags": [
+      "room_mapping_seed = true",
+      "early_systems_thinking += collected",
+      "perception_without_origin += ignored",
+      "room_mapping_origin_hidden += missed",
+      "cannot_stop_reading_room += forced"
+    ],
+    "endingInfluence": "If collected, the ending should make systems thinking feel earned from lived experience.\n\nIf ignored or missed, the ending should show perception as both gift and burden.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_03_MUSICandFEAR.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-23"
+    }
+  },
+  {
+    "id": "teodor-scott-24-sound-becomes-a-room",
+    "order": 23,
+    "number": 24,
+    "name": "Sound Becomes A Room",
+    "zone": "Music and Fear",
+    "type": "Zone Gate",
+    "kind": "room",
+    "realityLayer": "software",
+    "realityLayers": [
+      "Music Layer",
+      "Systems Layer",
+      "Memory Layer",
+      "Creation Layer"
+    ],
+    "symbol": "♫",
+    "glassRiddle": "When the room would not hold him, sound learned how.",
+    "artifact": "Sound Room",
+    "artifactName": "Sound Room",
+    "artifactVocabulary": [
+      "sound",
+      "room"
+    ],
+    "glassSeeds": [
+      "When the room would not hold him, sound learned how."
+    ],
+    "storySeed": "Music and fear combine into something usable. Sound becomes a room the character can build, enter, arrange, repeat, distort, and survive inside. The child who listened to danger begins becoming the person who builds with sound.",
+    "collectMeaning": "The character accepts sound as constructed shelter.\n\nThe final story should connect early music to later creative systems, software, beats, loops, and AIFRED.",
+    "ignoreMeaning": "The character treats sound as only entertainment or escape.\n\nThe final story should delay the recognition that music was one of his first architectures.",
+    "missedMeaning": "The connection between fear, music, and creation remains unseen.\n\nThe final ending may show him building sound later without understanding what the room was for.",
+    "forcedConsequence": "A later project forces him to realize that he has been building rooms out of sound since childhood.",
+    "booleanTags": [
+      "music_fear_zone_complete = true",
+      "sound_as_room_active = true",
+      "sound_as_architecture += collected",
+      "music_reduced_to_noise += ignored",
+      "music_creation_origin_hidden += missed",
+      "aifred_seed += collected_or_forced"
+    ],
+    "endingInfluence": "This space closes the Music and Fear zone.\n\nIf collected, the ending should clearly connect childhood listening, piano, music production, and later system-building.\n\nIf ignored or missed, the ending should make that connection return later through AIFRED, loops, or the need to compare sound to a target.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_03_MUSICandFEAR.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-24"
+    }
+  },
+  {
+    "id": "teodor-scott-25-father",
+    "order": 24,
+    "number": 25,
+    "name": "Father",
+    "zone": "Father Layer",
+    "type": "Fixed Anchor",
+    "kind": "threshold",
+    "realityLayer": "self-awareness",
+    "realityLayers": [
+      "Family Layer",
+      "Memory Layer",
+      "Father Layer",
+      "Identity Layer"
+    ],
+    "symbol": "◇",
+    "glassRiddle": "The man became real by staying.",
+    "artifact": "Father’s Hand",
+    "artifactName": "Father’s Hand",
+    "artifactVocabulary": [
+      "father",
+      "s",
+      "hand"
+    ],
+    "glassSeeds": [
+      "The man became real by staying."
+    ],
+    "storySeed": "The father is not only the man who signed the papers or gave the name. He becomes real through repetition. He is there enough times that the child stops checking whether the door is still open. He is funny, stubborn, practical, flawed, present, and safe in the way real fathers can be safe without being perfect.",
+    "collectMeaning": "The character accepts the father as a real anchor.\n\nThe final story should show the father as human, not mythic.",
+    "ignoreMeaning": "The character avoids looking directly at how much the father mattered.\n\nThe final story should show grief becoming harder to name because love was minimized first.",
+    "missedMeaning": "The father remains present in the story, but the character does not understand the size of the anchor until after it is gone.",
+    "forcedConsequence": "A later room asks what held the character in place, and the answer returns wearing his father’s voice.",
+    "booleanTags": [
+      "fixed_anchor = true",
+      "father_exists = true",
+      "father_as_real_person = true",
+      "father_anchor_weight += collected",
+      "father_importance_minimized += ignored",
+      "father_anchor_unrecognized += missed",
+      "father_voice_return += forced"
+    ],
+    "endingInfluence": "This space must influence every Teodor / Scott ending.\n\nIf collected, the ending should show the father as a real man with texture and presence.\n\nIf ignored or missed, the ending should show the character discovering too late how much of his identity had been standing on that presence.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_04_FATHER_LAYER.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-25"
+    }
+  },
+  {
+    "id": "teodor-scott-26-father-as-anchor",
+    "order": 25,
+    "number": 26,
+    "name": "Father As Anchor",
+    "zone": "Father Layer",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "self-awareness",
+    "realityLayers": [
+      "Family Layer",
+      "Identity Layer",
+      "Memory Layer"
+    ],
+    "branchGroup": "father_relation",
+    "oppositeSpace": 27,
+    "symbol": "◇",
+    "glassRiddle": "The name felt safer when his voice stood under it.",
+    "artifact": "Anchor Voice",
+    "artifactName": "Anchor Voice",
+    "artifactVocabulary": [
+      "anchor",
+      "voice"
+    ],
+    "glassSeeds": [
+      "The name felt safer when his voice stood under it."
+    ],
+    "storySeed": "The father makes Scott feel like a name the character can stand inside. The new life becomes less abstract because someone is there, using the name with love, irritation, jokes, correction, and ordinary presence.",
+    "collectMeaning": "The character accepts that his father anchored the name Scott.\n\nThe final story should connect identity, naming, and fatherly presence.",
+    "ignoreMeaning": "The character refuses to admit how much the name depended on the person who gave it.\n\nThe final story should show Scott functioning in public while feeling unstable underneath.",
+    "missedMeaning": "The anchor is not recognized.\n\nIf Space 27 is also missed, the board must resolve father relation later.",
+    "forcedConsequence": "After the father is gone, the character hears the name Scott and realizes the voice that made it safe is missing.",
+    "booleanTags": [
+      "branch_group = father_relation",
+      "father_anchor_collected = true_if_collected",
+      "scott_name_anchored += collected",
+      "name_safety += collected",
+      "name_without_voice += ignored_or_forced",
+      "father_anchor_unseen += missed"
+    ],
+    "endingInfluence": "If collected, the ending should show Scott as a name supported by his father’s presence.\n\nIf ignored, the ending should show the character underestimating the connection between identity and fatherly witness.\n\nIf both Space 26 and Space 27 are collected, the ending should hold contradiction: the father was anchor and became absence.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_04_FATHER_LAYER.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-26"
+    }
+  },
+  {
+    "id": "teodor-scott-27-father-as-absence",
+    "order": 26,
+    "number": 27,
+    "name": "Father As Absence",
+    "zone": "Father Layer",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Father Layer",
+      "Grief Layer",
+      "Memory Layer"
+    ],
+    "branchGroup": "father_relation",
+    "oppositeSpace": 26,
+    "symbol": "◇",
+    "glassRiddle": "The empty place arrived before the death did.",
+    "artifact": "Coming Absence",
+    "artifactName": "Coming Absence",
+    "artifactVocabulary": [
+      "coming",
+      "absence"
+    ],
+    "glassSeeds": [
+      "The empty place arrived before the death did."
+    ],
+    "storySeed": "Even before the loss, the possibility of absence exists somewhere in the room. The child does not know how to name it, but the board knows that every anchor has a shadow: the terror of what happens if it is removed.",
+    "collectMeaning": "The character recognizes that the father’s importance created the possibility of devastating absence.\n\nThe final story should show love and fear of loss as connected.",
+    "ignoreMeaning": "The character rejects the idea of absence until absence becomes unavoidable.\n\nThe final story should show grief arriving as a shock with no prepared language.",
+    "missedMeaning": "The shadow of absence is unseen.\n\nIf Space 26 is also missed, the board must resolve father relation later.",
+    "forcedConsequence": "The father’s absence becomes the room before the character is ready to admit the room changed.",
+    "booleanTags": [
+      "branch_group = father_relation",
+      "father_absence_collected = true_if_collected",
+      "absence_shadow_seen += collected",
+      "grief_unprepared += ignored_or_missed",
+      "room_changed_by_absence += forced"
+    ],
+    "endingInfluence": "If collected, the ending should show that love carried the risk of loss from the beginning.\n\nIf ignored or missed, the ending should show absence arriving before the character has language to survive it.\n\nIf both father branches are collected, the final story should make the father both safety and the source of the largest empty space.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_04_FATHER_LAYER.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-27"
+    }
+  },
+  {
+    "id": "teodor-scott-28-the-office-smell",
+    "order": 27,
+    "number": 28,
+    "name": "The Office Smell",
+    "zone": "Father Layer",
+    "type": "Witness Fragment",
+    "kind": "room",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Memory Layer",
+      "Body Layer",
+      "Father Layer"
+    ],
+    "symbol": "◇",
+    "glassRiddle": "Memory entered through the nose before the mind opened the file.",
+    "artifact": "Stetson Trace",
+    "artifactName": "Stetson Trace",
+    "artifactVocabulary": [
+      "stetson",
+      "trace"
+    ],
+    "glassSeeds": [
+      "Memory entered through the nose before the mind opened the file."
+    ],
+    "storySeed": "The father’s office carries him in pieces. Paper. Coffee. Old work. Stetson. Drakkar Noir. Dust. A chair. A desk. The kind of smell that does not ask permission before turning a grown man back into a child.",
+    "collectMeaning": "The character accepts sensory grief as real memory.\n\nThe final story should use smell, room texture, and physical detail when the father returns through memory.",
+    "ignoreMeaning": "The character tries to treat grief as thought only.\n\nThe body remembers anyway.",
+    "missedMeaning": "The sensory memory is not claimed.\n\nThe final story may make the father feel distant, abstract, or difficult to locate until a later trigger returns him.",
+    "forcedConsequence": "A smell in another room opens the office without warning, and the character is seventeen again before he can defend himself.",
+    "booleanTags": [
+      "father_sensory_memory_active = true",
+      "office_smell_collected = true_if_collected",
+      "sensory_grief_weight += collected",
+      "grief_over_intellectualized += ignored",
+      "father_memory_abstracted += missed",
+      "smell_trigger_return += forced"
+    ],
+    "endingInfluence": "If collected, the ending should make the father vivid through physical memory.\n\nIf ignored or missed, the ending should show the father becoming abstract until the body forces memory open.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_04_FATHER_LAYER.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-28"
+    }
+  },
+  {
+    "id": "teodor-scott-29-the-empty-chair",
+    "order": 28,
+    "number": 29,
+    "name": "The Empty Chair",
+    "zone": "Father Layer",
+    "type": "Fixed Anchor",
+    "kind": "threshold",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Grief Layer",
+      "Family Layer",
+      "Memory Layer",
+      "Reality Layer"
+    ],
+    "symbol": "◇",
+    "glassRiddle": "The chair did not move. The world did.",
+    "artifact": "Empty Chair",
+    "artifactName": "Empty Chair",
+    "artifactVocabulary": [
+      "empty",
+      "chair"
+    ],
+    "glassSeeds": [
+      "The chair did not move. The world did."
+    ],
+    "storySeed": "The father dies, and the room changes without moving the furniture. The chair remains where it was, but it becomes empty in a new way. A smell becomes evidence. A joke becomes a wound. A familiar phrase becomes a relic.",
+    "collectMeaning": "The character accepts the death as the moment the board tilts.\n\nThe final story should show grief as a structural change, not only sadness.",
+    "ignoreMeaning": "The character refuses to look at the empty chair directly.\n\nThe final story should show grief leaking into behavior, decisions, anger, motion, or avoidance.",
+    "missedMeaning": "The death remains a fact, but the character does not understand how much it changed the board.\n\nThe final story may show him living inside the tilt without knowing why everything feels slanted.",
+    "forcedConsequence": "The empty chair appears later in another form: an unanswered call, a missed hospital visit, a fatherhood moment with no father to ask, or a room where the wrong person is missing.",
+    "booleanTags": [
+      "fixed_anchor = true",
+      "father_death_exists = true",
+      "empty_chair_active = true",
+      "board_tilted_by_grief = true",
+      "grief_as_structure += collected",
+      "grief_avoidance += ignored",
+      "grief_tilt_unrecognized += missed",
+      "empty_chair_return += forced"
+    ],
+    "endingInfluence": "This space must influence every Teodor / Scott ending.\n\nIf collected, the ending should name the father’s death as a structural shift.\n\nIf ignored or missed, the ending should show the character behaving from grief without admitting grief is driving.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_04_FATHER_LAYER.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-29"
+    }
+  },
+  {
+    "id": "teodor-scott-30-grief-named",
+    "order": 29,
+    "number": 30,
+    "name": "Grief Named",
+    "zone": "Father Layer",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "clinical",
+    "realityLayers": [
+      "Grief Layer",
+      "Clinical Reality Layer",
+      "Memory Layer"
+    ],
+    "branchGroup": "grief_relation",
+    "oppositeSpace": 31,
+    "symbol": "◇",
+    "glassRiddle": "The wound changed when he called it by its name.",
+    "artifact": "Named Grief",
+    "artifactName": "Named Grief",
+    "artifactVocabulary": [
+      "named",
+      "grief"
+    ],
+    "glassSeeds": [
+      "The wound changed when he called it by its name."
+    ],
+    "storySeed": "The character says the sentence plainly: he wanted his dad. Not the idea of a father. Not a symbol. Not an explanation. His dad. Naming grief does not fix it, but it stops the wound from pretending to be everything else.",
+    "collectMeaning": "The character accepts grief as grief.\n\nThe final story should show emotional honesty becoming possible, even if repair is still incomplete.",
+    "ignoreMeaning": "The character almost names the grief but turns it into theory, anger, humor, work, or performance instead.\n\nThe final story should show grief hiding inside other explanations.",
+    "missedMeaning": "The chance to name grief passes.\n\nIf Space 31 is also missed, the board must resolve grief relation later.",
+    "forcedConsequence": "A later moment removes every disguise, and the character has to admit the simple sentence underneath the architecture:\n\nHe wanted his dad.",
+    "booleanTags": [
+      "branch_group = grief_relation",
+      "grief_named_collected = true_if_collected",
+      "grief_named += collected",
+      "grief_nearly_named += ignored",
+      "grief_language_missing += missed",
+      "plain_grief_sentence_forced += forced"
+    ],
+    "endingInfluence": "If collected, the ending should allow honesty around grief.\n\nIf ignored, the ending should show grief being converted into other forms.\n\nIf both Grief Named and Grief Disguised are collected, the ending should show a character who knows the truth and still sometimes hides from it.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_04_FATHER_LAYER.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-30"
+    }
+  },
+  {
+    "id": "teodor-scott-31-grief-disguised",
+    "order": 30,
+    "number": 31,
+    "name": "Grief Disguised",
+    "zone": "Father Layer",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "clinical",
+    "realityLayers": [
+      "Grief Layer",
+      "Behavioral Layer",
+      "Clinical Reality Layer"
+    ],
+    "branchGroup": "grief_relation",
+    "oppositeSpace": 30,
+    "symbol": "◇",
+    "glassRiddle": "The wound wore different clothes and called itself motion.",
+    "artifact": "Disguised Grief",
+    "artifactName": "Disguised Grief",
+    "artifactVocabulary": [
+      "disguised",
+      "grief"
+    ],
+    "glassSeeds": [
+      "The wound wore different clothes and called itself motion."
+    ],
+    "storySeed": "Grief does not always look like crying. Sometimes it looks like intensity, anger, bad timing, jokes, escape, arguments, substances, obsession, overbuilding, or the desperate need to prove the wound has become useful.",
+    "collectMeaning": "The character recognizes grief in disguise.\n\nThe final story should show how grief moved through behavior without pretending the behavior did not matter.",
+    "ignoreMeaning": "The character refuses to connect behavior to grief.\n\nThe final story should show him mistaking the disguise for personality.",
+    "missedMeaning": "The disguise remains unseen.\n\nIf Space 30 is also missed, the board must resolve grief relation later.",
+    "forcedConsequence": "A consequence strips the disguise away, and the character sees that what he called motion was grief trying not to stand still.",
+    "booleanTags": [
+      "branch_group = grief_relation",
+      "grief_disguised_collected = true_if_collected",
+      "behavioral_grief_seen += collected",
+      "grief_as_personality += ignored",
+      "grief_disguise_unseen += missed",
+      "disguise_removed_by_consequence += forced"
+    ],
+    "endingInfluence": "If collected, the ending should show grief moving through behavior with accountability.\n\nIf ignored or missed, the ending should show the character confusing grief-driven behavior for who he is.\n\nIf both grief branches are collected, the ending should show both awareness and avoidance.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_04_FATHER_LAYER.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-31"
+    }
+  },
+  {
+    "id": "teodor-scott-32-the-board-tilts",
+    "order": 31,
+    "number": 32,
+    "name": "The Board Tilts",
+    "zone": "Father Layer",
+    "type": "Zone Gate",
+    "kind": "room",
+    "realityLayer": "software",
+    "realityLayers": [
+      "Grief Layer",
+      "Systems Layer",
+      "Family Layer",
+      "Consequence Layer"
+    ],
+    "symbol": "◇",
+    "glassRiddle": "One piece left, and every square leaned toward it.",
+    "artifact": "Tilted Board",
+    "artifactName": "Tilted Board",
+    "artifactVocabulary": [
+      "tilted",
+      "board"
+    ],
+    "glassSeeds": [
+      "One piece left, and every square leaned toward it."
+    ],
+    "storySeed": "The father’s death does not end the game. It changes the angle of every space after it. Choices, love, anger, work, music, fatherhood, and fear all begin moving on a tilted surface.",
+    "collectMeaning": "The character accepts that grief changed the whole system.\n\nThe final story should show father-loss influencing later zones without reducing everything to father-loss.",
+    "ignoreMeaning": "The character refuses to admit the board tilted.\n\nThe final story should show him blaming individual spaces while missing the slope under all of them.",
+    "missedMeaning": "The tilt remains invisible.\n\nThe final story may show a life that keeps sliding in the same direction without understanding the angle.",
+    "forcedConsequence": "A later space will not behave the way he expects, and the board reveals the reason: the tilt began here.",
+    "booleanTags": [
+      "father_layer_complete = true",
+      "board_tilt_active = true",
+      "grief_system_shift += collected",
+      "grief_system_denied += ignored",
+      "tilt_unrecognized += missed",
+      "future_spaces_affected_by_father_loss = true",
+      "tilt_revealed_later += forced"
+    ],
+    "endingInfluence": "This space closes the Father Layer zone.\n\nIf collected, the ending should make father-loss a clear structural force.\n\nIf ignored or missed, the ending should show father-loss influencing later life indirectly, through silence, urgency, fear of absence, or the need to build something strong enough to hold the missing weight.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_04_FATHER_LAYER.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-32"
+    }
+  },
+  {
+    "id": "teodor-scott-33-weather-inside-him",
+    "order": 32,
+    "number": 33,
+    "name": "Weather Inside Him",
+    "zone": "Collapse and Survival",
+    "type": "Collapse Fragment",
+    "kind": "room",
+    "realityLayer": "clinical",
+    "realityLayers": [
+      "Grief Layer",
+      "Behavioral Layer",
+      "Clinical Reality Layer"
+    ],
+    "symbol": "↯",
+    "glassRiddle": "The storm learned his hands before it learned his mouth.",
+    "artifact": "Inner Weather",
+    "artifactName": "Inner Weather",
+    "artifactVocabulary": [
+      "inner",
+      "weather"
+    ],
+    "glassSeeds": [
+      "The storm learned his hands before it learned his mouth."
+    ],
+    "storySeed": "After the father’s death, something moves inside the character faster than language. From the outside, his choices look like choices. From inside him, they feel like weather: pressure, heat, motion, warning, and the need to do something before the feeling catches him standing still.",
+    "collectMeaning": "The character recognizes that grief became internal weather.\n\nThe final story should show behavior coming from pressure without pretending pressure removes responsibility.",
+    "ignoreMeaning": "The character refuses to see the weather inside him.\n\nThe final story should show him treating his reactions as personality, luck, or other people’s fault.",
+    "missedMeaning": "The weather remains unnamed.\n\nThe final story may show the character moving through storms he keeps calling normal days.",
+    "forcedConsequence": "A later conflict makes the old weather visible, and the character realizes his body knew the storm before his mind admitted it.",
+    "booleanTags": [
+      "collapse_zone_active = true",
+      "inner_weather_active = true",
+      "grief_pressure_seen += collected",
+      "grief_pressure_denied += ignored",
+      "emotional_weather_unnamed += missed",
+      "old_weather_return += forced"
+    ],
+    "endingInfluence": "If collected, the ending should make the character aware of the pressure underneath his behavior.\n\nIf ignored or missed, the ending should show the pressure acting through him before he understands it.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_05_COLLAPSEandSURVIVAL.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-33"
+    }
+  },
+  {
+    "id": "teodor-scott-34-rebellion",
+    "order": 33,
+    "number": 34,
+    "name": "Rebellion",
+    "zone": "Collapse and Survival",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Behavioral Layer",
+      "Grief Layer",
+      "Consequence Layer"
+    ],
+    "branchGroup": "collapse_response",
+    "oppositeSpace": 35,
+    "symbol": "↯",
+    "glassRiddle": "He called it freedom because control had left first.",
+    "artifact": "Rebel Match",
+    "artifactName": "Rebel Match",
+    "artifactVocabulary": [
+      "rebel",
+      "match"
+    ],
+    "glassSeeds": [
+      "He called it freedom because control had left first."
+    ],
+    "storySeed": "The character runs hot. He pushes, argues, tests, leaves, returns, breaks rules, takes risks, and mistakes motion for control. Rebellion gives him the feeling of steering, even when the road is choosing more than he is.",
+    "collectMeaning": "The character recognizes rebellion as one response to loss.\n\nThe final story should show rebellion clearly: not as coolness, not as villainy, but as pain moving too fast.",
+    "ignoreMeaning": "The character romanticizes rebellion or treats it as proof he cannot be contained.\n\nThe final story should show him confusing destruction with identity.",
+    "missedMeaning": "The rebellious response is not examined.\n\nIf Space 35 is also missed, the board must resolve collapse response later.",
+    "forcedConsequence": "A choice made in heat returns later colder, heavier, and harder to laugh off.",
+    "booleanTags": [
+      "branch_group = collapse_response",
+      "rebellion_collected = true_if_collected",
+      "grief_as_rebellion += collected",
+      "rebellion_romanticized += ignored",
+      "rebellion_unexamined += missed",
+      "heated_choice_returns += forced"
+    ],
+    "endingInfluence": "If collected, the ending should show rebellion as part of the character’s collapse.\n\nIf ignored, the ending should show rebellion becoming performance.\n\nIf both Rebellion and Survival are collected, the ending should show stubborn motion as both dangerous and life-preserving.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_05_COLLAPSEandSURVIVAL.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-34"
+    }
+  },
+  {
+    "id": "teodor-scott-35-survival",
+    "order": 34,
+    "number": 35,
+    "name": "Survival",
+    "zone": "Collapse and Survival",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Behavioral Layer",
+      "Resilience Layer",
+      "Consequence Layer"
+    ],
+    "branchGroup": "collapse_response",
+    "oppositeSpace": 34,
+    "symbol": "↯",
+    "glassRiddle": "The same stubbornness that broke doors kept him breathing.",
+    "artifact": "Survival Bone",
+    "artifactName": "Survival Bone",
+    "artifactVocabulary": [
+      "survival",
+      "bone"
+    ],
+    "glassSeeds": [
+      "The same stubbornness that broke doors kept him breathing."
+    ],
+    "storySeed": "Stubbornness keeps the character alive. The same force that makes him difficult also keeps him from disappearing into the worst version of the story. Survival is not clean, but it is real.",
+    "collectMeaning": "The character accepts survival without turning it into sainthood.\n\nThe final story should show that staying alive matters, even when survival was messy.",
+    "ignoreMeaning": "The character dismisses survival because it was not graceful.\n\nThe final story should show him failing to credit the part of himself that kept returning.",
+    "missedMeaning": "The survival response is not claimed.\n\nIf Space 34 is also missed, the board must resolve collapse response later.",
+    "forcedConsequence": "A later crisis reveals that the stubborn part of him is still there, still flawed, still useful, and still refusing to vanish.",
+    "booleanTags": [
+      "branch_group = collapse_response",
+      "survival_collected = true_if_collected",
+      "stubborn_survival += collected",
+      "survival_minimized += ignored",
+      "survival_unclaimed += missed",
+      "survival_instinct_return += forced"
+    ],
+    "endingInfluence": "If collected, the ending should show survival as meaningful but imperfect.\n\nIf ignored, the ending should show the character overlooking his own endurance.\n\nIf both Rebellion and Survival are collected, the ending should make stubbornness double-edged.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_05_COLLAPSEandSURVIVAL.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-35"
+    }
+  },
+  {
+    "id": "teodor-scott-36-smart-was-not-safe",
+    "order": 35,
+    "number": 36,
+    "name": "Smart Was Not Safe",
+    "zone": "Collapse and Survival",
+    "type": "Consequence Fragment",
+    "kind": "room",
+    "realityLayer": "clinical",
+    "realityLayers": [
+      "Clinical Reality Layer",
+      "Consequence Layer",
+      "Learning Layer"
+    ],
+    "symbol": "↯",
+    "glassRiddle": "A sharp mind still bleeds when it walks into glass.",
+    "artifact": "Sharp Wrong Key",
+    "artifactName": "Sharp Wrong Key",
+    "artifactVocabulary": [
+      "sharp",
+      "wrong",
+      "key"
+    ],
+    "glassSeeds": [
+      "A sharp mind still bleeds when it walks into glass."
+    ],
+    "storySeed": "The character learns that being smart does not mean being safe. Intelligence can explain a room after the damage. It cannot always stop him from entering it. He mistakes understanding for maturity until consequence teaches the difference.",
+    "collectMeaning": "The character accepts that intelligence is not the same as wisdom.\n\nThe final story should show learning through consequence, not instant enlightenment.",
+    "ignoreMeaning": "The character keeps using intelligence as a shield.\n\nThe final story should show him explaining patterns while repeating them.",
+    "missedMeaning": "The lesson remains unseen.\n\nThe final story may show him building better explanations than choices.",
+    "forcedConsequence": "A situation he understands perfectly still hurts someone, proving that insight without discipline is not enough.",
+    "booleanTags": [
+      "intelligence_not_safety = true",
+      "maturity_lesson_seen += collected",
+      "intelligence_as_shield += ignored",
+      "insight_without_change += missed",
+      "understanding_not_enough += forced"
+    ],
+    "endingInfluence": "If collected, the ending should show humility beginning.\n\nIf ignored or missed, the ending should show the character being right about the pattern and still wrong in the moment.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_05_COLLAPSEandSURVIVAL.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-36"
+    }
+  },
+  {
+    "id": "teodor-scott-37-dragging-the-old-self",
+    "order": 36,
+    "number": 37,
+    "name": "Dragging The Old Self",
+    "zone": "Collapse and Survival",
+    "type": "Consequence Fragment",
+    "kind": "room",
+    "realityLayer": "self-awareness",
+    "realityLayers": [
+      "Behavioral Layer",
+      "Identity Layer",
+      "Recovery Layer"
+    ],
+    "symbol": "↯",
+    "glassRiddle": "He tried to walk forward while holding his own ankle.",
+    "artifact": "Old Self",
+    "artifactName": "Old Self",
+    "artifactVocabulary": [
+      "old",
+      "self"
+    ],
+    "glassSeeds": [
+      "He tried to walk forward while holding his own ankle."
+    ],
+    "storySeed": "The character tries to become better while still carrying the older version of himself. The old self is not dead. It complains, panics, jokes, reaches for old exits, and occasionally grabs the wheel.",
+    "collectMeaning": "The character recognizes that change requires carrying, confronting, and retraining the old self.\n\nThe final story should show growth as difficult continuity, not a clean transformation.",
+    "ignoreMeaning": "The character pretends the old self is gone.\n\nThe final story should show old patterns returning because they were declared dead instead of understood.",
+    "missedMeaning": "The old self remains hidden.\n\nThe final story may show the character surprised by behavior that has been walking beside him for years.",
+    "forcedConsequence": "The old self speaks in a moment that needed the new self, and the character has to answer for both.",
+    "booleanTags": [
+      "old_self_active = true",
+      "old_self_recognized += collected",
+      "false_reinvention += ignored",
+      "old_pattern_hidden += missed",
+      "old_self_returns_in_conflict += forced"
+    ],
+    "endingInfluence": "If collected, the ending should show change as a negotiation with the old self.\n\nIf ignored or missed, the ending should show old patterns returning at the worst possible time.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_05_COLLAPSEandSURVIVAL.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-37"
+    }
+  },
+  {
+    "id": "teodor-scott-38-damage-done",
+    "order": 37,
+    "number": 38,
+    "name": "Damage Done",
+    "zone": "Collapse and Survival",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Consequence Layer",
+      "Relationship Layer",
+      "Accountability Layer"
+    ],
+    "branchGroup": "consequence_response",
+    "oppositeSpace": 39,
+    "symbol": "↯",
+    "glassRiddle": "A reason does not unbreak the glass.",
+    "artifact": "Broken Glass",
+    "artifactName": "Broken Glass",
+    "artifactVocabulary": [
+      "broken",
+      "glass"
+    ],
+    "glassSeeds": [
+      "A reason does not unbreak the glass."
+    ],
+    "storySeed": "Some choices cost people. Some words land. Some absences teach. Some damage remains even after the character understands why he caused it. Explanation does not reverse impact.",
+    "collectMeaning": "The character accepts that damage happened.\n\nThe final story should show accountability without collapsing into self-hatred.",
+    "ignoreMeaning": "The character avoids the damage by focusing only on his pain.\n\nThe final story should show him confusing explanation with repair.",
+    "missedMeaning": "The damage is not seen clearly.\n\nIf Space 39 is also missed, the board must resolve consequence response later.",
+    "forcedConsequence": "Someone else names the damage before he does, and the board does not let him call it misunderstanding.",
+    "booleanTags": [
+      "branch_group = consequence_response",
+      "damage_done_collected = true_if_collected",
+      "accountability_seed += collected",
+      "explanation_without_repair += ignored",
+      "damage_unseen += missed",
+      "damage_named_by_other += forced"
+    ],
+    "endingInfluence": "If collected, the ending should include honest consequence.\n\nIf ignored, the ending should show the character over-explaining instead of repairing.\n\nIf both Damage Done and Repair Attempted are collected, the ending should show harm and effort in the same life.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_05_COLLAPSEandSURVIVAL.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-38"
+    }
+  },
+  {
+    "id": "teodor-scott-39-repair-attempted",
+    "order": 38,
+    "number": 39,
+    "name": "Repair Attempted",
+    "zone": "Collapse and Survival",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Repair Layer",
+      "Relationship Layer",
+      "Accountability Layer"
+    ],
+    "branchGroup": "consequence_response",
+    "oppositeSpace": 38,
+    "symbol": "↯",
+    "glassRiddle": "He could not undo the stone, but he could stop throwing it.",
+    "artifact": "Repair Thread",
+    "artifactName": "Repair Thread",
+    "artifactVocabulary": [
+      "repair",
+      "thread"
+    ],
+    "glassSeeds": [
+      "He could not undo the stone, but he could stop throwing it."
+    ],
+    "storySeed": "The character attempts repair. Sometimes too late. Sometimes clumsily. Sometimes with the wrong words first. But he tries to answer consequence with action instead of only regret.",
+    "collectMeaning": "The character accepts repair as responsibility.\n\nThe final story should show repair as effort, not magic.",
+    "ignoreMeaning": "The character wants to be forgiven without doing the slow work.\n\nThe final story should show apology without structure failing to hold.",
+    "missedMeaning": "The repair attempt is not claimed.\n\nIf Space 38 is also missed, the board must resolve consequence response later.",
+    "forcedConsequence": "A relationship offers one narrow chance to repair, and the character has to choose action before explanation.",
+    "booleanTags": [
+      "branch_group = consequence_response",
+      "repair_attempted_collected = true_if_collected",
+      "repair_as_action += collected",
+      "apology_without_structure += ignored",
+      "repair_unclaimed += missed",
+      "repair_window_forced += forced"
+    ],
+    "endingInfluence": "If collected, the ending should show repair as possible but not guaranteed.\n\nIf ignored, the ending should show the character wanting relief more than repair.\n\nIf both Damage Done and Repair Attempted are collected, the ending should show accountability with effort.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_05_COLLAPSEandSURVIVAL.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-39"
+    }
+  },
+  {
+    "id": "teodor-scott-40-kept-moving",
+    "order": 39,
+    "number": 40,
+    "name": "Kept Moving",
+    "zone": "Collapse and Survival",
+    "type": "Zone Gate",
+    "kind": "room",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Survival Layer",
+      "Consequence Layer",
+      "Recovery Layer"
+    ],
+    "symbol": "↯",
+    "glassRiddle": "The board did not call it victory. It marked that he moved.",
+    "artifact": "Forward Mark",
+    "artifactName": "Forward Mark",
+    "artifactVocabulary": [
+      "forward",
+      "mark"
+    ],
+    "glassSeeds": [
+      "The board did not call it victory. It marked that he moved."
+    ],
+    "storySeed": "The character keeps moving. Not cleanly. Not heroically. Not always wisely. But he does not vanish into the worst version of himself. The board records movement without pretending movement equals healing.",
+    "collectMeaning": "The character accepts that continuing mattered.\n\nThe final story should show survival as a fact worth carrying, while still preserving consequence.",
+    "ignoreMeaning": "The character dismisses movement because it was messy.\n\nThe final story should show him unable to see progress unless it looks perfect.",
+    "missedMeaning": "The forward motion remains unrecognized.\n\nThe final story may show him surviving without understanding that survival itself changed the path.",
+    "forcedConsequence": "A later space only exists because he kept moving long enough to reach it.",
+    "booleanTags": [
+      "collapse_survival_zone_complete = true",
+      "kept_moving = true",
+      "movement_without_victory += collected",
+      "progress_dismissed += ignored",
+      "survival_unrecognized += missed",
+      "future_space_unlocked_by_survival += forced"
+    ],
+    "endingInfluence": "This space closes the Collapse and Survival zone.\n\nIf collected, the ending should show that movement allowed future spaces to exist.\n\nIf ignored or missed, the ending should show the character failing to value survival because it did not look like redemption yet.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_05_COLLAPSEandSURVIVAL.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-40"
+    }
+  },
+  {
+    "id": "teodor-scott-41-kaegan",
+    "order": 40,
+    "number": 41,
+    "name": "Kaegan",
+    "zone": "Kaegan / Future Layer",
+    "type": "Fixed Anchor",
+    "kind": "threshold",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Family Layer",
+      "Future Layer",
+      "Responsibility Layer"
+    ],
+    "symbol": "0826",
+    "glassRiddle": "The future arrived with a child’s face.",
+    "artifact": "Future Child",
+    "artifactName": "Future Child",
+    "artifactVocabulary": [
+      "future",
+      "child"
+    ],
+    "glassSeeds": [
+      "The future arrived with a child’s face."
+    ],
+    "storySeed": "Kaegan enters the board, and consequence changes. The character is no longer only surviving his own story. His choices now echo into someone else’s childhood, someone else’s memory, someone else’s understanding of what love feels like when it enters or leaves a room.",
+    "collectMeaning": "The character accepts Kaegan as a future space with his own agency.\n\nThe final story should show fatherhood as responsibility, not redemption by default.",
+    "ignoreMeaning": "The character loves the child but avoids the full weight of what fatherhood changes.\n\nThe final story should show love existing alongside delay, fear, inconsistency, or emotional unreadiness.",
+    "missedMeaning": "The fatherhood anchor remains present, but the character does not understand its full meaning yet.\n\nThe final story may show him realizing too late that the child was witnessing more than he thought.",
+    "forcedConsequence": "A later choice returns through Kaegan’s eyes, and the character understands that consequence can inherit a face.",
+    "booleanTags": [
+      "fixed_anchor = true",
+      "kaegan_exists = true",
+      "future_layer_active = true",
+      "fatherhood_responsibility += collected",
+      "fatherhood_weight_avoided += ignored",
+      "fatherhood_meaning_delayed += missed",
+      "consequence_seen_through_child += forced"
+    ],
+    "endingInfluence": "This space must influence every Teodor / Scott ending.\n\nIf collected, the ending should treat Kaegan as a real person with agency.\n\nIf ignored or missed, the ending should show the character learning that love without steadiness still leaves marks.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_06_KAEGAN&FUTURE_LAYER.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-41"
+    }
+  },
+  {
+    "id": "teodor-scott-42-present-father",
+    "order": 41,
+    "number": 42,
+    "name": "Present Father",
+    "zone": "Kaegan / Future Layer",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Family Layer",
+      "Responsibility Layer",
+      "Repair Layer"
+    ],
+    "branchGroup": "fatherhood_relation",
+    "oppositeSpace": 43,
+    "symbol": "0826",
+    "glassRiddle": "Showing up is a door that opens more than once.",
+    "artifact": "Present Hour",
+    "artifactName": "Present Hour",
+    "artifactVocabulary": [
+      "present",
+      "hour"
+    ],
+    "glassSeeds": [
+      "Showing up is a door that opens more than once."
+    ],
+    "storySeed": "The character shows up. Not perfectly. Not magically healed. But present enough for the child to feel him as part of the room. He learns that fatherhood is not a title held once. It is a repeated arrival.",
+    "collectMeaning": "The character accepts presence as an active responsibility.\n\nThe final story should show fatherhood through repeated showing-up, not grand speeches.",
+    "ignoreMeaning": "The character wants presence to count without doing the repetition.\n\nThe final story should show the difference between wanting to be present and being reliably present.",
+    "missedMeaning": "The present-father branch is not claimed.\n\nIf Space 43 is also missed, the board must resolve fatherhood relation later.",
+    "forcedConsequence": "A moment arrives where the child does not need an explanation. He needs the father to be there.",
+    "booleanTags": [
+      "branch_group = fatherhood_relation",
+      "present_father_collected = true_if_collected",
+      "father_presence += collected",
+      "presence_without_repetition += ignored",
+      "father_presence_unclaimed += missed",
+      "show_up_required += forced"
+    ],
+    "endingInfluence": "If collected, the ending should show fatherhood as repeated presence.\n\nIf ignored, the ending should show the gap between intention and reliability.\n\nIf both Present Father and Distant Father are collected, the ending should show a father who loves deeply but does not always arrive cleanly.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_06_KAEGAN&FUTURE_LAYER.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-42"
+    }
+  },
+  {
+    "id": "teodor-scott-43-distant-father",
+    "order": 42,
+    "number": 43,
+    "name": "Distant Father",
+    "zone": "Kaegan / Future Layer",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Family Layer",
+      "Distance Layer",
+      "Grief Layer"
+    ],
+    "branchGroup": "fatherhood_relation",
+    "oppositeSpace": 42,
+    "symbol": "0826",
+    "glassRiddle": "Love stayed in the room after the chair moved back.",
+    "artifact": "Distant Chair",
+    "artifactName": "Distant Chair",
+    "artifactVocabulary": [
+      "distant",
+      "chair"
+    ],
+    "glassSeeds": [
+      "Love stayed in the room after the chair moved back."
+    ],
+    "storySeed": "The character loves his son, but distance enters the relationship. Sometimes through circumstance. Sometimes through fear. Sometimes through silence, inconsistency, shame, or the old grief standing between father and child.",
+    "collectMeaning": "The character names the distance honestly.\n\nThe final story should show love and distance existing at the same time.",
+    "ignoreMeaning": "The character refuses to admit the distance matters because the love is real.\n\nThe final story should show how love without contact can still become absence.",
+    "missedMeaning": "The distant-father branch is not claimed.\n\nIf Space 42 is also missed, the board must resolve fatherhood relation later.",
+    "forcedConsequence": "The child learns the shape of distance before the father finds the language to explain it.",
+    "booleanTags": [
+      "branch_group = fatherhood_relation",
+      "distant_father_collected = true_if_collected",
+      "father_distance_named += collected",
+      "love_used_to_deny_distance += ignored",
+      "father_distance_unclaimed += missed",
+      "child_learns_distance += forced"
+    ],
+    "endingInfluence": "If collected, the ending should allow honest distance without erasing love.\n\nIf ignored, the ending should show the character hiding behind love to avoid accountability.\n\nIf both fatherhood branches are collected, the final story should preserve contradiction: present in some rooms, distant in others.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_06_KAEGAN&FUTURE_LAYER.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-43"
+    }
+  },
+  {
+    "id": "teodor-scott-44-another-address",
+    "order": 43,
+    "number": 44,
+    "name": "Another Address",
+    "zone": "Kaegan / Future Layer",
+    "type": "Future Fragment",
+    "kind": "room",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Consequence Layer",
+      "Family Layer",
+      "Future Layer"
+    ],
+    "symbol": "0826",
+    "glassRiddle": "Every choice learned a second place to land.",
+    "artifact": "Second Address",
+    "artifactName": "Second Address",
+    "artifactVocabulary": [
+      "second",
+      "address"
+    ],
+    "glassSeeds": [
+      "Every choice learned a second place to land."
+    ],
+    "storySeed": "After Kaegan, every choice travels farther. An absence is not only absence. A mood is not only a mood. A relapse, repair, silence, paycheck, apology, message, or missed day can land in the child’s world too.",
+    "collectMeaning": "The character accepts that his choices echo into another life.\n\nThe final story should make consequence multi-addressed.",
+    "ignoreMeaning": "The character treats his choices as private even when they are no longer private.\n\nThe final story should show private chaos becoming shared weather.",
+    "missedMeaning": "The second address remains unseen.\n\nThe final story may show the character surprised when consequences reach the child.",
+    "forcedConsequence": "A choice he thought belonged only to him arrives in Kaegan’s room.",
+    "booleanTags": [
+      "second_address_active = true",
+      "multi_address_consequence += collected",
+      "private_chaos_denial += ignored",
+      "second_address_unseen += missed",
+      "choice_arrives_in_child_room += forced"
+    ],
+    "endingInfluence": "If collected, the ending should show cause and effect extending into fatherhood.\n\nIf ignored or missed, the ending should reveal consequence through delayed impact.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_06_KAEGAN&FUTURE_LAYER.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-44"
+    }
+  },
+  {
+    "id": "teodor-scott-45-the-child-learns-the-absence",
+    "order": 44,
+    "number": 45,
+    "name": "The Child Learns The Absence",
+    "zone": "Kaegan / Future Layer",
+    "type": "Inheritance Fragment",
+    "kind": "room",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Family Layer",
+      "Memory Layer",
+      "Inheritance Layer",
+      "Grief Layer"
+    ],
+    "symbol": "0826",
+    "glassRiddle": "A child can inherit the shape of someone he never met.",
+    "artifact": "Inherited Outline",
+    "artifactName": "Inherited Outline",
+    "artifactVocabulary": [
+      "inherited",
+      "outline"
+    ],
+    "glassSeeds": [
+      "A child can inherit the shape of someone he never met."
+    ],
+    "storySeed": "Kaegan does not need to know the grandfather directly to feel the outline of him. Grief moves through posture, silence, stories, tone, and the way a room changes when a name is spoken. Absence can become a shape a child learns before he understands it.",
+    "collectMeaning": "The character recognizes inheritance as transmission.\n\nThe final story should show grief traveling indirectly without turning it into magic or proof.",
+    "ignoreMeaning": "The character refuses to see how his unfinished grief can reach the child.\n\nThe final story should show inheritance happening through tone and silence anyway.",
+    "missedMeaning": "The inheritance layer remains hidden.\n\nThe final story may show the child carrying echoes the father does not recognize at first.",
+    "forcedConsequence": "A child repeats a gesture, phrase, posture, or pattern that reveals the old absence has traveled forward.",
+    "booleanTags": [
+      "inheritance_layer_active = true",
+      "grief_transmission_seen += collected",
+      "unfinished_grief_denied += ignored",
+      "inheritance_hidden += missed",
+      "absence_repeated_by_child += forced"
+    ],
+    "endingInfluence": "If collected, the ending should show inheritance as human transmission.\n\nIf ignored or missed, the ending should let inherited absence appear indirectly through behavior, silence, or imitation.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_06_KAEGAN&FUTURE_LAYER.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-45"
+    }
+  },
+  {
+    "id": "teodor-scott-46-future-date",
+    "order": 45,
+    "number": 46,
+    "name": "Future Date",
+    "zone": "Kaegan / Future Layer",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Future Layer",
+      "Memory Layer",
+      "Family Layer"
+    ],
+    "branchGroup": "future_contact",
+    "oppositeSpace": 47,
+    "symbol": "0826",
+    "glassRiddle": "A date became a door because someone was born there.",
+    "artifact": "Future Date",
+    "artifactName": "Future Date",
+    "artifactVocabulary": [
+      "future",
+      "date"
+    ],
+    "glassSeeds": [
+      "A date became a door because someone was born there."
+    ],
+    "storySeed": "The future has a date. Not an abstract someday, but a number that carries a child, a birthday, a reminder, a promise, and the pressure of wanting to arrive better than before.",
+    "collectMeaning": "The character holds the future date with intention.\n\nThe final story should show a father trying to orient himself toward the child’s future.",
+    "ignoreMeaning": "The character knows the date matters but avoids the pressure attached to it.\n\nThe final story should show avoidance around meaningful reminders.",
+    "missedMeaning": "The future date passes unclaimed.\n\nIf Space 47 is also missed, the board must resolve future contact later.",
+    "forcedConsequence": "The date returns on its own, and the character has to face what he did or did not build toward it.",
+    "booleanTags": [
+      "branch_group = future_contact",
+      "future_date_collected = true_if_collected",
+      "future_orientation += collected",
+      "meaningful_date_avoidance += ignored",
+      "future_date_unclaimed += missed",
+      "date_returns_as_consequence += forced"
+    ],
+    "endingInfluence": "If collected, the ending should use the future date as orientation.\n\nIf ignored, the ending should show the character avoiding the pressure of dates that matter.\n\nIf both Future Date and Missed Call are collected, the ending should show the father both remembering and failing to answer in time.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_06_KAEGAN&FUTURE_LAYER.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-46"
+    }
+  },
+  {
+    "id": "teodor-scott-47-missed-call",
+    "order": 46,
+    "number": 47,
+    "name": "Missed Call",
+    "zone": "Kaegan / Future Layer",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Communication Layer",
+      "Family Layer",
+      "Consequence Layer"
+    ],
+    "branchGroup": "future_contact",
+    "oppositeSpace": 46,
+    "symbol": "0826",
+    "glassRiddle": "The future rang once and learned what silence sounded like.",
+    "artifact": "Missed Call",
+    "artifactName": "Missed Call",
+    "artifactVocabulary": [
+      "missed",
+      "call"
+    ],
+    "glassSeeds": [
+      "The future rang once and learned what silence sounded like."
+    ],
+    "storySeed": "A call, message, invitation, birthday, apology, or small opening is missed. The future does not vanish, but it learns something from the delay. Not every missed call is final. But every missed call becomes part of the room.",
+    "collectMeaning": "The character names the missed contact.\n\nThe final story should show missed connection as real consequence, not permanent doom.",
+    "ignoreMeaning": "The character minimizes the missed call because he still loves the child.\n\nThe final story should show that love does not erase unanswered moments.",
+    "missedMeaning": "The missed-call branch is not claimed.\n\nIf Space 46 is also missed, the board must resolve future contact later.",
+    "forcedConsequence": "The next time the future calls, the character hears both calls at once: the one now, and the one he missed before.",
+    "booleanTags": [
+      "branch_group = future_contact",
+      "missed_call_collected = true_if_collected",
+      "missed_connection_named += collected",
+      "love_used_to_minimize_absence += ignored",
+      "missed_connection_unclaimed += missed",
+      "second_call_carries_first += forced"
+    ],
+    "endingInfluence": "If collected, the ending should include missed contact as consequence.\n\nIf ignored, the ending should show minimization causing more distance.\n\nIf both future-contact branches are collected, the ending should show memory and missed connection braided together.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_06_KAEGAN&FUTURE_LAYER.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-47"
+    }
+  },
+  {
+    "id": "teodor-scott-48-the-mirror-has-a-child-s-face",
+    "order": 47,
+    "number": 48,
+    "name": "The Mirror Has A Child’S Face",
+    "zone": "Kaegan / Future Layer",
+    "type": "Zone Gate",
+    "kind": "room",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Family Layer",
+      "Reflection Layer",
+      "Future Layer",
+      "Accountability Layer"
+    ],
+    "symbol": "0826",
+    "glassRiddle": "He looked for his father and found his son looking back.",
+    "artifact": "Child Mirror",
+    "artifactName": "Child Mirror",
+    "artifactVocabulary": [
+      "child",
+      "mirror"
+    ],
+    "glassSeeds": [
+      "He looked for his father and found his son looking back."
+    ],
+    "storySeed": "Fatherhood reflects the unfinished grief underneath the character. He wants to become the father his son needs, but part of him is still reaching backward for the father he lost. The mirror does not condemn him. It shows him the shape of the work.",
+    "collectMeaning": "The character accepts the mirror without asking the child to carry it.\n\nThe final story should show accountability beginning through fatherhood.",
+    "ignoreMeaning": "The character looks away from the mirror because it hurts.\n\nThe final story should show fatherhood pressure returning later through distance, silence, or a delayed repair attempt.",
+    "missedMeaning": "The child-mirror remains unseen.\n\nThe final story may show the character trying to repair the future while still not understanding what the future has been reflecting.",
+    "forcedConsequence": "The child reflects something back that the character cannot blame on anyone else.",
+    "booleanTags": [
+      "kaegan_future_zone_complete = true",
+      "child_mirror_active = true",
+      "fatherhood_accountability += collected",
+      "child_mirror_avoided += ignored",
+      "future_reflection_unseen += missed",
+      "reflection_forced_by_child += forced"
+    ],
+    "endingInfluence": "This space closes the Kaegan / Future Layer zone.\n\nIf collected, the ending should show fatherhood becoming accountability without making the child responsible for saving the father.\n\nIf ignored or missed, the ending should show the mirror returning later through consequence.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_06_KAEGAN&FUTURE_LAYER.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-48"
+    }
+  },
+  {
+    "id": "teodor-scott-49-the-kitchen-rush",
+    "order": 48,
+    "number": 49,
+    "name": "The Kitchen Rush",
+    "zone": "Work / Systems Layer",
+    "type": "Fixed Anchor",
+    "kind": "threshold",
+    "realityLayer": "software",
+    "realityLayers": [
+      "Work Layer",
+      "Systems Layer",
+      "Pressure Layer"
+    ],
+    "symbol": "⚙",
+    "glassRiddle": "The tickets stacked, and the room showed him its nervous system.",
+    "artifact": "Rush Ticket",
+    "artifactName": "Rush Ticket",
+    "artifactVocabulary": [
+      "rush",
+      "ticket"
+    ],
+    "glassSeeds": [
+      "The tickets stacked, and the room showed him its nervous system."
+    ],
+    "storySeed": "The kitchen rush teaches him what pressure looks like when it becomes visible. Orders stack faster than people can move. Every station depends on another station. A mistake in one corner travels across the whole line.",
+    "collectMeaning": "The character accepts work as a systems teacher.\n\nThe final story should show the kitchen as one of the places where he learns how consequence moves through rooms.",
+    "ignoreMeaning": "The character treats the rush as just stress.\n\nThe final story should show him missing the lesson while still being shaped by it.",
+    "missedMeaning": "The kitchen remains part of his life, but its meaning is not understood.\n\nThe final story may show him learning systems later without realizing the kitchen taught him first.",
+    "forcedConsequence": "A later room starts behaving like a rush, and the character recognizes the ticket line under a different name.",
+    "booleanTags": [
+      "fixed_anchor = true",
+      "kitchen_rush_exists = true",
+      "work_systems_layer_active = true",
+      "kitchen_as_system_teacher += collected",
+      "rush_reduced_to_stress += ignored",
+      "work_lesson_unseen += missed",
+      "rush_pattern_returns += forced"
+    ],
+    "endingInfluence": "This space must influence every Teodor / Scott ending.\n\nIf collected, the ending should connect work pressure to systems thinking.\n\nIf ignored or missed, the ending should show the character repeating kitchen lessons in other rooms before understanding where he learned them.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_07_WORK&SYSTEMS_LAYER.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-49"
+    }
+  },
+  {
+    "id": "teodor-scott-50-pressure-flow",
+    "order": 49,
+    "number": 50,
+    "name": "Pressure Flow",
+    "zone": "Work / Systems Layer",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "software",
+    "realityLayers": [
+      "Systems Layer",
+      "Work Layer",
+      "Rhythm Layer"
+    ],
+    "branchGroup": "work_systems",
+    "oppositeSpace": 51,
+    "symbol": "⚙",
+    "glassRiddle": "The room moved better when one person found rhythm.",
+    "artifact": "Clean Handoff",
+    "artifactName": "Clean Handoff",
+    "artifactVocabulary": [
+      "clean",
+      "handoff"
+    ],
+    "glassSeeds": [
+      "The room moved better when one person found rhythm."
+    ],
+    "storySeed": "The character learns that pressure does not always need more speed. Sometimes it needs flow. One station steadies. One handoff lands clean. One person stops fighting the rush and starts moving with it.",
+    "collectMeaning": "The character accepts rhythm as a form of control.\n\nThe final story should show him learning that flow can reduce chaos without denying pressure.",
+    "ignoreMeaning": "The character mistakes speed for flow.\n\nThe final story should show him moving harder but not cleaner.",
+    "missedMeaning": "The pressure-flow branch is not claimed.\n\nIf Space 51 is also missed, the board must resolve work systems later.",
+    "forcedConsequence": "A later rush forces him to choose between frantic motion and steady rhythm.",
+    "booleanTags": [
+      "branch_group = work_systems",
+      "pressure_flow_collected = true_if_collected",
+      "rhythm_as_control += collected",
+      "speed_mistaken_for_flow += ignored",
+      "pressure_flow_unclaimed += missed",
+      "flow_choice_forced += forced"
+    ],
+    "endingInfluence": "If collected, the ending should show systems improving through rhythm.\n\nIf ignored, the ending should show effort without flow.\n\nIf both Pressure Flow and Broken Station are collected, the ending should show the character understanding both working systems and failing systems.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_07_WORK&SYSTEMS_LAYER.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-50"
+    }
+  },
+  {
+    "id": "teodor-scott-51-broken-station",
+    "order": 50,
+    "number": 51,
+    "name": "Broken Station",
+    "zone": "Work / Systems Layer",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "software",
+    "realityLayers": [
+      "Systems Layer",
+      "Work Layer",
+      "Consequence Layer"
+    ],
+    "branchGroup": "work_systems",
+    "oppositeSpace": 50,
+    "symbol": "⚙",
+    "glassRiddle": "One bad handoff taught the whole room how to fall behind.",
+    "artifact": "Broken Station",
+    "artifactName": "Broken Station",
+    "artifactVocabulary": [
+      "broken",
+      "station"
+    ],
+    "glassSeeds": [
+      "One bad handoff taught the whole room how to fall behind."
+    ],
+    "storySeed": "A station breaks down. Not always dramatically. Sometimes one missed item, one wrong order, one person in the wrong lane, one delay that spreads. The room does not fail all at once. It backs up one consequence at a time.",
+    "collectMeaning": "The character recognizes breakdown as a systems event.\n\nThe final story should show how one failure can move through a whole room.",
+    "ignoreMeaning": "The character blames one person or one moment instead of seeing the system.\n\nThe final story should show him missing the pattern by focusing only on the symptom.",
+    "missedMeaning": "The broken-station branch is not claimed.\n\nIf Space 50 is also missed, the board must resolve work systems later.",
+    "forcedConsequence": "A future system breaks at the exact place he refused to examine.",
+    "booleanTags": [
+      "branch_group = work_systems",
+      "broken_station_collected = true_if_collected",
+      "system_breakdown_seen += collected",
+      "symptom_blame += ignored",
+      "breakdown_unclaimed += missed",
+      "unexamined_break_returns += forced"
+    ],
+    "endingInfluence": "If collected, the ending should show the character learning from failure.\n\nIf ignored, the ending should show him blaming the visible delay while missing the hidden bottleneck.\n\nIf both work-system branches are collected, the ending should show flow and breakdown as connected lessons.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_07_WORK&SYSTEMS_LAYER.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-51"
+    }
+  },
+  {
+    "id": "teodor-scott-52-ticket-line",
+    "order": 51,
+    "number": 52,
+    "name": "Ticket Line",
+    "zone": "Work / Systems Layer",
+    "type": "Systems Fragment",
+    "kind": "room",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Work Layer",
+      "Pressure Layer",
+      "Queue Layer"
+    ],
+    "symbol": "⚙",
+    "glassRiddle": "The future printed itself faster than hands could answer.",
+    "artifact": "Ticket Line",
+    "artifactName": "Ticket Line",
+    "artifactVocabulary": [
+      "ticket",
+      "line"
+    ],
+    "glassSeeds": [
+      "The future printed itself faster than hands could answer."
+    ],
+    "storySeed": "The ticket line becomes a visible future. Each slip is something that has not happened yet but already demands action. The room is not only handling the present. It is being pulled forward by obligations arriving in order.",
+    "collectMeaning": "The character accepts queued pressure as part of systems reality.\n\nThe final story should show him understanding how future demands affect present behavior.",
+    "ignoreMeaning": "The character treats each task as separate.\n\nThe final story should show him losing the shape of the whole line.",
+    "missedMeaning": "The queue lesson remains hidden.\n\nThe final story may show him reacting to pressure one item at a time without seeing the sequence.",
+    "forcedConsequence": "A future obligation stacks behind another, and he realizes too late that the line was forming before he looked up.",
+    "booleanTags": [
+      "ticket_line_active = true",
+      "queued_pressure_seen += collected",
+      "tasks_seen_as_isolated += ignored",
+      "queue_logic_hidden += missed",
+      "future_obligation_stack += forced"
+    ],
+    "endingInfluence": "If collected, the ending should show the character understanding pressure as sequence.\n\nIf ignored or missed, the ending should show him reacting to individual demands while missing the larger queue.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_07_WORK&SYSTEMS_LAYER.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-52"
+    }
+  },
+  {
+    "id": "teodor-scott-53-one-calm-voice",
+    "order": 52,
+    "number": 53,
+    "name": "One Calm Voice",
+    "zone": "Work / Systems Layer",
+    "type": "Intervention Fragment",
+    "kind": "room",
+    "realityLayer": "natural",
+    "realityLayers": [
+      "Work Layer",
+      "Social Layer",
+      "Emotional Weather Layer"
+    ],
+    "symbol": "⚙",
+    "glassRiddle": "One steady voice changed the weather without touching the walls.",
+    "artifact": "Calm Call",
+    "artifactName": "Calm Call",
+    "artifactVocabulary": [
+      "calm",
+      "call"
+    ],
+    "glassSeeds": [
+      "One steady voice changed the weather without touching the walls."
+    ],
+    "storySeed": "In the middle of pressure, one calm voice changes the room. Not by controlling everyone. Not by pretending the rush is easy. By giving the room a rhythm other people can borrow.",
+    "collectMeaning": "The character accepts steadiness as an intervention.\n\nThe final story should show calm as active force, not passivity.",
+    "ignoreMeaning": "The character dismisses calm because it does not look powerful enough.\n\nThe final story should show him choosing volume where steadiness would have worked.",
+    "missedMeaning": "The calm-voice lesson remains unseen.\n\nThe final story may show him overlooking the quiet intervention that kept the room from breaking.",
+    "forcedConsequence": "A later room needs steadiness, and the character either becomes the calm voice or realizes he missed the chance.",
+    "booleanTags": [
+      "calm_voice_active = true",
+      "steadiness_as_intervention += collected",
+      "calm_dismissed += ignored",
+      "quiet_intervention_unseen += missed",
+      "steadiness_required_later += forced"
+    ],
+    "endingInfluence": "If collected, the ending should show the character understanding presence as pressure regulation.\n\nIf ignored or missed, the ending should show him mistaking intensity for leadership.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_07_WORK&SYSTEMS_LAYER.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-53"
+    }
+  },
+  {
+    "id": "teodor-scott-54-room-changed",
+    "order": 53,
+    "number": 54,
+    "name": "Room Changed",
+    "zone": "Work / Systems Layer",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Ripple Layer",
+      "Work Layer",
+      "Social Layer"
+    ],
+    "branchGroup": "room_influence",
+    "oppositeSpace": 55,
+    "symbol": "⚙",
+    "glassRiddle": "He changed his rhythm, and the room answered.",
+    "artifact": "Room Shift",
+    "artifactName": "Room Shift",
+    "artifactVocabulary": [
+      "room",
+      "shift"
+    ],
+    "glassSeeds": [
+      "He changed his rhythm, and the room answered."
+    ],
+    "storySeed": "The character notices that a room can change when one person changes their rhythm. Not every room. Not every time. But often enough that the pattern becomes impossible to ignore.",
+    "collectMeaning": "The character accepts his influence on the room.\n\nThe final story should show behavior affecting atmosphere, timing, and other people’s movement.",
+    "ignoreMeaning": "The character sees the room change but avoids responsibility for his role in it.\n\nThe final story should show influence happening without ownership.",
+    "missedMeaning": "The room-change branch is not claimed.\n\nIf Space 55 is also missed, the board must resolve room influence later.",
+    "forcedConsequence": "A later room changes because of him before he is ready to admit he was part of the cause.",
+    "booleanTags": [
+      "branch_group = room_influence",
+      "room_changed_collected = true_if_collected",
+      "personal_influence_seen += collected",
+      "influence_without_ownership += ignored",
+      "room_change_unclaimed += missed",
+      "room_change_forced_awareness += forced"
+    ],
+    "endingInfluence": "If collected, the ending should show the first practical form of Ripple Theory.\n\nIf ignored, the ending should show the character affecting rooms while denying accountability.\n\nIf both Room Changed and Room Ignored are collected, the ending should show influence noticed and avoided in different moments.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_07_WORK&SYSTEMS_LAYER.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-54"
+    }
+  },
+  {
+    "id": "teodor-scott-55-room-ignored",
+    "order": 54,
+    "number": 55,
+    "name": "Room Ignored",
+    "zone": "Work / Systems Layer",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Ripple Layer",
+      "Work Layer",
+      "Accountability Layer"
+    ],
+    "branchGroup": "room_influence",
+    "oppositeSpace": 54,
+    "symbol": "⚙",
+    "glassRiddle": "The room moved around him while he called himself separate.",
+    "artifact": "Ignored Room",
+    "artifactName": "Ignored Room",
+    "artifactVocabulary": [
+      "ignored",
+      "room"
+    ],
+    "glassSeeds": [
+      "The room moved around him while he called himself separate."
+    ],
+    "storySeed": "The room changes, but the character ignores his relationship to it. He treats the rush, the mood, the timing, and the breakdowns as things happening around him instead of things he is also participating in.",
+    "collectMeaning": "The character recognizes that he ignored the room.\n\nThe final story should show accountability beginning through hindsight.",
+    "ignoreMeaning": "The character doubles down on separation.\n\nThe final story should show him acting like an observer while still creating ripples.",
+    "missedMeaning": "The ignored-room branch is not claimed.\n\nIf Space 54 is also missed, the board must resolve room influence later.",
+    "forcedConsequence": "The room reflects his own energy back so clearly that he can no longer pretend he was outside it.",
+    "booleanTags": [
+      "branch_group = room_influence",
+      "room_ignored_collected = true_if_collected",
+      "ignored_room_seen += collected",
+      "observer_separation += ignored",
+      "room_influence_hidden += missed",
+      "room_mirror_forced += forced"
+    ],
+    "endingInfluence": "If collected, the ending should show the character realizing he was part of the room.\n\nIf ignored, the ending should show false observer-distance causing harm or delay.\n\nIf both room-influence branches are collected, the story should show a character learning influence through contradiction.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_07_WORK&SYSTEMS_LAYER.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-55"
+    }
+  },
+  {
+    "id": "teodor-scott-56-practical-theory",
+    "order": 55,
+    "number": 56,
+    "name": "Practical Theory",
+    "zone": "Work / Systems Layer",
+    "type": "Zone Gate",
+    "kind": "room",
+    "realityLayer": "software",
+    "realityLayers": [
+      "Systems Layer",
+      "Ripple Layer",
+      "Work Layer",
+      "Theory Layer"
+    ],
+    "symbol": "⚙",
+    "glassRiddle": "Before the theory had a name, the rush had already proved it.",
+    "artifact": "Practical Theory",
+    "artifactName": "Practical Theory",
+    "artifactVocabulary": [
+      "practical",
+      "theory"
+    ],
+    "glassSeeds": [
+      "Before the theory had a name, the rush had already proved it."
+    ],
+    "storySeed": "Ripple Theory begins here before it is called Ripple Theory. A room changes when people change. Pressure moves through systems. Missed signals become delays. Calm can become a bridge. Work teaches what philosophy will later try to explain.",
+    "collectMeaning": "The character accepts that theory began as lived experience.\n\nThe final story should connect work rhythm to the later naming of Ripple.",
+    "ignoreMeaning": "The character treats theory as something separate from ordinary life.\n\nThe final story should show him overcomplicating what the kitchen already taught him.",
+    "missedMeaning": "The practical theory remains hidden.\n\nThe final story may show him discovering Ripple later as if it were new, when he had already lived it.",
+    "forcedConsequence": "A later idea only clicks because the kitchen had already built the pattern in him.",
+    "booleanTags": [
+      "work_systems_zone_complete = true",
+      "practical_theory_active = true",
+      "ripple_seed_from_work += collected",
+      "theory_separated_from_life += ignored",
+      "practical_origin_hidden += missed",
+      "kitchen_pattern_clicks_later += forced"
+    ],
+    "endingInfluence": "This space closes the Work / Systems Layer.\n\nIf collected, the ending should show Ripple Theory emerging from lived pressure.\n\nIf ignored or missed, the ending should show the character discovering a theory that had already been practicing on him through work.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_07_WORK&SYSTEMS_LAYER.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-56"
+    }
+  },
+  {
+    "id": "teodor-scott-57-aifred",
+    "order": 56,
+    "number": 57,
+    "name": "AIFRED",
+    "zone": "AIFRED / INTERVENTION",
+    "type": "Fixed Anchor",
+    "kind": "threshold",
+    "realityLayer": "software",
+    "realityLayers": [
+      "Software Systems Layer",
+      "Music Layer",
+      "Diagnostic Layer"
+    ],
+    "symbol": "▣",
+    "glassRiddle": "He asked the machine to hear the difference.",
+    "artifact": "AIFRED Core",
+    "artifactName": "AIFRED Core",
+    "artifactVocabulary": [
+      "aifred",
+      "core"
+    ],
+    "glassSeeds": [
+      "He asked the machine to hear the difference."
+    ],
+    "storySeed": "AIFRED begins as a practical desire: compare a mix to a professional target and tell him what is different. Not vague encouragement. Not producer mysticism. A real diagnostic mirror for tone, stereo, loudness, dynamics, and the gap between current sound and intended sound.",
+    "collectMeaning": "The character accepts AIFRED as a real tool and a real beginning.\n\nThe final story should show the tool as practical before it becomes symbolic.",
+    "ignoreMeaning": "The character treats AIFRED as just another unfinished idea.\n\nThe final story should show the mirror existing before the character is ready to look into it.",
+    "missedMeaning": "AIFRED remains in the background as unused architecture.\n\nThe final story may show the character searching for diagnostic language elsewhere without recognizing he already built a version of it.",
+    "forcedConsequence": "A later problem asks the same question AIFRED asked first:\n\nWhat is different between where you are and where you are trying to be?",
+    "booleanTags": [
+      "fixed_anchor = true",
+      "aifred_exists = true",
+      "software_systems_layer_active = true",
+      "diagnostic_tool_origin += collected",
+      "aifred_dismissed_as_unfinished += ignored",
+      "diagnostic_origin_hidden += missed",
+      "current_vs_target_question_returns += forced"
+    ],
+    "endingInfluence": "This space must influence every Teodor / Scott ending.\n\nIf collected, the ending should connect AIFRED to practical creation and honest feedback.\n\nIf ignored or missed, the ending should show the character building mirrors without realizing when the first one appeared.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_08_AIFRED&INTERVENTION.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-57"
+    }
+  },
+  {
+    "id": "teodor-scott-58-diagnostic-mirror",
+    "order": 57,
+    "number": 58,
+    "name": "Diagnostic Mirror",
+    "zone": "AIFRED / INTERVENTION",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "software",
+    "realityLayers": [
+      "Diagnostic Layer",
+      "Software Systems Layer",
+      "Reflection Layer"
+    ],
+    "branchGroup": "aifred_relation",
+    "oppositeSpace": 59,
+    "symbol": "▣",
+    "glassRiddle": "The mirror did not flatter the signal. It measured it.",
+    "artifact": "Diagnostic Mirror",
+    "artifactName": "Diagnostic Mirror",
+    "artifactVocabulary": [
+      "diagnostic",
+      "mirror"
+    ],
+    "glassSeeds": [
+      "The mirror did not flatter the signal. It measured it."
+    ],
+    "storySeed": "AIFRED becomes a mirror that does not insult and does not comfort. It listens, measures, compares, and shows the gap. The character begins to understand that feedback can be useful when it tells the truth without trying to become punishment.",
+    "collectMeaning": "The character accepts diagnostic feedback as guidance.\n\nThe final story should show him learning from difference instead of being destroyed by it.",
+    "ignoreMeaning": "The character avoids the mirror because honest comparison feels like judgment.\n\nThe final story should show him struggling to separate feedback from shame.",
+    "missedMeaning": "The diagnostic mirror is not claimed.\n\nIf Space 59 is also missed, the board must resolve AIFRED relation later.",
+    "forcedConsequence": "A later room gives him feedback he cannot mute, and he must decide whether truth is correction or attack.",
+    "booleanTags": [
+      "branch_group = aifred_relation",
+      "diagnostic_mirror_collected = true_if_collected",
+      "feedback_as_guidance += collected",
+      "feedback_as_shame += ignored",
+      "diagnostic_mirror_unclaimed += missed",
+      "unavoidable_feedback += forced"
+    ],
+    "endingInfluence": "If collected, the ending should show the character using feedback as a path.\n\nIf ignored, the ending should show him treating accurate feedback as personal rejection.\n\nIf both Diagnostic Mirror and Unused Tool are collected, the ending should show a tool that exists clearly but is not always used.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_08_AIFRED&INTERVENTION.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-58"
+    }
+  },
+  {
+    "id": "teodor-scott-59-unused-tool",
+    "order": 58,
+    "number": 59,
+    "name": "Unused Tool",
+    "zone": "AIFRED / INTERVENTION",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "software",
+    "realityLayers": [
+      "Software Systems Layer",
+      "Potential Layer",
+      "Avoidance Layer"
+    ],
+    "branchGroup": "aifred_relation",
+    "oppositeSpace": 58,
+    "symbol": "▣",
+    "glassRiddle": "A tool left unopened still changes the room by waiting.",
+    "artifact": "Unused Plugin",
+    "artifactName": "Unused Plugin",
+    "artifactVocabulary": [
+      "unused",
+      "plugin"
+    ],
+    "glassSeeds": [
+      "A tool left unopened still changes the room by waiting."
+    ],
+    "storySeed": "The tool exists, but it is not fully used. Maybe it is unfinished. Maybe it is overwhelming. Maybe the character builds faster than he can maintain. Potential gathers like dust on a workbench.",
+    "collectMeaning": "The character recognizes unused potential honestly.\n\nThe final story should show the difference between building a tool and becoming ready to use it.",
+    "ignoreMeaning": "The character insists the tool is enough because it exists.\n\nThe final story should show creation without integration.",
+    "missedMeaning": "The unused-tool branch is not claimed.\n\nIf Space 58 is also missed, the board must resolve AIFRED relation later.",
+    "forcedConsequence": "A later project requires the exact tool he left unfinished, and the board makes potential feel heavy.",
+    "booleanTags": [
+      "branch_group = aifred_relation",
+      "unused_tool_collected = true_if_collected",
+      "unused_potential_seen += collected",
+      "creation_without_integration += ignored",
+      "unused_tool_unclaimed += missed",
+      "unfinished_tool_returns += forced"
+    ],
+    "endingInfluence": "If collected, the ending should show unfinished work as honest material, not failure by default.\n\nIf ignored, the ending should show the character confusing creation with completion.\n\nIf both AIFRED branches are collected, the final story should hold contradiction: the mirror works, but the builder does not always use it.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_08_AIFRED&INTERVENTION.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-59"
+    }
+  },
+  {
+    "id": "teodor-scott-60-current-state-target-state",
+    "order": 59,
+    "number": 60,
+    "name": "Current State / Target State",
+    "zone": "AIFRED / INTERVENTION",
+    "type": "Systems Fragment",
+    "kind": "room",
+    "realityLayer": "software",
+    "realityLayers": [
+      "Diagnostic Layer",
+      "Systems Layer",
+      "Software Systems Layer"
+    ],
+    "symbol": "▣",
+    "glassRiddle": "The path appeared when the signal met its target.",
+    "artifact": "Target Curve",
+    "artifactName": "Target Curve",
+    "artifactVocabulary": [
+      "target",
+      "curve"
+    ],
+    "glassSeeds": [
+      "The path appeared when the signal met its target."
+    ],
+    "storySeed": "The character begins with audio, but the pattern expands. Current state. Target state. Difference. Adjustment. Re-test. A mix can be compared to a reference. A system can be compared to an intended behavior. A life can be compared to the version it keeps claiming it wants to become.",
+    "collectMeaning": "The character accepts current-state versus target-state thinking.\n\nThe final story should show comparison becoming practical guidance.",
+    "ignoreMeaning": "The character resists comparison because it feels like failure.\n\nThe final story should show him avoiding measurement while still wanting improvement.",
+    "missedMeaning": "The diagnostic model remains hidden.\n\nThe final story may show him seeking change without understanding how to compare the present to the intended future.",
+    "forcedConsequence": "A later consequence becomes measurable, and the character cannot improve it until he admits where the signal actually is.",
+    "booleanTags": [
+      "current_state_target_state_active = true",
+      "diagnostic_comparison_seen += collected",
+      "comparison_resisted += ignored",
+      "diagnostic_model_hidden += missed",
+      "signal_must_be_measured += forced"
+    ],
+    "endingInfluence": "If collected, the ending should use current-state / target-state logic as a clean bridge from audio into life.\n\nIf ignored or missed, the ending should show the character wanting change without wanting measurement.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_08_AIFRED&INTERVENTION.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-60"
+    }
+  },
+  {
+    "id": "teodor-scott-61-intervention",
+    "order": 60,
+    "number": 61,
+    "name": "INTERVENTION",
+    "zone": "AIFRED / INTERVENTION",
+    "type": "Fixed Anchor",
+    "kind": "threshold",
+    "realityLayer": "software",
+    "realityLayers": [
+      "Archive Layer",
+      "Story Layer",
+      "Software Systems Layer",
+      "Performance Layer"
+    ],
+    "symbol": "▣",
+    "glassRiddle": "He built a room for the things that would not stay quiet.",
+    "artifact": "INTERVENTION Archive",
+    "artifactName": "INTERVENTION Archive",
+    "artifactVocabulary": [
+      "intervention",
+      "archive"
+    ],
+    "glassSeeds": [
+      "He built a room for the things that would not stay quiet."
+    ],
+    "storySeed": "INTERVENTION becomes the archive. Folders, chapters, artifacts, notes, screenshots, public posts, grief, theory, father lines, family echoes, and old rooms are given places to stand. The mess does not disappear. It becomes visible.",
+    "collectMeaning": "The character accepts INTERVENTION as an archive.\n\nThe final story should show structure as a way to hold pain without pretending structure heals everything.",
+    "ignoreMeaning": "The character treats the archive as performance only.\n\nThe final story should show the danger of displaying the wound without fully listening to it.",
+    "missedMeaning": "INTERVENTION remains present but not understood.\n\nThe final story may show the character building an archive before knowing what it was truly holding.",
+    "forcedConsequence": "A later reader, family member, or reflection opens the archive and shows the character what he had accidentally documented.",
+    "booleanTags": [
+      "fixed_anchor = true",
+      "intervention_exists = true",
+      "archive_layer_active = true",
+      "archive_as_container += collected",
+      "archive_as_performance += ignored",
+      "archive_purpose_hidden += missed",
+      "archive_reflects_back += forced"
+    ],
+    "endingInfluence": "This space must influence every Teodor / Scott ending.\n\nIf collected, the ending should show INTERVENTION as a structured archive.\n\nIf ignored or missed, the ending should show the archive operating before the character fully understands what it contains.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_08_AIFRED&INTERVENTION.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-61"
+    }
+  },
+  {
+    "id": "teodor-scott-62-archive-opened",
+    "order": 61,
+    "number": 62,
+    "name": "Archive Opened",
+    "zone": "AIFRED / INTERVENTION",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "self-awareness",
+    "realityLayers": [
+      "Archive Layer",
+      "Story Layer",
+      "Witness Layer"
+    ],
+    "branchGroup": "archive_relation",
+    "oppositeSpace": 63,
+    "symbol": "▣",
+    "glassRiddle": "The room became safer when the boxes had names.",
+    "artifact": "Open Archive",
+    "artifactName": "Open Archive",
+    "artifactVocabulary": [
+      "open",
+      "archive"
+    ],
+    "glassSeeds": [
+      "The room became safer when the boxes had names."
+    ],
+    "storySeed": "The character opens the archive. He labels the pieces. He arranges the rooms. He lets the fragments become visible enough to be read, questioned, challenged, and carried differently.",
+    "collectMeaning": "The character accepts visibility as part of repair.\n\nThe final story should show arrangement, naming, and witness as useful but not magical.",
+    "ignoreMeaning": "The character opens the archive for others but avoids reading it himself.\n\nThe final story should show public structure hiding private avoidance.",
+    "missedMeaning": "The open-archive branch is not claimed.\n\nIf Space 63 is also missed, the board must resolve archive relation later.",
+    "forcedConsequence": "Someone else reads the archive correctly before the character admits what it says.",
+    "booleanTags": [
+      "branch_group = archive_relation",
+      "archive_opened_collected = true_if_collected",
+      "visibility_as_repair += collected",
+      "public_structure_private_avoidance += ignored",
+      "archive_opening_unclaimed += missed",
+      "reader_reflects_archive += forced"
+    ],
+    "endingInfluence": "If collected, the ending should show the archive creating visibility and witness.\n\nIf ignored, the ending should show the archive being opened outward while still closed inward.\n\nIf both Archive Opened and Archive Avoided are collected, the ending should show the archive as both courage and hiding place.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_08_AIFRED&INTERVENTION.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-62"
+    }
+  },
+  {
+    "id": "teodor-scott-63-archive-avoided",
+    "order": 62,
+    "number": 63,
+    "name": "Archive Avoided",
+    "zone": "AIFRED / INTERVENTION",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "self-awareness",
+    "realityLayers": [
+      "Archive Layer",
+      "Avoidance Layer",
+      "Story Layer"
+    ],
+    "branchGroup": "archive_relation",
+    "oppositeSpace": 62,
+    "symbol": "▣",
+    "glassRiddle": "The room was full, but nobody turned on the light.",
+    "artifact": "Closed Archive",
+    "artifactName": "Closed Archive",
+    "artifactVocabulary": [
+      "closed",
+      "archive"
+    ],
+    "glassSeeds": [
+      "The room was full, but nobody turned on the light."
+    ],
+    "storySeed": "The archive exists, but the character avoids what it means. The files are there. The chapters are there. The artifacts are there. But arrangement can become another way to delay feeling if the builder never sits inside the room he built.",
+    "collectMeaning": "The character recognizes archive avoidance.\n\nThe final story should show that structure can hide pain as easily as reveal it.",
+    "ignoreMeaning": "The character insists that building the archive is the same as facing it.\n\nThe final story should show documentation without integration.",
+    "missedMeaning": "The avoided-archive branch is not claimed.\n\nIf Space 62 is also missed, the board must resolve archive relation later.",
+    "forcedConsequence": "A file opens at the wrong time, and the character realizes the archive has been waiting for him too.",
+    "booleanTags": [
+      "branch_group = archive_relation",
+      "archive_avoided_collected = true_if_collected",
+      "structure_as_avoidance_seen += collected",
+      "documentation_without_integration += ignored",
+      "archive_avoidance_unclaimed += missed",
+      "file_opens_wrong_time += forced"
+    ],
+    "endingInfluence": "If collected, the ending should show the character recognizing the archive as both container and avoidance.\n\nIf ignored, the ending should show him confusing documentation with healing.\n\nIf both archive branches are collected, the final story should preserve the contradiction: the archive reveals and conceals.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_08_AIFRED&INTERVENTION.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-63"
+    }
+  },
+  {
+    "id": "teodor-scott-64-filing-cabinet-inside-the-computer",
+    "order": 63,
+    "number": 64,
+    "name": "Filing Cabinet Inside The Computer",
+    "zone": "AIFRED / INTERVENTION",
+    "type": "Zone Gate",
+    "kind": "room",
+    "realityLayer": "software",
+    "realityLayers": [
+      "Archive Layer",
+      "Software Systems Layer",
+      "Story Layer",
+      "Structure Layer"
+    ],
+    "symbol": "▣",
+    "glassRiddle": "He called it a repo because filing cabinet sounded too ordinary.",
+    "artifact": "Digital Filing Cabinet",
+    "artifactName": "Digital Filing Cabinet",
+    "artifactVocabulary": [
+      "digital",
+      "filing",
+      "cabinet"
+    ],
+    "glassSeeds": [
+      "He called it a repo because filing cabinet sounded too ordinary."
+    ],
+    "storySeed": "The story becomes structure. A repo becomes a room. Folders become shelves. Commits become time marks. Chapters become doors. Artifacts become objects on the table. The character builds a place where the scattered pieces can stop running loose.",
+    "collectMeaning": "The character accepts structure as a way to hold complexity.\n\nThe final story should show the repo as a room where memory, grief, theory, and creation can be arranged.",
+    "ignoreMeaning": "The character treats structure as proof of completion.\n\nThe final story should show the danger of organizing the wound without listening to it.",
+    "missedMeaning": "The filing-cabinet meaning remains hidden.\n\nThe final story may show the character building elaborate systems without realizing they are rooms for memory.",
+    "forcedConsequence": "The repo reflects the character back to himself, and the board reveals that the filing cabinet was never only for the files.",
+    "booleanTags": [
+      "aifred_intervention_zone_complete = true",
+      "digital_filing_cabinet_active = true",
+      "structure_holds_complexity += collected",
+      "structure_mistaken_for_completion += ignored",
+      "system_as_memory_room_hidden += missed",
+      "repo_reflects_builder += forced"
+    ],
+    "endingInfluence": "This space closes the AIFRED / INTERVENTION zone.\n\nIf collected, the ending should connect AIFRED, INTERVENTION, software, archive, and story into one structural movement.\n\nIf ignored or missed, the ending should show the character building containers faster than he understands what they contain.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_08_AIFRED&INTERVENTION.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-64"
+    }
+  },
+  {
+    "id": "teodor-scott-65-ripple",
+    "order": 64,
+    "number": 65,
+    "name": "Ripple",
+    "zone": "Ripple / Last Glass",
+    "type": "Fixed Anchor",
+    "kind": "threshold",
+    "realityLayer": "software",
+    "realityLayers": [
+      "Ripple Layer",
+      "Theory Layer",
+      "Consequence Layer",
+      "Systems Layer"
+    ],
+    "symbol": "◎",
+    "glassRiddle": "The water had been moving before he named it.",
+    "artifact": "Ripple Name",
+    "artifactName": "Ripple Name",
+    "artifactVocabulary": [
+      "ripple",
+      "name"
+    ],
+    "glassSeeds": [
+      "The water had been moving before he named it."
+    ],
+    "storySeed": "The character finally gives the movement a name. Ripple. Not fate. Not prophecy. Not proof that the universe was arranged around him. Movement. Cause and effect with emotional weather attached. Choices moving through rooms, people, families, systems, and futures.",
+    "collectMeaning": "The character accepts Ripple as a name for observed movement.\n\nThe final story should show the pattern clearly without turning it into destiny.",
+    "ignoreMeaning": "The character avoids naming the pattern because naming it would make him responsible for noticing it.\n\nThe final story should show movement continuing without language.",
+    "missedMeaning": "Ripple exists as motion, but the character does not consciously name it.\n\nThe final story may show the pattern acting through rooms before the character understands what he is seeing.",
+    "forcedConsequence": "A later room changes so clearly because of one choice that the character can no longer pretend the water was still.",
+    "booleanTags": [
+      "fixed_anchor = true",
+      "ripple_exists = true",
+      "ripple_layer_active = true",
+      "pattern_named_as_ripple += collected",
+      "pattern_language_avoided += ignored",
+      "pattern_unnamed_but_active += missed",
+      "ripple_revealed_by_consequence += forced"
+    ],
+    "endingInfluence": "This space must influence every Teodor / Scott ending.\n\nIf collected, the ending should show Ripple as a grounded theory of movement and consequence.\n\nIf ignored or missed, the ending should show the pattern moving anyway, unnamed or resisted.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_09_RIPPLE_LAST_GLASS.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-65"
+    }
+  },
+  {
+    "id": "teodor-scott-66-pattern-named",
+    "order": 65,
+    "number": 66,
+    "name": "Pattern Named",
+    "zone": "Ripple / Last Glass",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "software",
+    "realityLayers": [
+      "Theory Layer",
+      "Systems Layer",
+      "Accountability Layer"
+    ],
+    "branchGroup": "ripple_relation",
+    "oppositeSpace": 67,
+    "symbol": "◎",
+    "glassRiddle": "A named pattern asks to be answered.",
+    "artifact": "Named Pattern",
+    "artifactName": "Named Pattern",
+    "artifactVocabulary": [
+      "named",
+      "pattern"
+    ],
+    "glassSeeds": [
+      "A named pattern asks to be answered."
+    ],
+    "storySeed": "The character names the pattern and understands that naming is not ownership. A named pattern becomes a responsibility. Once he can see how choices move through rooms, he can no longer pretend he is only passing through them.",
+    "collectMeaning": "The character accepts the responsibility that comes with naming the pattern.\n\nThe final story should show awareness becoming obligation.",
+    "ignoreMeaning": "The character wants the power of naming without the burden of accountability.\n\nThe final story should show theory becoming performance if not grounded in action.",
+    "missedMeaning": "The named-pattern branch is not claimed.\n\nIf Space 67 is also missed, the board must resolve Ripple relation later.",
+    "forcedConsequence": "A named pattern turns back on the character and asks what he changed after seeing it.",
+    "booleanTags": [
+      "branch_group = ripple_relation",
+      "pattern_named_collected = true_if_collected",
+      "awareness_as_responsibility += collected",
+      "theory_without_accountability += ignored",
+      "named_pattern_unclaimed += missed",
+      "pattern_demands_answer += forced"
+    ],
+    "endingInfluence": "If collected, the ending should show the character becoming accountable to what he has noticed.\n\nIf ignored, the ending should show naming becoming performance.\n\nIf both Pattern Named and Pattern Denied are collected, the ending should show a character who sees the pattern and still sometimes runs from it.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_09_RIPPLE_LAST_GLASS.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-66"
+    }
+  },
+  {
+    "id": "teodor-scott-67-pattern-denied",
+    "order": 66,
+    "number": 67,
+    "name": "Pattern Denied",
+    "zone": "Ripple / Last Glass",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Denial Layer",
+      "Theory Layer",
+      "Consequence Layer"
+    ],
+    "branchGroup": "ripple_relation",
+    "oppositeSpace": 66,
+    "symbol": "◎",
+    "glassRiddle": "The wave did not need belief to reach the shore.",
+    "artifact": "Denied Pattern",
+    "artifactName": "Denied Pattern",
+    "artifactVocabulary": [
+      "denied",
+      "pattern"
+    ],
+    "glassSeeds": [
+      "The wave did not need belief to reach the shore."
+    ],
+    "storySeed": "The character denies the pattern. Maybe because it sounds too big. Maybe because it sounds too strange. Maybe because accepting it would mean accepting that his choices were never isolated. But denial does not stop movement.",
+    "collectMeaning": "The character recognizes his own denial.\n\nThe final story should show the pattern moving even while the character resists naming it.",
+    "ignoreMeaning": "The character denies the denial too.\n\nThe final story should show him calling the pattern coincidence, mood, stress, luck, or someone else’s problem.",
+    "missedMeaning": "The denied-pattern branch is not claimed.\n\nIf Space 66 is also missed, the board must resolve Ripple relation later.",
+    "forcedConsequence": "A consequence arrives with too much shape to be dismissed as random.",
+    "booleanTags": [
+      "branch_group = ripple_relation",
+      "pattern_denied_collected = true_if_collected",
+      "denial_seen += collected",
+      "denial_of_denial += ignored",
+      "denied_pattern_unclaimed += missed",
+      "consequence_too_shaped_to_ignore += forced"
+    ],
+    "endingInfluence": "If collected, the ending should show denial as part of the character’s relationship to the theory.\n\nIf ignored or missed, the ending should show the pattern returning through consequence rather than explanation.\n\nIf both Ripple branches are collected, the final story should preserve contradiction: the character names the pattern and still resists what it asks from him.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_09_RIPPLE_LAST_GLASS.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-67"
+    }
+  },
+  {
+    "id": "teodor-scott-68-the-water-started-moving",
+    "order": 67,
+    "number": 68,
+    "name": "The Water Started Moving",
+    "zone": "Ripple / Last Glass",
+    "type": "Reflection Fragment",
+    "kind": "room",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Consequence Layer",
+      "Memory Layer",
+      "Origin Layer",
+      "Ripple Layer"
+    ],
+    "symbol": "◎",
+    "glassRiddle": "He could not stop the water, but he could stop lying about where it began.",
+    "artifact": "First Water",
+    "artifactName": "First Water",
+    "artifactVocabulary": [
+      "first",
+      "water"
+    ],
+    "glassSeeds": [
+      "He could not stop the water, but he could stop lying about where it began."
+    ],
+    "storySeed": "The character begins tracing the movement backward. Adoption. Naming. Father. Loss. Music. Kaegan. Work. AIFRED. INTERVENTION. Ripple. He cannot undo the first stone, but he can stop pretending he does not know where some of the water started moving.",
+    "collectMeaning": "The character accepts origin tracing without using it as an excuse.\n\nThe final story should show him identifying where consequence began while still choosing what comes next.",
+    "ignoreMeaning": "The character avoids tracing the water because origin feels too close to blame.\n\nThe final story should show him reacting to ripples without examining their source.",
+    "missedMeaning": "The water-source reflection remains hidden.\n\nThe final story may show him naming the theory but not applying it backward to his own life.",
+    "forcedConsequence": "A later consequence forces him to trace the ripple backward to a space he wanted to leave untouched.",
+    "booleanTags": [
+      "water_origin_reflection_active = true",
+      "origin_tracing += collected",
+      "origin_tracing_avoided += ignored",
+      "source_reflection_hidden += missed",
+      "ripple_traced_back_by_force += forced"
+    ],
+    "endingInfluence": "If collected, the ending should show the character locating origin without becoming trapped by it.\n\nIf ignored or missed, the ending should show him understanding ripple outward better than ripple inward.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_09_RIPPLE_LAST_GLASS.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-68"
+    }
+  },
+  {
+    "id": "teodor-scott-69-wound-as-blueprint",
+    "order": 68,
+    "number": 69,
+    "name": "Wound As Blueprint",
+    "zone": "Ripple / Last Glass",
+    "type": "Consequence Fragment",
+    "kind": "room",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Architecture Layer",
+      "Grief Layer",
+      "Creation Layer",
+      "Accountability Layer"
+    ],
+    "symbol": "◎",
+    "glassRiddle": "A wound can become a door, but it can also become a room you trap others inside.",
+    "artifact": "Wound Blueprint",
+    "artifactName": "Wound Blueprint",
+    "artifactVocabulary": [
+      "wound",
+      "blueprint"
+    ],
+    "glassSeeds": [
+      "A wound can become a door, but it can also become a room you trap others inside."
+    ],
+    "storySeed": "The character sees the danger in his own gift. He can build from pain. He can make structure from grief. He can turn wounds into software, stories, theories, games, and rooms. But building from a wound is dangerous if the people he loves are asked to live inside the architecture without consent.",
+    "collectMeaning": "The character accepts the danger of building from pain.\n\nThe final story should show creativity as powerful but ethically charged.",
+    "ignoreMeaning": "The character treats the wound-built structure as automatically meaningful because it came from pain.\n\nThe final story should show him confusing intensity with permission.",
+    "missedMeaning": "The wound-blueprint danger remains unseen.\n\nThe final story may show him building something impressive that still asks too much from others.",
+    "forcedConsequence": "Someone he loves refuses to live inside the monument, and the board makes that refusal part of the story.",
+    "booleanTags": [
+      "wound_as_blueprint_active = true",
+      "creative_ethics_seen += collected",
+      "pain_mistaken_for_permission += ignored",
+      "wound_architecture_unseen += missed",
+      "loved_one_refuses_monument += forced"
+    ],
+    "endingInfluence": "If collected, the ending should show the character questioning what his creations ask from other people.\n\nIf ignored or missed, the ending should show beauty and harm existing inside the same architecture.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_09_RIPPLE_LAST_GLASS.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-69"
+    }
+  },
+  {
+    "id": "teodor-scott-70-accountability",
+    "order": 69,
+    "number": 70,
+    "name": "Accountability",
+    "zone": "Ripple / Last Glass",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Accountability Layer",
+      "Repair Layer",
+      "Ripple Layer"
+    ],
+    "branchGroup": "final_response",
+    "oppositeSpace": 71,
+    "symbol": "◎",
+    "glassRiddle": "The ripple became real when he stopped calling it holy.",
+    "artifact": "Accountability Stone",
+    "artifactName": "Accountability Stone",
+    "artifactVocabulary": [
+      "accountability",
+      "stone"
+    ],
+    "glassSeeds": [
+      "The ripple became real when he stopped calling it holy."
+    ],
+    "storySeed": "The character accepts that a ripple being real does not make it good. The same movement that can wake someone up can also overwhelm them. The same theory that explains connection can become pressure if handled carelessly. Accountability begins when he stops treating the ripple as victory and starts asking what it does to the room.",
+    "collectMeaning": "The character accepts accountability as the final response.\n\nThe final story should show him choosing repair, restraint, consent, steadiness, or responsibility over spectacle.",
+    "ignoreMeaning": "The character wants the language of accountability without changing behavior.\n\nThe final story should show accountability becoming another performance layer if not acted out.",
+    "missedMeaning": "The accountability branch is not claimed.\n\nIf Space 71 is also missed, the board must resolve final response later.",
+    "forcedConsequence": "A final room refuses the theory until the character demonstrates care instead of explanation.",
+    "booleanTags": [
+      "branch_group = final_response",
+      "accountability_collected = true_if_collected",
+      "ripple_accountability += collected",
+      "accountability_as_language_only += ignored",
+      "accountability_unclaimed += missed",
+      "care_required_over_explanation += forced"
+    ],
+    "endingInfluence": "If collected, the ending should lean toward repair, responsibility, and grounded action.\n\nIf ignored, the ending should show the danger of using accountability language without changing the room.\n\nIf both Accountability and Monument are collected, the ending should show a creator caught between responsibility and spectacle.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_09_RIPPLE_LAST_GLASS.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-70"
+    }
+  },
+  {
+    "id": "teodor-scott-71-monument",
+    "order": 70,
+    "number": 71,
+    "name": "Monument",
+    "zone": "Ripple / Last Glass",
+    "type": "Branch Option",
+    "kind": "signal",
+    "realityLayer": "cultural",
+    "realityLayers": [
+      "Performance Layer",
+      "Grief Layer",
+      "Architecture Layer",
+      "Consequence Layer"
+    ],
+    "branchGroup": "final_response",
+    "oppositeSpace": 70,
+    "symbol": "◎",
+    "glassRiddle": "He built the wound tall enough for everyone to see, then wondered why the room felt small.",
+    "artifact": "Grief Monument",
+    "artifactName": "Grief Monument",
+    "artifactVocabulary": [
+      "grief",
+      "monument"
+    ],
+    "glassSeeds": [
+      "He built the wound tall enough for everyone to see, then wondered why the room felt small."
+    ],
+    "storySeed": "The character turns the wound into architecture. It is impressive. It is beautiful in places. It is terrifying in others. But a monument is not the same as healing. If he is not careful, he begins asking others to admire what they were actually asked to survive.",
+    "collectMeaning": "The character recognizes the monument impulse.\n\nThe final story should show the beauty and danger of building too high from grief.",
+    "ignoreMeaning": "The character defends the monument because it proves the pain meant something.\n\nThe final story should show him choosing spectacle over consent.",
+    "missedMeaning": "The monument branch is not claimed.\n\nIf Space 70 is also missed, the board must resolve final response later.",
+    "forcedConsequence": "The monument casts a shadow over someone who never agreed to stand inside it.",
+    "booleanTags": [
+      "branch_group = final_response",
+      "monument_collected = true_if_collected",
+      "monument_impulse_seen += collected",
+      "spectacle_over_consent += ignored",
+      "monument_unclaimed += missed",
+      "monument_shadow_forced += forced"
+    ],
+    "endingInfluence": "If collected, the ending should show the character recognizing how grief can become architecture.\n\nIf ignored, the ending should warn that beauty does not excuse pressure.\n\nIf both final-response branches are collected, the story should hold the tension between making meaning and making amends.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_09_RIPPLE_LAST_GLASS.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-71"
+    }
+  },
+  {
+    "id": "teodor-scott-72-last-glass",
+    "order": 71,
+    "number": 72,
+    "name": "Last Glass",
+    "zone": "Ripple / Last Glass",
+    "type": "Fixed Anchor / End Space",
+    "kind": "return",
+    "realityLayer": "self-awareness",
+    "realityLayers": [
+      "Glass Layer",
+      "Story Layer",
+      "Ripple Layer",
+      "Final Generation Layer"
+    ],
+    "symbol": "◎",
+    "glassRiddle": "The board does not end. It hands you the story you made it carry.",
+    "artifact": "Last Glass",
+    "artifactName": "Last Glass",
+    "artifactVocabulary": [
+      "last",
+      "glass"
+    ],
+    "glassSeeds": [
+      "The board does not end. It hands you the story you made it carry."
+    ],
+    "storySeed": "The character reaches the Last Glass. The board gathers what was collected, ignored, missed, and forced. It does not retell the life exactly. It generates one fictional variation of the life based on the path that was played.",
+    "collectMeaning": "The run completes.\n\nThe final story should become a coherent fictional ending shaped by the player’s board movement.",
+    "ignoreMeaning": "This space cannot be ignored in standard play.\n\nIf the player reaches the Last Glass, the board resolves the run.",
+    "missedMeaning": "This space cannot be missed in standard play.\n\nThe board ends here.",
+    "forcedConsequence": "All unresolved branches, ignored spaces, missed anchors, and forced consequences are gathered into the final generation state.",
+    "booleanTags": [
+      "fixed_anchor = true",
+      "end_space = true",
+      "last_glass_reached = true",
+      "generate_final_story = true",
+      "resolve_all_unresolved_branches = true",
+      "apply_collected_ignored_missed_forced_states = true"
+    ],
+    "endingInfluence": "This space generates the ending.\n\nThe ending should not read like a report.\n\nThe ending should not say, “Because the player collected Space 25…”\n\nThe ending should turn the run data into fiction.\n\nThe story should feel like one possible Teodor / Scott life, shaped by the board.",
+    "referenceIds": [
+      "teodor-scott-board"
+    ],
+    "sourceFile": "BOARDS/TEODOR_SCOTT/SPACE_CARDS_09_RIPPLE_LAST_GLASS.md.md",
+    "live": {
+      "enabled": true,
+      "revision": 1,
+      "remoteKey": "teodor-scott-space-72"
+    }
+  }
+]

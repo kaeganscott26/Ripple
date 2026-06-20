@@ -47,6 +47,50 @@ export interface BoardSpaceConfig {
   };
 }
 
+export interface LifeBoardSpace extends BoardSpaceConfig {
+  number: number;
+  zone: string;
+  type: string;
+  realityLayer: RealityLayerId;
+  realityLayers: string[];
+  branchGroup?: string;
+  oppositeSpace?: number;
+  glassRiddle: string;
+  artifact: string;
+  storySeed: string;
+  collectMeaning: string;
+  ignoreMeaning: string;
+  missedMeaning: string;
+  booleanTags: string[];
+  endingInfluence: string;
+  sourceFile: string;
+}
+
+export interface BoardZone {
+  id: string;
+  name: string;
+  start: number;
+  end: number;
+}
+
+export interface BranchGroupConfig {
+  id: string;
+  spaces: [number, number];
+}
+
+export interface CharacterBoard {
+  id: string;
+  characterId: string;
+  name: string;
+  totalSpaces: number;
+  zones: BoardZone[];
+  fixedAnchors: number[];
+  branchGroups: BranchGroupConfig[];
+  baseStorySummary: string;
+  fixedTruths: string[];
+  spaces: LifeBoardSpace[];
+}
+
 export interface LiveBoardDataset {
   id: string;
   schemaVersion: number;
@@ -80,6 +124,8 @@ export interface ArtifactRecord {
   artifactName: string;
   realityLayer: RealityLayerId;
   glassFragment: string;
+  storySeed?: string;
+  meaning?: string;
   consequence?: string;
 }
 
@@ -105,8 +151,52 @@ export interface FinalStoryResult {
   story: string;
 }
 
+export type BranchResolutionKind = "dominant" | "contradiction" | "pressure" | "mode-resolved";
+
+export interface BranchPairResolution {
+  group: string;
+  spaces: [number, number];
+  kind: BranchResolutionKind;
+  resolution: string;
+  dominantSpaces: number[];
+  hidden: boolean;
+}
+
+export interface BranchPairState {
+  group: string;
+  spaces: [number, number];
+  collected: number[];
+  ignored: number[];
+  missed: number[];
+  forced: number[];
+  status: "pending" | "dominant" | "contradiction" | "pressure" | "unresolved";
+}
+
+export interface LifeBoardRunState {
+  selected_mode: GameModeId;
+  selected_character: string;
+  current_position: number;
+  turn_count: number;
+  dice_history: ThreeDiceRoll[];
+  spaces_landed: number[];
+  spaces_collected: number[];
+  spaces_ignored: number[];
+  spaces_missed: number[];
+  spaces_forced: number[];
+  fixed_anchor_states: Record<number, ArtifactState | "landed" | "unseen">;
+  branch_pair_states: Record<string, BranchPairState>;
+  resolved_branch_pairs: BranchPairResolution[];
+  unresolved_branch_pairs: string[];
+  dominant_zones: string[];
+  dominant_reality_layers: string[];
+  ending_pressure: string[];
+  final_response: string;
+  last_glass_reached: boolean;
+}
+
 export interface RippleGameState {
-  version: 1;
+  version: 2;
+  boardId: string;
   phase: GamePhase;
   modeId: GameModeId;
   characterId: string;
@@ -118,6 +208,7 @@ export interface RippleGameState {
   pendingChoice?: PendingChoice;
   inventory: Record<ArtifactState, ArtifactRecord[]>;
   turns: TurnRecord[];
+  boardRun: LifeBoardRunState;
   finalStory?: FinalStoryResult;
 }
 
@@ -125,4 +216,3 @@ export interface RippleGameSetup {
   modeId: GameModeId;
   characterId: string;
 }
-

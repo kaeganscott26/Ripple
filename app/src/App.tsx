@@ -1,19 +1,20 @@
 import { useEffect, useState } from "react";
 import layerCardsJson from "./data/layerCards.json";
 import { characterConfig, characterConfigs, gameModes, modeConfig } from "./data/gameConfig";
-import { boardSpaces, liveBoard, realityLayerLabels } from "./data/liveBoard";
+import { boardForCharacter } from "./data/boards";
+import { realityLayerLabels } from "./data/liveBoard";
 import { advanceWithRoll, collectArtifact, createRippleGame, ignoreArtifact } from "./engine/rippleGame";
-import type { ArtifactState, GameModeId, RippleGameState } from "./engine/gameTypes";
+import type { ArtifactState, GameModeId, LifeBoardSpace, RippleGameState } from "./engine/gameTypes";
 import type { LayerCard } from "./engine/types";
 
-const savedRunKey = "ripple-canonical-run-v1";
+const savedRunKey = "ripple-canonical-run-v2";
 const layerCards = layerCardsJson as LayerCard[];
 type View = "board" | "inventory" | "reference";
 
 function loadRun(): RippleGameState | null {
   try {
     const parsed = JSON.parse(window.localStorage.getItem(savedRunKey) ?? "null") as RippleGameState | null;
-    return parsed?.version === 1 && characterConfigs.some((character) => character.id === parsed.characterId) ? parsed : null;
+    return parsed?.version === 2 && characterConfigs.some((character) => character.id === parsed.characterId) ? parsed : null;
   } catch {
     return null;
   }
@@ -97,7 +98,9 @@ export default function App() {
 
   const character = characterConfig(game.characterId);
   const mode = modeConfig(game.modeId);
-  const currentSpace = boardSpaces[game.position];
+  const board = boardForCharacter(game.characterId);
+  const currentSpace = board.spaces[game.position];
+  const authoredSpace = board.authored?.spaces[game.position] as LifeBoardSpace | undefined;
 
   return (
     <main className="app canonical-app">
@@ -106,6 +109,7 @@ export default function App() {
           <p className="eyebrow">Ripple / {mode.name}</p>
           <h1>{character.name}'s run</h1>
           <p>{character.role} · {character.question}</p>
+          <p className="board-identity">{board.name} · Space {game.position + 1} of {board.totalSpaces}</p>
         </div>
         <div className="topbar-actions">
           <button className="ghost-action" onClick={reset} type="button">New run</button>
@@ -130,13 +134,25 @@ export default function App() {
           <BoardTrack game={game} />
           <aside className="glass-console">
             <section className="center-glass-v1" aria-live="polite">
-              <p className="eyebrow">Center Glass</p>
+              <p className="eyebrow">Center Glass · Space {game.position + 1} / {board.totalSpaces}</p>
               <div className="glass-symbol">{currentSpace.symbol}</div>
-              <h2>{game.pendingChoice?.glassPrompt.output ?? "The glass is waiting."}</h2>
+              <h2>{game.pendingChoice?.glassPrompt.output ?? authoredSpace?.glassRiddle ?? "The glass is waiting."}</h2>
               <p className="glass-space-name">
                 {currentSpace.name}
-                {mode.revealsLayer ? ` · ${realityLayerLabels[currentSpace.realityLayer]}` : ""}
+                {authoredSpace ? ` · ${authoredSpace.zone}` : ""}
+                {mode.revealsLayer ? ` · ${authoredSpace?.realityLayers.join(" / ") ?? realityLayerLabels[currentSpace.realityLayer]}` : ""}
               </p>
+              {game.pendingChoice && authoredSpace && (
+                <div className="authored-space-card">
+                  <p><strong>Artifact</strong> {authoredSpace.artifact}</p>
+                  <p>{authoredSpace.storySeed}</p>
+                  <dl>
+                    <div><dt>Collect</dt><dd>{authoredSpace.collectMeaning}</dd></div>
+                    <div><dt>Ignore</dt><dd>{authoredSpace.ignoreMeaning}</dd></div>
+                    <div><dt>Forced consequence</dt><dd>{authoredSpace.forcedConsequence}</dd></div>
+                  </dl>
+                </div>
+              )}
             </section>
 
             <DiceConsole game={game} onRoll={() => setGame((state) => state ? advanceWithRoll(state) : state)} />
@@ -145,10 +161,12 @@ export default function App() {
               <section className="artifact-choice">
                 <p className="eyebrow">Artifact offered</p>
                 <h3>{game.pendingChoice.artifact.artifactName}</h3>
-                <p>Collect it, or ignore it and move back one space to receive that space's consequence.</p>
+                <p>{game.boardRun.last_glass_reached ? "The Last Glass resolves the run." : "Collect it, or ignore it and move back one space to receive that space's consequence."}</p>
                 <div className="choice-actions">
-                  <button className="primary-action" onClick={() => setGame(collectArtifact(game))} type="button">Collect</button>
-                  <button className="secondary-action" onClick={() => setGame(ignoreArtifact(game))} type="button">Ignore</button>
+                  <button className="primary-action" onClick={() => setGame(collectArtifact(game))} type="button">
+                    {game.boardRun.last_glass_reached ? "Enter Last Glass" : "Collect"}
+                  </button>
+                  {!game.boardRun.last_glass_reached && <button className="secondary-action" onClick={() => setGame(ignoreArtifact(game))} type="button">Ignore</button>}
                 </div>
               </section>
             )}
@@ -175,14 +193,15 @@ export default function App() {
 }
 
 function BoardTrack({ game }: { game: RippleGameState }) {
+  const board = boardForCharacter(game.characterId);
   return (
     <section className="canonical-board" aria-label="Ripple board">
       <div className="board-dataset-line">
-        <span>Board {liveBoard.revision}</span>
-        <span>{game.position + 1} / {boardSpaces.length}</span>
+        <span>{board.name}</span>
+        <span>{game.position + 1} / {board.totalSpaces}</span>
       </div>
       <div className="canonical-space-grid">
-        {boardSpaces.map((space, index) => {
+        {board.spaces.map((space, index) => {
           const current = index === game.position;
           const passed = index < game.position;
           return (
@@ -190,7 +209,7 @@ function BoardTrack({ game }: { game: RippleGameState }) {
               <span>{String(index + 1).padStart(2, "0")}</span>
               <i>{space.symbol}</i>
               <strong>{game.modeId === "mystery" && !current && !passed ? "Unrevealed" : space.name}</strong>
-              {game.modeId === "experimental" && <small>{realityLayerLabels[space.realityLayer]}</small>}
+              {game.modeId === "experimental" && <small>{board.authored?.spaces[index]?.zone ?? realityLayerLabels[space.realityLayer]}</small>}
               {current && <b aria-label={`${characterConfig(game.characterId).name} is here`}>{characterConfig(game.characterId).name.slice(0, 1)}</b>}
             </article>
           );
@@ -284,8 +303,42 @@ function EndingStory({ game }: { game: RippleGameState }) {
       <p className="eyebrow">The glass opens / A complete fiction</p>
       <h2>{story.title}</h2>
       <div className="story-prose">{story.story.split("\n\n").map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</div>
+      <RunSummary game={game} />
       {game.modeId === "experimental" && (
         <details className="prompt-inspector"><summary>Inspect final story prompt</summary><pre>{story.prompt.user}</pre></details>
+      )}
+    </section>
+  );
+}
+
+function RunSummary({ game }: { game: RippleGameState }) {
+  const board = boardForCharacter(game.characterId);
+  const run = game.boardRun;
+  const showExactBranches = game.modeId === "experimental";
+  return (
+    <section className="run-summary">
+      <p className="eyebrow">Run summary / Mechanics</p>
+      <h3>{board.name}</h3>
+      <div className="run-summary-grid">
+        <p><strong>{run.turn_count}</strong><span>turns</span></p>
+        <p><strong>{run.spaces_collected.length}</strong><span>collected</span></p>
+        <p><strong>{run.spaces_ignored.length}</strong><span>ignored</span></p>
+        <p><strong>{run.spaces_missed.length}</strong><span>missed</span></p>
+        <p><strong>{run.spaces_forced.length}</strong><span>forced</span></p>
+      </div>
+      <p><strong>Dominant zones:</strong> {run.dominant_zones.join(", ") || "No dominant zone"}</p>
+      <p><strong>Final response:</strong> {run.final_response.replace(/_/g, " ")}</p>
+      {game.modeId === "vague" && run.unresolved_branch_pairs.length > 0 && (
+        <p>Unresolved branches quietly changed this ending.</p>
+      )}
+      {showExactBranches && (
+        <div className="branch-summary">
+          <h4>Branch resolutions</h4>
+          {run.resolved_branch_pairs.map((pair) => (
+            <p key={pair.group}><strong>{pair.group.replace(/_/g, " ")}:</strong> {pair.resolution} <span>({pair.kind})</span></p>
+          ))}
+          <p><strong>Missed pairs:</strong> {run.unresolved_branch_pairs.join(", ") || "none"}</p>
+        </div>
       )}
     </section>
   );
