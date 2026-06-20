@@ -1,6 +1,7 @@
 export type GameModeId = "mystery" | "vague" | "experimental";
 export type GamePhase = "playing" | "awaiting-choice" | "complete";
 export type ArtifactState = "missed" | "collected" | "ignored" | "forced";
+export type RippleLens = "Memory" | "Pressure" | "Echo" | "Fork" | "Intervention" | "Ripple";
 export type RealityLayerId =
   | "natural"
   | "clinical"
@@ -105,7 +106,23 @@ export interface ThreeDiceRoll {
   ripple: number;
   total: number;
   doubles: boolean;
-  influence: string;
+  lens: RippleLens;
+}
+
+export interface RippleLensEffect {
+  turn: number;
+  lens: RippleLens;
+  space: number;
+  note: string;
+  relatedSpace?: number;
+  branchGroup?: string;
+}
+
+export interface EchoLink {
+  turn: number;
+  fromSpace: number;
+  toSpace: number;
+  note: string;
 }
 
 export interface GlassPrompt {
@@ -178,6 +195,13 @@ export interface LifeBoardRunState {
   current_position: number;
   turn_count: number;
   dice_history: ThreeDiceRoll[];
+  ripple_lens_history: RippleLens[];
+  active_lens: RippleLens | null;
+  lens_effects: RippleLensEffect[];
+  emphasized_spaces: number[];
+  echo_links: EchoLink[];
+  amplified_spaces: number[];
+  intervention_turns_used: number;
   spaces_landed: number[];
   spaces_collected: number[];
   spaces_ignored: number[];
@@ -195,7 +219,7 @@ export interface LifeBoardRunState {
 }
 
 export interface RippleGameState {
-  version: 2;
+  version: 3;
   boardId: string;
   phase: GamePhase;
   modeId: GameModeId;

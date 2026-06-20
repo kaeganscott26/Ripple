@@ -6,21 +6,31 @@ import type {
   BoardSpaceConfig,
   FinalStoryResult,
   GlassPrompt,
+  RippleLens,
   RippleGameState,
   ThreeDiceRoll,
 } from "./gameTypes";
 
-const rippleInfluences: Record<number, string> = {
-  1: "echo",
-  2: "fracture",
-  3: "warning",
-  4: "inversion",
-  5: "date",
-  6: "threshold",
+const rippleLenses: Record<number, RippleLens> = {
+  1: "Memory",
+  2: "Pressure",
+  3: "Echo",
+  4: "Fork",
+  5: "Intervention",
+  6: "Ripple",
 };
 
-export function influenceFor(die: number): string {
-  return rippleInfluences[die] ?? "echo";
+export const rippleLensExplanations: Record<RippleLens, string> = {
+  Memory: "The board remembers this space in sharper detail.",
+  Pressure: "The board carries this space forward as tension.",
+  Echo: "The board connects this space to another room.",
+  Fork: "The board emphasizes an alternate possibility.",
+  Intervention: "Ignoring this space will not move you back.",
+  Ripple: "The board makes this space more consequential.",
+};
+
+export function influenceFor(die: number): RippleLens {
+  return rippleLenses[die] ?? "Memory";
 }
 
 function hashText(value: string): number {
@@ -44,7 +54,9 @@ export function buildRippleRiddlePrompt(
       `Character: ${character.name} (${character.lens}; asks: ${character.question})`,
       `Mode tone: ${mode.glassTone}`,
       `Space: ${space.name}; symbol: ${space.symbol}; vocabulary: ${space.artifactVocabulary.join(", ")}`,
-      `Dice: movement ${roll.movement[0]} + ${roll.movement[1]}; ripple die ${roll.ripple} (${roll.influence})`,
+      `Movement: ${roll.movement[0]} + ${roll.movement[1]} = ${roll.total}`,
+      `Ripple Die: ${roll.ripple} — ${roll.lens}`,
+      `Lens effect: ${rippleLensExplanations[roll.lens]}`,
       `Reality layer: ${realityLayerLabels[space.realityLayer]}`,
     ].join("\n"),
     constraints: [
@@ -62,6 +74,23 @@ function names(records: ArtifactRecord[], fallback: string): string[] {
   return unique.length > 0 ? unique : [fallback];
 }
 
+function dominantLensFor(state: RippleGameState): RippleLens | undefined {
+  const counts = state.boardRun.ripple_lens_history.reduce<Partial<Record<RippleLens, number>>>((result, lens) => {
+    result[lens] = (result[lens] ?? 0) + 1;
+    return result;
+  }, {});
+  return (Object.entries(counts) as [RippleLens, number][]).sort((a, b) => b[1] - a[1])[0]?.[0];
+}
+
+const lensFiction: Record<RippleLens, string> = {
+  Memory: "The room returned first as smell and color, then as the exact angle of light across the table.",
+  Pressure: "Every truth delayed behind a closed door had gathered weight without raising its voice.",
+  Echo: "A phrase from the first room returned in the last, answered by a sound that had seemed unrelated at the time.",
+  Fork: "Two opposed versions of the hallway remained possible, and neither could erase what the other had cost.",
+  Intervention: "An ordinary kindness bought enough time for a different answer; it was not repair, but it kept repair possible.",
+  Ripple: "A small choice in one room changed the timing of the next, then the posture of someone who never saw where it began.",
+};
+
 export function buildFinalStory(state: RippleGameState): FinalStoryResult {
   const board = boardForCharacter(state.characterId);
   if (board.authored) return buildTeodorScottFinalStory(state);
@@ -72,12 +101,13 @@ export function buildFinalStory(state: RippleGameState): FinalStoryResult {
   const ignored = names(state.inventory.ignored, "a darkened window");
   const missed = names(state.inventory.missed, "a distant signal");
   const lastSpace = board.spaces[state.position] ?? board.spaces[board.spaces.length - 1];
+  const dominantLens = dominantLensFor(state);
   const title = `The ${collected[0]} Beyond the Glass`;
 
   const story = [
     `${character.name} arrived at the edge of the city carrying ${collected[0].toLowerCase()}, though no one could remember who had placed it in ${character.name === "Teodor / Scott" ? "their" : "the traveler's"} hand. Beyond the final pane, the streets were quiet and every window reflected a different hour. ${character.name} followed the reflection that showed an open door instead of a face.`,
     `Inside was a room built around ${forced[0].toLowerCase()}. It had been waiting without anger. When ${character.name} touched it, the walls released the sound of ${missed[0].toLowerCase()} moving far away through rain. The sound did not ask to be followed; it only proved that distance could have a shape.`,
-    `At the center table sat ${ignored[0].toLowerCase()}, exactly where it had been left. ${character.name} understood then that refusal had not erased it. Refusal had given it another room, another witness, and enough time to change its name. So ${character.name} spoke the question that had survived the journey: “${character.question}”`,
+    `At the center table sat ${ignored[0].toLowerCase()}, exactly where it had been left. ${character.name} understood then that refusal had not erased it. Refusal had given it another room, another witness, and enough time to change its name. ${dominantLens ? lensFiction[dominantLens] : "The room kept its details without explaining them."} So ${character.name} spoke the question that had survived the journey: “${character.question}”`,
     `The answer came from the ordinary things. A chair shifted toward the doorway. A blank line opened on an old form. Somewhere below the floor, water changed direction around a stone. None of it was a sign, but together the small movements made passage possible. ${character.name} placed ${collected[collected.length - 1].toLowerCase()} beside the window and left the rest unclaimed.`,
     `By morning, ${lastSpace.name} was no longer a destination. It was a house with two exits and a light left on for whoever arrived next. ${character.name} crossed the threshold without becoming the keeper of it, while behind the glass the city continued inventing rooms that no single story could contain.`,
   ].join("\n\n");
@@ -85,7 +115,7 @@ export function buildFinalStory(state: RippleGameState): FinalStoryResult {
   const runTrace = state.turns.map((turn) => ({
     space: turn.spaceId,
     fragment: turn.glassFragment,
-    influence: turn.roll.influence,
+    lens: turn.roll.lens,
     decision: turn.decision,
     forcedSpace: turn.forcedSpaceId,
   }));
@@ -104,12 +134,15 @@ export function buildFinalStory(state: RippleGameState): FinalStoryResult {
         `Forced artifacts: ${forced.join(", ")}`,
         `Missed artifacts: ${missed.join(", ")}`,
         `Run trace: ${JSON.stringify(runTrace)}`,
+        `Ripple lens history: ${state.boardRun.ripple_lens_history.join(", ")}`,
+        `Lens effects: ${JSON.stringify(state.boardRun.lens_effects)}`,
       ].join("\n"),
       constraints: [
         "Write a complete fictional story with a beginning, change, climax, and ending.",
         "Transform mechanics into story events; never recap dice, turns, inventory, or UI actions.",
         "Do not mention INTERVENTION chapters or imply that fiction is proof, prophecy, diagnosis, or command.",
         "Let collected, ignored, missed, and forced artifacts affect the fiction differently.",
+        "Translate lens history into sensory recall, pressure, connection, contradiction, mercy, and consequence without naming dice or lenses.",
       ],
       output: story,
     },
@@ -135,12 +168,13 @@ function buildTeodorScottFinalStory(state: RippleGameState): FinalStoryResult {
     .filter(Boolean);
   const contradiction = state.boardRun.resolved_branch_pairs.some((pair) => pair.kind === "contradiction");
   const accountability = state.boardRun.final_response.includes("accountability");
+  const dominantLens = dominantLensFor(state);
   const title = `The ${collected[0]} at Last Glass`;
 
   const story = [
     `The ${collected[0].toLowerCase()} waited on the kitchen table beneath a water ring. Teodor had been adopted before he could name the first door, and Scott was the name his father later gave him. The new name made a roof, not an erasure. When he signed the note beside the artifact, both names remained visible in the wet ink.`,
     `His father had been funny, stubborn, practical, flawed—human before memory made him larger. At the piano, Scott found that music could hold a room steady without explaining it. After his father died, the empty chair kept its ordinary scratches and the office kept its smell. Grief did not make him wise. It changed the pressure in the house, and some of what he did under that pressure still belonged to him.`,
-    `The rooms refused a clean verdict. ${branchFuel.length > 0 ? branchFuel.join(" ") : "Warmth and distance occupied the same hallway."} ${contradiction ? "Two opposed memories stayed true without cancelling each other." : "One version spoke louder, but the quieter one did not disappear."} What he had left alone returned wearing ${forced[0].toLowerCase()}; what he had passed without seeing sounded like ${missed[0].toLowerCase()} beyond the wall.`,
+    `The rooms refused a clean verdict. ${branchFuel.length > 0 ? branchFuel.join(" ") : "Warmth and distance occupied the same hallway."} ${contradiction ? "Two opposed memories stayed true without cancelling each other." : "One version spoke louder, but the quieter one did not disappear."} ${dominantLens ? lensFiction[dominantLens] : "The rooms kept their details without agreeing on a verdict."} What he had left alone returned wearing ${forced[0].toLowerCase()}; what he had passed without seeing sounded like ${missed[0].toLowerCase()} beyond the wall.`,
     `Kaegan called with plans and irritation of his own, a son with the right to answer, refuse, leave, and return. He mattered, but he was not assigned the work of saving his father. Scott carried that fact into the kitchen rush, where timing, broken stations, and one calm voice taught him how pressure moved through a room. AIFRED began as an audio tool, a practical comparison between a current sound and a target. INTERVENTION became the archive where loose pages could be arranged without being mistaken for healing. Ripple was only the name Scott gave the movement he noticed—not fate, not proof, and not a theory guaranteed to be right.`,
     accountability
       ? `At Last Glass, he chose accountability before monument. He put ${ignored[0].toLowerCase()} on the table and named the damage without asking the naming to count as repair. Then he made one specific promise small enough to be tested by another person. The glass offered this as a fictional variation, never a direct autobiography, and left him with the harder opening: what would this consequence build next?`
@@ -167,6 +201,11 @@ function buildTeodorScottFinalStory(state: RippleGameState): FinalStoryResult {
         `dominant_zones: ${state.boardRun.dominant_zones.join(", ")}`,
         `dominant_layers: ${state.boardRun.dominant_reality_layers.join(", ")}`,
         `ending_pressure: ${state.boardRun.ending_pressure.join(", ")}`,
+        `ripple_lens_history: ${state.boardRun.ripple_lens_history.join(", ")}`,
+        `lens_effects: ${JSON.stringify(state.boardRun.lens_effects)}`,
+        `echo_links: ${JSON.stringify(state.boardRun.echo_links)}`,
+        `amplified_spaces: ${state.boardRun.amplified_spaces.join(", ")}`,
+        `intervention_turns_used: ${state.boardRun.intervention_turns_used}`,
         `turn_count: ${state.boardRun.turn_count}`,
         `dice_history: ${JSON.stringify(state.boardRun.dice_history)}`,
         `final_response: ${state.boardRun.final_response}`,
@@ -178,6 +217,7 @@ function buildTeodorScottFinalStory(state: RippleGameState): FinalStoryResult {
         "Keep the father and Kaegan human; neither is a symbol, cure, or automatic source of wisdom.",
         "Treat Ripple as accountable observation, never fate, prophecy, cosmic certainty, or automatic proof.",
         "Transform collected, ignored, missed, forced, and branch resolution data into concrete scenes.",
+        "Translate lens history into fiction: sensory recall, returning pressure, linked rooms, alternate possibilities, mercy, or amplified consequence. Never name the die or lens mechanic.",
       ],
       output: story,
     },

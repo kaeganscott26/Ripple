@@ -9,6 +9,7 @@ import type {
   LifeBoardSpace,
   RippleGameSetup,
   RippleGameState,
+  RippleLensEffect,
   ThreeDiceRoll,
 } from "./gameTypes";
 
@@ -21,7 +22,7 @@ export function rollThreeDice(random: () => number = Math.random): ThreeDiceRoll
     ripple,
     total: dieA + dieB,
     doubles: dieA === dieB,
-    influence: influenceFor(ripple),
+    lens: influenceFor(ripple),
   };
 }
 
@@ -42,6 +43,13 @@ function initialBoardRun(setup: RippleGameSetup, board: PlayableBoard): LifeBoar
     current_position: 1,
     turn_count: 0,
     dice_history: [],
+    ripple_lens_history: [],
+    active_lens: null,
+    lens_effects: [],
+    emphasized_spaces: [],
+    echo_links: [],
+    amplified_spaces: [],
+    intervention_turns_used: 0,
     spaces_landed: [],
     spaces_collected: [],
     spaces_ignored: [],
@@ -62,7 +70,7 @@ function initialBoardRun(setup: RippleGameSetup, board: PlayableBoard): LifeBoar
 export function createRippleGame(setup: RippleGameSetup): RippleGameState {
   const board = boardForCharacter(setup.characterId);
   const initial: RippleGameState = {
-    version: 2,
+    version: 3,
     boardId: board.id,
     phase: "playing",
     modeId: setup.modeId,
@@ -147,8 +155,9 @@ function weightedDominance(board: PlayableBoard, run: LifeBoardRunState) {
   weights.forEach((weight, number) => {
     const space = asLifeSpace(board, number - 1);
     if (!space) return;
-    zones.set(space.zone, (zones.get(space.zone) ?? 0) + weight);
-    space.realityLayers.forEach((layer) => layers.set(layer, (layers.get(layer) ?? 0) + weight));
+    const weighted = run.amplified_spaces.includes(number) ? weight * 2 : weight;
+    zones.set(space.zone, (zones.get(space.zone) ?? 0) + weighted);
+    space.realityLayers.forEach((layer) => layers.set(layer, (layers.get(layer) ?? 0) + weighted));
   });
   const leaders = (values: Map<string, number>) =>
     [...values].sort((a, b) => b[1] - a[1]).slice(0, 3).map(([name]) => name);
@@ -181,7 +190,8 @@ function updateDerivedRun(board: PlayableBoard, run: LifeBoardRunState): LifeBoa
     return [id, { group: id, spaces, collected, ignored, missed, forced, status }];
   })) as Record<string, BranchPairState>;
   const dominance = weightedDominance(board, run);
-  const ending_pressure = unique([...run.spaces_ignored, ...run.spaces_forced])
+  const pressureSpaces = run.lens_effects.filter((effect) => effect.lens === "Pressure").map((effect) => effect.space);
+  const ending_pressure = unique([...run.spaces_ignored, ...run.spaces_forced, ...pressureSpaces])
     .map((number) => board.spaces[number - 1]?.name)
     .filter((name): name is string => Boolean(name));
 
@@ -193,6 +203,82 @@ function updateDerivedRun(board: PlayableBoard, run: LifeBoardRunState): LifeBoa
     dominant_zones: dominance.zones,
     dominant_reality_layers: dominance.layers,
     ending_pressure,
+  };
+}
+
+function normalizedRoll(roll: ThreeDiceRoll): ThreeDiceRoll {
+  const [dieA, dieB] = roll.movement;
+  return {
+    movement: [dieA, dieB],
+    ripple: roll.ripple,
+    total: dieA + dieB,
+    doubles: dieA === dieB,
+    lens: influenceFor(roll.ripple),
+  };
+}
+
+function applyLens(board: PlayableBoard, run: LifeBoardRunState, roll: ThreeDiceRoll, space: number, turn: number): LifeBoardRunState {
+  const authoredSpace = asLifeSpace(board, space - 1);
+  let emphasizedSpaces = run.emphasized_spaces;
+  let amplifiedSpaces = run.amplified_spaces;
+  let echoLinks = run.echo_links;
+  let relatedSpace: number | undefined;
+  let branchGroup: string | undefined;
+  let note: string;
+
+  if (roll.lens === "Memory") {
+    note = `${board.spaces[space - 1].name} returns as remembered sensory material.`;
+  } else if (roll.lens === "Pressure") {
+    note = `${board.spaces[space - 1].name} carries tension and delayed pressure into the ending.`;
+  } else if (roll.lens === "Echo") {
+    const known = unique([
+      ...run.spaces_collected,
+      ...run.spaces_ignored,
+      ...run.spaces_missed,
+      ...run.spaces_forced,
+      ...run.spaces_landed,
+    ]).filter((number) => number !== space);
+    relatedSpace = authoredSpace?.oppositeSpace ?? known.sort((a, b) => Math.abs(a - space) - Math.abs(b - space))[0];
+    if (relatedSpace) {
+      note = `${board.spaces[space - 1].name} echoes ${board.spaces[relatedSpace - 1]?.name ?? `Space ${relatedSpace}`}.`;
+      echoLinks = [...echoLinks, { turn, fromSpace: space, toSpace: relatedSpace, note }];
+    } else {
+      note = `${board.spaces[space - 1].name} waits for a later room to answer it.`;
+    }
+  } else if (roll.lens === "Fork") {
+    const ownGroup = authoredSpace?.branchGroup
+      ? board.authored?.branchGroups.find((group) => group.id === authoredSpace.branchGroup)
+      : undefined;
+    const unresolved = board.authored?.branchGroups
+      .filter((group) => ["pending", "unresolved"].includes(run.branch_pair_states[group.id]?.status ?? "pending"))
+      .sort((a, b) => {
+        const distance = (group: { spaces: [number, number] }) => Math.min(...group.spaces.map((number) => Math.abs(number - space)));
+        return distance(a) - distance(b);
+      })[0];
+    const group = ownGroup ?? unresolved;
+    branchGroup = group?.id;
+    relatedSpace = ownGroup ? ownGroup.spaces.find((number) => number !== space) : group?.spaces[0];
+    const targets = relatedSpace ? [relatedSpace] : group?.spaces ?? [];
+    emphasizedSpaces = unique([...emphasizedSpaces, ...targets]);
+    note = relatedSpace
+      ? `${board.spaces[relatedSpace - 1]?.name ?? `Space ${relatedSpace}`} is emphasized as an alternate possibility.`
+      : "No unresolved branch remains to emphasize.";
+  } else if (roll.lens === "Intervention") {
+    note = `${board.spaces[space - 1].name} may be ignored without moving back.`;
+  } else {
+    amplifiedSpaces = unique([...amplifiedSpaces, space]);
+    note = `${board.spaces[space - 1].name} has heavier influence on the ending.`;
+  }
+
+  const effect: RippleLensEffect = { turn, lens: roll.lens, space, note, relatedSpace, branchGroup };
+  return {
+    ...run,
+    ripple_lens_history: [...run.ripple_lens_history, roll.lens],
+    active_lens: roll.lens,
+    lens_effects: [...run.lens_effects, effect],
+    emphasized_spaces: emphasizedSpaces,
+    echo_links: echoLinks,
+    amplified_spaces: amplifiedSpaces,
   };
 }
 
@@ -235,7 +321,7 @@ function resolveBranches(board: PlayableBoard, run: LifeBoardRunState): LifeBoar
 export function advanceWithRoll(state: RippleGameState, suppliedRoll?: ThreeDiceRoll): RippleGameState {
   if (state.phase !== "playing") return state;
   const board = boardForCharacter(state.characterId);
-  const roll = suppliedRoll ?? rollThreeDice();
+  const roll = normalizedRoll(suppliedRoll ?? rollThreeDice());
   const from = state.position;
   const to = Math.min(from + roll.total, board.totalSpaces - 1);
   const turn = state.turn + 1;
@@ -253,8 +339,9 @@ export function advanceWithRoll(state: RippleGameState, suppliedRoll?: ThreeDice
     artifactRecord({ ...state, turn }, board, position, "missed", asLifeSpace(board, position)?.missedMeaning ?? "Passed beyond the glass."),
   );
   const offered = artifactRecord({ ...state, turn }, board, to, "collected", prompt.output);
+  const landedRun = applyLens(board, state.boardRun, roll, to + 1, turn);
   const boardRun = updateDerivedRun(board, {
-    ...state.boardRun,
+    ...landedRun,
     current_position: to + 1,
     turn_count: turn,
     dice_history: [...state.boardRun.dice_history, roll],
@@ -307,6 +394,22 @@ export function ignoreArtifact(state: RippleGameState): RippleGameState {
   const board = boardForCharacter(state.characterId);
   if (state.position === board.totalSpaces - 1) return collectArtifact(state);
   const ignored = { ...state.pendingChoice.artifact, state: "ignored" as const, meaning: asLifeSpace(board, state.position)?.ignoreMeaning };
+  const intervention = state.lastRoll?.lens === "Intervention";
+  if (intervention) {
+    const boardRun = updateDerivedRun(board, {
+      ...state.boardRun,
+      spaces_ignored: unique([...state.boardRun.spaces_ignored, state.position + 1]),
+      intervention_turns_used: state.boardRun.intervention_turns_used + 1,
+    });
+    return {
+      ...state,
+      phase: "playing",
+      pendingChoice: undefined,
+      inventory: { ...state.inventory, ignored: [...state.inventory.ignored, ignored] },
+      boardRun,
+      turns: state.turns.map((turn, index) => index === state.turns.length - 1 ? { ...turn, decision: "ignore" } : turn),
+    };
+  }
   const forcedPosition = Math.max(0, state.position - 1);
   const forcedSpace = board.spaces[forcedPosition];
   const forced = artifactRecord(state, board, forcedPosition, "forced", asLifeSpace(board, forcedPosition)?.forcedConsequence ?? `Forced: ${forcedSpace.symbol} ${forcedSpace.artifactName}`);

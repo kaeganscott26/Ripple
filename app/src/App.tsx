@@ -4,17 +4,18 @@ import { characterConfig, characterConfigs, gameModes, modeConfig } from "./data
 import { boardForCharacter } from "./data/boards";
 import { realityLayerLabels } from "./data/liveBoard";
 import { advanceWithRoll, collectArtifact, createRippleGame, ignoreArtifact } from "./engine/rippleGame";
-import type { ArtifactState, GameModeId, LifeBoardSpace, RippleGameState } from "./engine/gameTypes";
+import { rippleLensExplanations } from "./engine/aiGlass";
+import type { ArtifactState, GameModeId, LifeBoardSpace, RippleGameState, RippleLens } from "./engine/gameTypes";
 import type { LayerCard } from "./engine/types";
 
-const savedRunKey = "ripple-canonical-run-v2";
+const savedRunKey = "ripple-canonical-run-v3";
 const layerCards = layerCardsJson as LayerCard[];
 type View = "board" | "inventory" | "reference";
 
 function loadRun(): RippleGameState | null {
   try {
     const parsed = JSON.parse(window.localStorage.getItem(savedRunKey) ?? "null") as RippleGameState | null;
-    return parsed?.version === 2 && characterConfigs.some((character) => character.id === parsed.characterId) ? parsed : null;
+    return parsed?.version === 3 && characterConfigs.some((character) => character.id === parsed.characterId) ? parsed : null;
   } catch {
     return null;
   }
@@ -161,7 +162,11 @@ export default function App() {
               <section className="artifact-choice">
                 <p className="eyebrow">Artifact offered</p>
                 <h3>{game.pendingChoice.artifact.artifactName}</h3>
-                <p>{game.boardRun.last_glass_reached ? "The Last Glass resolves the run." : "Collect it, or ignore it and move back one space to receive that space's consequence."}</p>
+                <p>{game.boardRun.last_glass_reached
+                  ? "The Last Glass resolves the run."
+                  : game.lastRoll?.lens === "Intervention"
+                    ? "Collect it, or ignore it without moving back."
+                    : "Collect it, or ignore it and move back one space to receive that space's consequence."}</p>
                 <div className="choice-actions">
                   <button className="primary-action" onClick={() => setGame(collectArtifact(game))} type="button">
                     {game.boardRun.last_glass_reached ? "Enter Last Glass" : "Collect"}
@@ -204,8 +209,9 @@ function BoardTrack({ game }: { game: RippleGameState }) {
         {board.spaces.map((space, index) => {
           const current = index === game.position;
           const passed = index < game.position;
+          const emphasized = game.boardRun.emphasized_spaces.includes(index + 1);
           return (
-            <article className={`canonical-space ${current ? "current" : ""} ${passed ? "passed" : ""}`} key={space.id}>
+            <article className={`canonical-space ${current ? "current" : ""} ${passed ? "passed" : ""} ${emphasized ? "emphasized" : ""}`} key={space.id}>
               <span>{String(index + 1).padStart(2, "0")}</span>
               <i>{space.symbol}</i>
               <strong>{game.modeId === "mystery" && !current && !passed ? "Unrevealed" : space.name}</strong>
@@ -231,7 +237,13 @@ function DiceConsole({ game, onRoll }: { game: RippleGameState; onRoll: () => vo
           <Die label="Ripple" value={roll?.ripple} />
         </div>
       </div>
-      {roll && <p>{roll.total} spaces · {roll.influence}{roll.doubles ? " · doubles: extra turn earned" : ""}</p>}
+      {roll && (
+        <div className="dice-result-v1">
+          <p><strong>Movement:</strong> {roll.movement[0]} + {roll.movement[1]} = {roll.total}</p>
+          <p><strong>Ripple Die:</strong> {roll.ripple} — {roll.lens}</p>
+          <p>{rippleLensExplanations[roll.lens]}{roll.doubles ? " Doubles: extra turn earned." : ""}</p>
+        </div>
+      )}
       <button className="primary-action" disabled={game.phase !== "playing"} onClick={onRoll} type="button">
         {game.extraTurnPending ? "Take extra turn" : game.turn === 0 ? "Roll three dice" : "Roll again"}
       </button>
@@ -315,6 +327,12 @@ function RunSummary({ game }: { game: RippleGameState }) {
   const board = boardForCharacter(game.characterId);
   const run = game.boardRun;
   const showExactBranches = game.modeId === "experimental";
+  const lensCounts = run.ripple_lens_history.reduce<Partial<Record<RippleLens, number>>>((counts, lens) => {
+    counts[lens] = (counts[lens] ?? 0) + 1;
+    return counts;
+  }, {});
+  const dominantLens = (Object.entries(lensCounts) as [RippleLens, number][]).sort((a, b) => b[1] - a[1])[0]?.[0];
+  const forkGroups = Array.from(new Set(run.lens_effects.filter((effect) => effect.lens === "Fork").map((effect) => effect.branchGroup).filter(Boolean)));
   return (
     <section className="run-summary">
       <p className="eyebrow">Run summary / Mechanics</p>
@@ -327,6 +345,12 @@ function RunSummary({ game }: { game: RippleGameState }) {
         <p><strong>{run.spaces_forced.length}</strong><span>forced</span></p>
       </div>
       <p><strong>Dominant zones:</strong> {run.dominant_zones.join(", ") || "No dominant zone"}</p>
+      <p><strong>Ripple Die history:</strong> {run.dice_history.map((roll) => roll.ripple).join(", ") || "No rolls"}</p>
+      <p><strong>Dominant lens:</strong> {dominantLens ?? "No dominant lens"}</p>
+      <p><strong>Amplified spaces:</strong> {run.amplified_spaces.join(", ") || "none"}</p>
+      <p><strong>Echo links:</strong> {run.echo_links.map((link) => `${link.fromSpace} → ${link.toSpace}`).join(", ") || "none"}</p>
+      <p><strong>Interventions used:</strong> {run.intervention_turns_used}</p>
+      <p><strong>Fork branch groups:</strong> {forkGroups.join(", ") || "none"}</p>
       <p><strong>Final response:</strong> {run.final_response.replace(/_/g, " ")}</p>
       {game.modeId === "vague" && run.unresolved_branch_pairs.length > 0 && (
         <p>Unresolved branches quietly changed this ending.</p>

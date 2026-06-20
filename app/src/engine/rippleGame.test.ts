@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { boardSpaces, liveBoard } from "../data/liveBoard";
 import { boardForCharacter, teodorScottBoard } from "../data/boards";
-import { buildRippleRiddlePrompt } from "./aiGlass";
+import { buildRippleRiddlePrompt, influenceFor } from "./aiGlass";
 import { advanceWithRoll, collectArtifact, createRippleGame, ignoreArtifact, rollThreeDice } from "./rippleGame";
 import type { ThreeDiceRoll } from "./gameTypes";
 
 function roll(a: number, b: number, ripple = 3): ThreeDiceRoll {
-  return { movement: [a, b], ripple, total: a + b, doubles: a === b, influence: ripple === 3 ? "warning" : "echo" };
+  return { movement: [a, b], ripple, total: a + b, doubles: a === b, lens: influenceFor(ripple) };
 }
 
 describe("canonical Ripple loop", () => {
@@ -58,7 +58,17 @@ describe("canonical Ripple loop", () => {
     expect(result.ripple).toBe(6);
     expect(result.total).toBe(4);
     expect(result.doubles).toBe(true);
-    expect(result.influence).toBe("threshold");
+    expect(result.lens).toBe("Ripple");
+  });
+
+  it("maps every Ripple Die face to a typed story lens", () => {
+    expect([1, 2, 3, 4, 5, 6].map(influenceFor)).toEqual([
+      "Memory", "Pressure", "Echo", "Fork", "Intervention", "Ripple",
+    ]);
+    const low = rollThreeDice(() => 0);
+    const high = rollThreeDice(() => 0.999);
+    expect(low.ripple).toBe(1);
+    expect(high.ripple).toBe(6);
   });
 
   it("moves with two dice, uses the third for the glass, and tracks crossed spaces as missed", () => {
@@ -68,8 +78,20 @@ describe("canonical Ripple loop", () => {
     expect(next.position).toBe(5);
     expect(next.phase).toBe("awaiting-choice");
     expect(next.inventory.missed).toHaveLength(4);
-    expect(next.pendingChoice?.glassPrompt.user).toContain("ripple die 3 (warning)");
+    expect(next.pendingChoice?.glassPrompt.user).toContain("Ripple Die: 3 — Echo");
     expect(next.pendingChoice?.glassPrompt.user).toContain("Mara");
+    expect(next.boardRun.ripple_lens_history).toEqual(["Echo"]);
+  });
+
+  it("recomputes movement total and doubles from only the first two dice", () => {
+    const initial = createRippleGame({ modeId: "vague", characterId: "mara" });
+    const supplied = { ...roll(2, 4, 6), total: 12, doubles: true };
+    const next = advanceWithRoll(initial, supplied);
+
+    expect(next.position).toBe(6);
+    expect(next.lastRoll?.total).toBe(6);
+    expect(next.lastRoll?.doubles).toBe(false);
+    expect(next.lastRoll?.ripple).toBe(6);
   });
 
   it("keeps center-glass output within two to eight words", () => {
@@ -96,6 +118,26 @@ describe("canonical Ripple loop", () => {
     expect(ignored.inventory.forced[0].consequence).toBeTruthy();
   });
 
+  it("uses Intervention to ignore without moving back or forcing a space", () => {
+    const initial = createRippleGame({ modeId: "vague", characterId: "jamal" });
+    const offer = advanceWithRoll(initial, roll(2, 3, 5));
+    const ignored = ignoreArtifact(offer);
+
+    expect(ignored.position).toBe(offer.position);
+    expect(ignored.inventory.ignored).toHaveLength(1);
+    expect(ignored.inventory.forced).toHaveLength(0);
+    expect(ignored.boardRun.intervention_turns_used).toBe(1);
+  });
+
+  it("uses Ripple to amplify the landed space", () => {
+    const initial = createRippleGame({ modeId: "vague", characterId: "mara" });
+    const offer = advanceWithRoll(initial, roll(2, 3, 6));
+
+    expect(offer.boardRun.active_lens).toBe("Ripple");
+    expect(offer.boardRun.amplified_spaces).toEqual([6]);
+    expect(offer.boardRun.lens_effects[0]).toMatchObject({ lens: "Ripple", space: 6 });
+  });
+
   it("creates a complete fiction at the board end rather than a mechanics recap", () => {
     const nearEnd = {
       ...createRippleGame({ modeId: "experimental", characterId: "maren" }),
@@ -106,6 +148,8 @@ describe("canonical Ripple loop", () => {
     expect(complete.phase).toBe("complete");
     expect(complete.finalStory?.story.split("\n\n")).toHaveLength(5);
     expect(complete.finalStory?.story).not.toMatch(/\bdice\b|\bturns\b|inventory|clicked/i);
+    expect(complete.finalStory?.story).toContain("ordinary kindness");
+    expect(complete.finalStory?.prompt.user).toContain("Ripple lens history: Intervention");
     expect(complete.finalStory?.prompt.constraints.join(" ")).toContain("never recap dice");
   });
 

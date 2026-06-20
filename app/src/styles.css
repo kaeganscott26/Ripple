@@ -183,6 +183,22 @@
   box-shadow: 0 0 24px rgba(215, 196, 106, 0.13);
 }
 
+.canonical-space.emphasized:not(.current) {
+  border-color: rgba(149, 202, 196, 0.72);
+  box-shadow: inset 0 0 0 1px rgba(149, 202, 196, 0.18);
+}
+
+.canonical-space.emphasized:not(.current)::after {
+  content: "Fork";
+  position: absolute;
+  right: 7px;
+  top: 7px;
+  color: #95cac4;
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .canonical-space > b {
   position: absolute;
   right: 8px;
@@ -302,6 +318,17 @@
   font-family: Georgia, "Times New Roman", serif;
   font-size: 2.2rem;
   font-weight: 400;
+}
+
+.dice-result-v1 {
+  display: grid;
+  gap: 3px;
+  color: #b8c2b7;
+  font-size: 0.86rem;
+}
+
+.dice-result-v1 p {
+  margin: 0;
 }
 
 .choice-actions {
