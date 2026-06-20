@@ -5,6 +5,7 @@ import { boardForCharacter } from "./data/boards";
 import { realityLayerLabels } from "./data/liveBoard";
 import { advanceWithRoll, collectArtifact, createRippleGame, ignoreArtifact } from "./engine/rippleGame";
 import { rippleLensExplanations } from "./engine/aiGlass";
+import { humanizeBranchGroup, humanizeFinalResponse } from "./engine/runLabels";
 import type { ArtifactState, GameModeId, LifeBoardSpace, RippleGameState, RippleLens } from "./engine/gameTypes";
 import type { LayerCard } from "./engine/types";
 
@@ -332,7 +333,10 @@ function RunSummary({ game }: { game: RippleGameState }) {
     return counts;
   }, {});
   const dominantLens = (Object.entries(lensCounts) as [RippleLens, number][]).sort((a, b) => b[1] - a[1])[0]?.[0];
-  const forkGroups = Array.from(new Set(run.lens_effects.filter((effect) => effect.lens === "Fork").map((effect) => effect.branchGroup).filter(Boolean)));
+  const forkGroups = Array.from(new Set(run.lens_effects
+    .filter((effect) => effect.lens === "Fork")
+    .map((effect) => effect.branchGroup)
+    .filter((group): group is string => Boolean(group))));
   return (
     <section className="run-summary">
       <p className="eyebrow">Run summary / Mechanics</p>
@@ -350,18 +354,22 @@ function RunSummary({ game }: { game: RippleGameState }) {
       <p><strong>Amplified spaces:</strong> {run.amplified_spaces.join(", ") || "none"}</p>
       <p><strong>Echo links:</strong> {run.echo_links.map((link) => `${link.fromSpace} → ${link.toSpace}`).join(", ") || "none"}</p>
       <p><strong>Interventions used:</strong> {run.intervention_turns_used}</p>
-      <p><strong>Fork branch groups:</strong> {forkGroups.join(", ") || "none"}</p>
-      <p><strong>Final response:</strong> {run.final_response.replace(/_/g, " ")}</p>
+      {game.modeId !== "mystery" && <p><strong>Fork branch groups:</strong> {forkGroups.map(humanizeBranchGroup).join(", ") || "none"}</p>}
+      {game.modeId !== "mystery" && <p><strong>Final response:</strong> {humanizeFinalResponse(run.final_response)}</p>}
       {game.modeId === "vague" && run.unresolved_branch_pairs.length > 0 && (
         <p>Unresolved branches quietly changed this ending.</p>
       )}
       {showExactBranches && (
         <div className="branch-summary">
           <h4>Branch resolutions</h4>
-          {run.resolved_branch_pairs.map((pair) => (
-            <p key={pair.group}><strong>{pair.group.replace(/_/g, " ")}:</strong> {pair.resolution} <span>({pair.kind})</span></p>
+          {run.resolved_branch_pairs.filter((pair) => pair.kind !== "mode-resolved").map((pair) => (
+            <p key={pair.group}><strong>{humanizeBranchGroup(pair.group)}:</strong> {pair.resolution} <span>({pair.kind})</span></p>
           ))}
-          <p><strong>Missed pairs:</strong> {run.unresolved_branch_pairs.join(", ") || "none"}</p>
+          <p><strong>Mode-resolved branches:</strong> {run.resolved_branch_pairs
+            .filter((pair) => pair.kind === "mode-resolved")
+            .map((pair) => `${humanizeBranchGroup(pair.group)} → ${pair.resolution}`)
+            .join(", ") || "none"}</p>
+          <p><strong>Originally unresolved branches:</strong> {run.unresolved_branch_pairs.map(humanizeBranchGroup).join(", ") || "none"}</p>
         </div>
       )}
     </section>

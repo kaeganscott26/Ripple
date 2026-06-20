@@ -6,6 +6,7 @@ import type {
   BoardSpaceConfig,
   FinalStoryResult,
   GlassPrompt,
+  LifeBoardSpace,
   RippleLens,
   RippleGameState,
   DiceRoll,
@@ -155,49 +156,90 @@ function buildTeodorScottFinalStory(state: RippleGameState): FinalStoryResult {
   const authored = board.authored;
   if (!authored) throw new Error("Teodor / Scott ending requires the authored board.");
   const mode = modeConfig(state.modeId);
-  const collected = names(state.inventory.collected, "Adoption Paper");
-  const ignored = names(state.inventory.ignored, "an unanswered room");
   const artifactNumber = (record: ArtifactRecord) => board.spaces.findIndex((space) => space.id === record.spaceId) + 1;
+  const artifactSpace = (record: ArtifactRecord): LifeBoardSpace | undefined => authored.spaces[artifactNumber(record) - 1];
   const stateWeight: Record<ArtifactRecord["state"], number> = { collected: 4, forced: 3, ignored: 2, missed: 1 };
-  const strongestArtifacts = [...state.inventory.collected, ...state.inventory.forced, ...state.inventory.ignored, ...state.inventory.missed]
-    .sort((left, right) => {
-      const score = (record: ArtifactRecord) => {
-        const number = artifactNumber(record);
-        return stateWeight[record.state]
-          + (state.boardRun.amplified_spaces.includes(number) ? 6 : 0)
-          + (authored.fixedAnchors.includes(number) ? 5 : 0);
-      };
-      return score(right) - score(left) || left.turn - right.turn;
-    })
-    .filter((record, index, records) => records.findIndex((candidate) => candidate.artifactName === record.artifactName) === index)
-    .slice(0, 4);
-  const sceneMaterial = strongestArtifacts.map((record) => {
-    const artifact = record.artifactName.toLowerCase();
-    if (record.state === "collected") {
-      return `At ${record.spaceName}, he set the ${artifact} where everyone in the room could see it, then stayed long enough for the conversation it opened.`;
-    }
-    if (record.state === "ignored") {
-      return `The ${artifact} remained at ${record.spaceName}; by evening, his silence around it had become pressure other people had to carry.`;
-    }
-    if (record.state === "forced") {
-      return `At ${record.spaceName}, the ${artifact} blocked the doorway, unavoidable and ordinary, until he named what it required of him.`;
-    }
-    return `The missing ${artifact} left ${record.spaceName} oddly bare, an absence that followed him as a faint sound in the next room.`;
+  const score = (record: ArtifactRecord) => {
+    const number = artifactNumber(record);
+    const zone = artifactSpace(record)?.zone;
+    return stateWeight[record.state]
+      + (state.boardRun.amplified_spaces.includes(number) ? 8 : 0)
+      + (authored.fixedAnchors.includes(number) ? 5 : 0)
+      + (zone && state.boardRun.dominant_zones.includes(zone) ? 4 : 0)
+      + (number >= 65 ? 2 : 0);
+  };
+  const ranked = (records: ArtifactRecord[]) => [...records]
+    .sort((left, right) => score(right) - score(left) || left.turn - right.turn)
+    .filter((record, index, all) => all.findIndex((candidate) => candidate.artifactName === record.artifactName) === index);
+  const primaryCandidates = [...state.inventory.collected, ...state.inventory.forced]
+    .filter((record) => artifactNumber(record) !== authored.totalSpaces);
+  const primary = ranked(primaryCandidates)[0]
+    ?? ranked([...state.inventory.collected, ...state.inventory.forced])[0]
+    ?? ranked([...state.inventory.ignored, ...state.inventory.missed])[0];
+  if (!primary) throw new Error("Teodor / Scott ending requires story material from the run.");
+  const support = ranked([...state.inventory.collected, ...state.inventory.forced])
+    .filter((record) => record.artifactName !== primary.artifactName)
+    .slice(0, 3);
+  const consequence = ranked(state.inventory.ignored).find((record) => record.artifactName !== primary.artifactName)
+    ?? ranked(state.inventory.forced).find((record) => record.artifactName !== primary.artifactName);
+  const missedEcho = ranked(state.inventory.missed)[0];
+
+  const artifactPhrase = (record: ArtifactRecord) => {
+    if (/^(AIFRED|INTERVENTION)\b/.test(record.artifactName)) return record.artifactName;
+    return record.artifactName.toLowerCase();
+  };
+  const zone = artifactSpace(primary)?.zone ?? "Ripple / Last Glass";
+  const sceneOpenings: Record<string, string> = {
+    Origin: "The kitchen table became the first room he could trust.",
+    "Childhood Rooms": "Late light crossed the living-room carpet and stopped at the kitchen table.",
+    "Music and Fear": "The piano room held the evening after the final note had gone.",
+    "Father Layer": "His father's office had kept its dust, its old coffee smell, and one working lamp.",
+    "Collapse and Survival": "By dusk, the apartment kitchen had narrowed to a table, a chair, and the work he could no longer postpone.",
+    "Kaegan / Future Layer": "The kitchen table waited between a silent phone and the chair reserved for Kaegan.",
+    "Work / Systems Layer": "After service, the kitchen line cooled around one clean table left beneath the lights.",
+    "AIFRED / INTERVENTION": "The studio desk glowed after midnight, cables crossing the wood like dark roots.",
+    "Ripple / Last Glass": "Near midnight, the kitchen table held the only light still on in the house.",
+  };
+  const supportSentences = support.map((record, index) => {
+    const artifact = artifactPhrase(record);
+    if (index === 0) return `The ${artifact} rested beside it, close enough to touch but not arranged for display.`;
+    if (index === 1) return `Beyond the half-open door, the ${artifact} changed the shape of the silence without asking to be explained.`;
+    return `Across from him, the ${artifact} kept its ordinary weight while the room gathered around it.`;
   });
+  const pressureSentence = consequence
+    ? consequence.state === "ignored"
+      ? `He had tried to leave the ${artifactPhrase(consequence)} outside this room; by nightfall, that refusal had become work someone else would otherwise have to carry.`
+      : `The ${artifactPhrase(consequence)} would not stay beyond the doorway, so he gave it a place without pretending that attention alone was repair.`
+    : "Nothing accused him, but nothing agreed to disappear for his comfort.";
+  const missedSentence = missedEcho
+    ? `Somewhere past the hallway, the place where the ${artifactPhrase(missedEcho)} should have been remained open, an absence with its own weather.`
+    : "The hallway beyond the room stayed dark, holding what the evening could not settle.";
+  const branchTheme = state.boardRun.resolved_branch_pairs.some((pair) => pair.kind === "contradiction")
+    ? "Opposed memories could share the room; neither excused what happened next."
+    : state.boardRun.resolved_branch_pairs.some((pair) => pair.kind === "pressure")
+      ? "What had gone unanswered returned as pressure, not prophecy."
+      : "The past offered a direction, not a verdict.";
   const contradiction = state.boardRun.resolved_branch_pairs.some((pair) => pair.kind === "contradiction");
   const accountability = state.boardRun.final_response.includes("accountability");
   const dominantLens = dominantLensFor(state);
-  const title = `The ${collected[0]} at Last Glass`;
+  const title = `The ${primary.artifactName} at Last Glass`;
 
   const story = [
-    `The ${collected[0].toLowerCase()} waited on the kitchen table beneath a water ring. Teodor had been adopted before he could name the first door, and Scott was the name his father later gave him. The new name made a roof, not an erasure. When he signed the note beside the artifact, both names remained visible in the wet ink.`,
-    `His father had been funny, stubborn, practical, flawed—human before memory made him larger. At the piano, Scott found that music could hold a room steady without explaining it. After his father died, the empty chair kept its ordinary scratches and the office kept its smell. Grief did not make him wise. It changed the pressure in the house, and some of what he did under that pressure still belonged to him.`,
-    `The rooms refused a clean verdict. ${sceneMaterial.length > 0 ? sceneMaterial.join(" ") : "Warmth and distance occupied the same hallway."} ${contradiction ? "Two opposed memories stayed true without cancelling each other." : "One version spoke louder, but the quieter one did not disappear."} ${dominantLens ? lensFiction[dominantLens] : "The rooms kept their details without agreeing on a verdict."}`,
-    `Kaegan called with plans and irritation of his own, a son with the right to answer, refuse, leave, and return. He mattered, but he was not assigned the work of saving his father. Scott carried that fact into the kitchen rush, where timing, broken stations, and one calm voice taught him how pressure moved through a room. AIFRED began as an audio tool, a practical comparison between a current sound and a target. INTERVENTION became the archive where loose pages could be arranged without being mistaken for healing. Ripple was only the name Scott gave the movement he noticed—not fate, not proof, and not a theory guaranteed to be right.`,
+    `Teodor was adopted before he could name the first door. Scott was the name given by his father, a name meant to make room rather than close one. The name Scott did not erase Teodor. Years later, when he signed a note at the edge of the table, both names remained visible in the wet ink.`,
+    `His father mattered. His father died. The chair kept its scratches and the office kept its smell, refusing the polish that memory tried to give them. Music mattered because it could hold grief in time without turning grief into wisdom. What Scott did under pressure still belonged to him.`,
+    `${sceneOpenings[zone]} The ${artifactPhrase(primary)} lay beneath his hand, chosen as the center of the evening rather than evidence in a case. ${supportSentences.join(" ")} ${pressureSentence} ${missedSentence} ${branchTheme} ${contradiction ? "The room held both versions without letting either cancel the cost." : "The quieter version remained present without demanding the final word."} ${dominantLens ? lensFiction[dominantLens] : "The light shifted across the table and left every object answerable to its own shadow."}`,
+    `Kaegan mattered; he was a son with the right to answer, refuse, leave, and return, not the person assigned to save his father. Scott carried that fact into the kitchen rush, where timing and one calm voice showed how pressure moved between people. AIFRED began as an audio tool, a practical comparison between a current sound and a target. INTERVENTION became the archive, a place for loose pages that did not pretend arrangement was healing. Ripple became the name for the movement he noticed—not fate, proof, or ownership.`,
     accountability
-      ? `At Last Glass, he chose accountability before monument. He put ${ignored[0].toLowerCase()} on the table and named the damage without asking the naming to count as repair. Then he made one specific promise small enough to be tested by another person. The glass offered this as a fictional variation, never a direct autobiography, and left him with the harder opening: what would this consequence build next?`
-      : `At Last Glass, the monument looked finished until he noticed it had no door for the people named inside it. He set ${ignored[0].toLowerCase()} beside the foundation and refused to call the structure repair. The glass offered this as a fictional variation, never a direct autobiography, and left the ending open to a harder question: what would this consequence build next?`,
+      ? `Before morning, he named one harm without asking the naming to count as repair, then made one promise small enough for another person to test. Monument remained in the room as a warning: pain could become architecture and still fail the people asked to live inside it. The Last Glass generates a fictional variation, not a direct autobiography. It left him with the harder opening: what would this consequence build next?`
+      : `Before morning, he found that the monument had no door for the people named inside it. He stopped calling the structure repair and left an opening where another person could refuse his design. The Last Glass generates a fictional variation, not a direct autobiography. It left the ending accountable to a harder question: what would this consequence build next?`,
   ].join("\n\n");
+
+  const storyArtifactData = (records: ArtifactRecord[]) => records.map((record) => ({
+    state: record.state,
+    space: record.spaceName,
+    artifact: record.artifactName,
+    layer: record.realityLayer,
+  }));
 
   return {
     title,
@@ -210,10 +252,14 @@ function buildTeodorScottFinalStory(state: RippleGameState): FinalStoryResult {
         `base_story_summary: ${authored.baseStorySummary}`,
         `fixed_truths: ${JSON.stringify(authored.fixedTruths)}`,
         `fixed_anchor_states: ${JSON.stringify(state.boardRun.fixed_anchor_states)}`,
-        `collected_spaces: ${JSON.stringify(state.inventory.collected)}`,
-        `ignored_spaces: ${JSON.stringify(state.inventory.ignored)}`,
-        `missed_spaces: ${JSON.stringify(state.inventory.missed)}`,
-        `forced_spaces: ${JSON.stringify(state.inventory.forced)}`,
+        `primary_scene_artifact: ${JSON.stringify(storyArtifactData([primary])[0])}`,
+        `support_artifacts: ${JSON.stringify(storyArtifactData(support))}`,
+        `consequence_pressure: ${JSON.stringify(consequence ? storyArtifactData([consequence])[0] : null)}`,
+        `missed_atmosphere: ${JSON.stringify(missedEcho ? storyArtifactData([missedEcho])[0] : null)}`,
+        `collected_spaces: ${JSON.stringify(storyArtifactData(state.inventory.collected))}`,
+        `ignored_spaces: ${JSON.stringify(storyArtifactData(state.inventory.ignored))}`,
+        `missed_spaces: ${JSON.stringify(storyArtifactData(state.inventory.missed))}`,
+        `forced_spaces: ${JSON.stringify(storyArtifactData(state.inventory.forced))}`,
         `resolved_branch_pairs: ${JSON.stringify(state.boardRun.resolved_branch_pairs)}`,
         `unresolved_branch_pairs: ${JSON.stringify(state.boardRun.unresolved_branch_pairs)}`,
         `dominant_zones: ${state.boardRun.dominant_zones.join(", ")}`,
@@ -235,7 +281,7 @@ function buildTeodorScottFinalStory(state: RippleGameState): FinalStoryResult {
         "Keep the father and Kaegan human; neither is a symbol, cure, or automatic source of wisdom.",
         "Treat Ripple as accountable observation, never fate, prophecy, cosmic certainty, or automatic proof.",
         "Transform collected, ignored, missed, forced, and branch resolution data into concrete scenes.",
-        "Choose two to four of the strongest artifacts as concrete scene material; do not list raw storySeed fragments.",
+        "Choose one primary scene anchor and blend no more than three support artifacts into that scene; do not list raw storySeed fragments.",
         "Turn ignored spaces into delayed pressure, forced spaces into unavoidable moments, and missed spaces into atmosphere, absence, or unresolved echo.",
         "Translate lens history into fiction: sensory recall, returning pressure, linked rooms, alternate possibilities, mercy, or amplified consequence. Never name the die or lens mechanic.",
       ],

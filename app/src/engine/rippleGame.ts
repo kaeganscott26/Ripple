@@ -297,7 +297,8 @@ function resolveBranches(board: PlayableBoard, run: LifeBoardRunState): LifeBoar
     }
     if (pair.ignored.length > 0 || pair.forced.length > 0) {
       const pressure = unique([...pair.ignored, ...pair.forced]);
-      return { group: pair.group, spaces: pair.spaces, kind: "pressure", resolution: `${pressure.map(name).join(" and ")} returns as pressure`, dominantSpaces: pressure, hidden: false };
+      const subject = pressure.map(name).join(" and ");
+      return { group: pair.group, spaces: pair.spaces, kind: "pressure", resolution: `${subject} ${pressure.length > 1 ? "return" : "returns"} as pressure`, dominantSpaces: pressure, hidden: false };
     }
     const chosen = modeChoice(pair.group, pair.spaces, derived);
     return {
@@ -310,7 +311,14 @@ function resolveBranches(board: PlayableBoard, run: LifeBoardRunState): LifeBoar
     };
   });
   const final = resolved_branch_pairs.find((pair) => pair.group === "final_response");
-  const final_response = final?.resolution.toLowerCase().replace(/\s+/g, "_") ?? "unresolved_final_response";
+  const responseNames = final?.dominantSpaces.map((number) => board.spaces[number - 1]?.name.toLowerCase()) ?? [];
+  const final_response = !final
+    ? "unresolved_final_response"
+    : final.kind === "pressure" && responseNames.includes("accountability") && responseNames.includes("monument")
+      ? "accountability_with_monument_pressure"
+      : final.kind === "pressure"
+        ? `${responseNames[0] ?? "unresolved_final_response"}_pressure`.replace(/\s+/g, "_")
+        : final.resolution.toLowerCase().replace(/\s+/g, "_");
   return { ...derived, resolved_branch_pairs, final_response };
 }
 

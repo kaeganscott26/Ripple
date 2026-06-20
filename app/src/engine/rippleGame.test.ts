@@ -3,6 +3,7 @@ import { boardSpaces, liveBoard } from "../data/liveBoard";
 import { boardForCharacter, teodorScottBoard } from "../data/boards";
 import { buildRippleRiddlePrompt, influenceFor } from "./aiGlass";
 import { advanceWithRoll, collectArtifact, createRippleGame, ignoreArtifact, rollDice } from "./rippleGame";
+import { humanizeBranchGroup, humanizeFinalResponse } from "./runLabels";
 import type { DiceRoll } from "./gameTypes";
 
 function roll(movementDie: number, rippleDie = 3): DiceRoll {
@@ -184,13 +185,53 @@ describe("canonical Ripple loop", () => {
     expect(name?.kind).toBe("mode-resolved");
     expect(name?.hidden).toBe(false);
     expect(complete.boardRun.unresolved_branch_pairs).toContain("name_relation");
-    expect(complete.finalStory?.story).toContain("Teodor had been adopted");
-    expect(complete.finalStory?.story).toContain("AIFRED began as an audio tool");
-    expect(complete.finalStory?.story).not.toMatch(/because the player|dice|inventory/i);
+    const story = complete.finalStory?.story ?? "";
+    const fixedTruths = [
+      "Teodor was adopted",
+      "Scott was the name given by his father",
+      "The name Scott did not erase Teodor",
+      "His father mattered",
+      "His father died",
+      "Music mattered",
+      "Kaegan mattered",
+      "AIFRED began as an audio tool",
+      "INTERVENTION became the archive",
+      "Ripple became the name for the movement he noticed",
+      "The Last Glass generates a fictional variation, not a direct autobiography",
+    ];
+    fixedTruths.forEach((truth) => expect(story).toContain(truth));
+    expect(story).not.toMatch(/because the player|dice|inventory/i);
+    expect(story).not.toMatch(/At [^,.]+, he set the/);
+    expect(story.match(/\bAt [A-Z][^,.]+,/g) ?? []).toHaveLength(0);
+    expect(story).not.toContain("Run summary");
+    expect(complete.finalStory?.prompt.user).toContain("turn_count:");
     expect(complete.inventory.collected.some((record) =>
-      Boolean(record.storySeed && complete.finalStory?.story.includes(record.storySeed)),
+      Boolean(record.storySeed && story.includes(record.storySeed)),
     )).toBe(false);
     expect(complete.finalStory?.prompt.constraints.join(" ")).toContain("do not list raw storySeed fragments");
+  });
+
+  it("uses clean final-response values and human-readable run labels", () => {
+    const started = collectArtifact(createRippleGame({ modeId: "experimental", characterId: "teodor-scott" }));
+    const nearEnd = {
+      ...started,
+      position: 68,
+      boardRun: {
+        ...started.boardRun,
+        current_position: 69,
+        spaces_ignored: [70],
+        spaces_forced: [71],
+      },
+    };
+    const complete = collectArtifact(advanceWithRoll(nearEnd, roll(6, 5)));
+    const finalBranch = complete.boardRun.resolved_branch_pairs.find((pair) => pair.group === "final_response");
+
+    expect(finalBranch?.resolution).toBe("Accountability and Monument return as pressure");
+    expect(complete.boardRun.final_response).toBe("accountability_with_monument_pressure");
+    expect(humanizeFinalResponse(complete.boardRun.final_response)).toBe("Accountability, with Monument returning as pressure");
+    expect(humanizeBranchGroup("childhood_tone")).toBe("Childhood tone");
+    expect(humanizeBranchGroup("name_relation")).toBe("Name relation");
+    expect(humanizeBranchGroup("fatherhood_relation")).toBe("Fatherhood relation");
   });
 
   it("takes 18–24 turns to cross Teodor / Scott with a representative 1–6 movement cycle", () => {
