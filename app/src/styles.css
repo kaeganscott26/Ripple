@@ -286,15 +286,63 @@
 
 .dice-console-v1,
 .artifact-choice,
+.resonance-choice,
 .prompt-inspector {
   display: grid;
   gap: 12px;
   padding: 16px;
 }
 
+.resonance-choice {
+  display: grid;
+  gap: 12px;
+  border: 1px solid rgba(215, 196, 106, 0.4);
+  background: radial-gradient(circle at 50% 0%, rgba(215, 196, 106, 0.1), transparent 70%);
+}
+
+.resonance-choice h3 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+}
+
+.resonance-candidates {
+  display: grid;
+  gap: 8px;
+}
+
+.resonance-card {
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+  border: 1px solid rgba(149, 202, 196, 0.25);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.035);
+  color: #d9ded5;
+  text-align: left;
+}
+
+.resonance-card:hover {
+  border-color: #d7c46a;
+}
+
+.resonance-card span,
+.resonance-card small,
+.resonance-result,
+.recovery-marker {
+  color: #d7c46a;
+}
+
+.recovery-marker {
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
 .dice-row-v1 {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 8px;
   margin-top: 8px;
 }

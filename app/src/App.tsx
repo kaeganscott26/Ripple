@@ -3,20 +3,20 @@ import layerCardsJson from "./data/layerCards.json";
 import { characterConfig, characterConfigs, gameModes, modeConfig } from "./data/gameConfig";
 import { boardForCharacter } from "./data/boards";
 import { realityLayerLabels } from "./data/liveBoard";
-import { advanceWithRoll, collectArtifact, createRippleGame, ignoreArtifact } from "./engine/rippleGame";
+import { advanceWithRoll, collectArtifact, createRippleGame, ignoreArtifact, rescueMissedArtifact, skipResonance } from "./engine/rippleGame";
 import { rippleLensExplanations } from "./engine/aiGlass";
 import { humanizeBranchGroup, humanizeFinalResponse } from "./engine/runLabels";
 import type { ArtifactState, GameModeId, LifeBoardSpace, RippleGameState, RippleLens } from "./engine/gameTypes";
 import type { LayerCard } from "./engine/types";
 
-const savedRunKey = "ripple-canonical-run-v4";
+const savedRunKey = "ripple-canonical-run-v5";
 const layerCards = layerCardsJson as LayerCard[];
 type View = "board" | "inventory" | "reference";
 
 function loadRun(): RippleGameState | null {
   try {
     const parsed = JSON.parse(window.localStorage.getItem(savedRunKey) ?? "null") as RippleGameState | null;
-    return parsed?.version === 4 && characterConfigs.some((character) => character.id === parsed.characterId) ? parsed : null;
+    return parsed?.version === 5 && characterConfigs.some((character) => character.id === parsed.characterId) ? parsed : null;
   } catch {
     return null;
   }
@@ -159,7 +159,15 @@ export default function App() {
 
             <DiceConsole game={game} onRoll={() => setGame((state) => state ? advanceWithRoll(state) : state)} />
 
-            {game.pendingChoice && (
+            {game.pendingResonance && (
+              <ResonanceChoice
+                game={game}
+                onRescue={(artifactId) => setGame(rescueMissedArtifact(game, artifactId))}
+                onSkip={() => setGame(skipResonance(game))}
+              />
+            )}
+
+            {game.pendingChoice && !game.pendingResonance && (
               <section className="artifact-choice">
                 <p className="eyebrow">Artifact offered</p>
                 <h3>{game.pendingChoice.artifact.artifactName}</h3>
@@ -242,12 +250,49 @@ function DiceConsole({ game, onRoll }: { game: RippleGameState; onRoll: () => vo
           <p><strong>Movement Die:</strong> {roll.movementDie}</p>
           <p><strong>Ripple Die:</strong> {roll.rippleDie} — {roll.lens}</p>
           <p><strong>Move:</strong> {roll.total} spaces</p>
+          {game.resonanceActive && <p className="resonance-result"><strong>Resonance:</strong> the dice matched.</p>}
           <p>{rippleLensExplanations[roll.lens]}</p>
         </div>
       )}
       <button className="primary-action" disabled={game.phase !== "playing"} onClick={onRoll} type="button">
         {game.turn === 0 ? "Roll two dice" : "Roll again"}
       </button>
+    </section>
+  );
+}
+
+export function ResonanceChoice({
+  game,
+  onRescue,
+  onSkip,
+}: {
+  game: RippleGameState;
+  onRescue: (artifactId: string) => void;
+  onSkip: () => void;
+}) {
+  const board = boardForCharacter(game.characterId);
+  const candidates = game.pendingResonance?.candidates ?? [];
+  return (
+    <section className="resonance-choice" aria-label="Resonance recovery">
+      <p className="eyebrow">Resonance</p>
+      <h3>{game.modeId === "mystery"
+        ? "The glass lets you recover one thing you passed."
+        : "Doubles: recover one missed artifact from this move."}</h3>
+      <div className="resonance-candidates">
+        {candidates.map((artifact) => {
+          const spaceNumber = board.spaces.findIndex((space) => space.id === artifact.spaceId) + 1;
+          const oracleText = board.spaces[spaceNumber - 1]?.glassSeeds[0] ?? artifact.glassFragment;
+          return (
+            <button className="resonance-card" key={artifact.id} onClick={() => onRescue(artifact.id)} type="button">
+              {game.modeId === "experimental" && <span>Space {spaceNumber} · {artifact.spaceName}</span>}
+              <strong>{artifact.artifactName}</strong>
+              {game.modeId === "vague" && <small>{oracleText}</small>}
+              {game.modeId === "experimental" && <small>Missed → Collected · resonance recovery</small>}
+            </button>
+          );
+        })}
+      </div>
+      <button className="ghost-action" onClick={onSkip} type="button">Let it pass</button>
     </section>
   );
 }
@@ -276,6 +321,7 @@ function InventoryView({ game }: { game: RippleGameState }) {
               <div className="artifact-record" key={artifact.id}>
                 <strong>{artifact.artifactName}</strong>
                 <span>{artifact.spaceName}</span>
+                {artifact.recoveryNote && <b className="recovery-marker">{artifact.recoveryNote}</b>}
                 <small>{artifact.glassFragment}</small>
                 {artifact.consequence && <p>{artifact.consequence}</p>}
               </div>
@@ -348,6 +394,11 @@ function RunSummary({ game }: { game: RippleGameState }) {
         <p><strong>{run.spaces_missed.length}</strong><span>missed</span></p>
         <p><strong>{run.spaces_forced.length}</strong><span>forced</span></p>
       </div>
+      <p><strong>Resonance recoveries:</strong> {run.rescued_artifacts.length}</p>
+      {run.rescued_artifacts.length > 0 && <p><strong>Recovered artifacts:</strong> {game.inventory.collected
+        .filter((artifact) => artifact.recovery === "resonance")
+        .map((artifact) => artifact.artifactName)
+        .join(", ")}</p>}
       <p><strong>Dominant zones:</strong> {run.dominant_zones.join(", ") || "No dominant zone"}</p>
       <p><strong>Ripple Die history:</strong> {run.dice_history.map((roll) => roll.rippleDie).join(", ") || "No rolls"}</p>
       <p><strong>Dominant lens:</strong> {dominantLens ?? "No dominant lens"}</p>

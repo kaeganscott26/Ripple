@@ -102,6 +102,7 @@ export function buildFinalStory(state: RippleGameState): FinalStoryResult {
   const forced = names(state.inventory.forced, "a borrowed warning");
   const ignored = names(state.inventory.ignored, "a darkened window");
   const missed = names(state.inventory.missed, "a distant signal");
+  const rescued = state.inventory.collected.filter((record) => record.recovery === "resonance");
   const lastSpace = board.spaces[state.position] ?? board.spaces[board.spaces.length - 1];
   const dominantLens = dominantLensFor(state);
   const title = `The ${collected[0]} Beyond the Glass`;
@@ -110,7 +111,7 @@ export function buildFinalStory(state: RippleGameState): FinalStoryResult {
     `${character.name} arrived at the edge of the city carrying ${collected[0].toLowerCase()}, though no one could remember who had placed it in ${character.name === "Teodor / Scott" ? "their" : "the traveler's"} hand. Beyond the final pane, the streets were quiet and every window reflected a different hour. ${character.name} followed the reflection that showed an open door instead of a face.`,
     `Inside was a room built around ${forced[0].toLowerCase()}. It had been waiting without anger. When ${character.name} touched it, the walls released the sound of ${missed[0].toLowerCase()} moving far away through rain. The sound did not ask to be followed; it only proved that distance could have a shape.`,
     `At the center table sat ${ignored[0].toLowerCase()}, exactly where it had been left. ${character.name} understood then that refusal had not erased it. Refusal had given it another room, another witness, and enough time to change its name. ${dominantLens ? lensFiction[dominantLens] : "The room kept its details without explaining them."} So ${character.name} spoke the question that had survived the journey: “${character.question}”`,
-    `The answer came from the ordinary things. A chair shifted toward the doorway. A blank line opened on an old form. Somewhere below the floor, water changed direction around a stone. None of it was a sign, but together the small movements made passage possible. ${character.name} placed ${collected[collected.length - 1].toLowerCase()} beside the window and left the rest unclaimed.`,
+    `The answer came from the ordinary things. A chair shifted toward the doorway. A blank line opened on an old form. Somewhere below the floor, water changed direction around a stone. None of it was a sign, but together the small movements made passage possible. ${rescued[0] ? `The ${rescued[0].artifactName.toLowerCase()} had nearly passed out of reach, but the glass gave it back. ` : ""}${character.name} placed ${collected[collected.length - 1].toLowerCase()} beside the window and left the rest unclaimed.`,
     `By morning, ${lastSpace.name} was no longer a destination. It was a house with two exits and a light left on for whoever arrived next. ${character.name} crossed the threshold without becoming the keeper of it, while behind the glass the city continued inventing rooms that no single story could contain.`,
   ].join("\n\n");
 
@@ -120,6 +121,7 @@ export function buildFinalStory(state: RippleGameState): FinalStoryResult {
     lens: turn.roll.lens,
     decision: turn.decision,
     forcedSpace: turn.forcedSpaceId,
+    resonanceRecovery: turn.rescuedArtifactSpaceId,
   }));
 
   return {
@@ -135,6 +137,7 @@ export function buildFinalStory(state: RippleGameState): FinalStoryResult {
         `Ignored artifacts: ${ignored.join(", ")}`,
         `Forced artifacts: ${forced.join(", ")}`,
         `Missed artifacts: ${missed.join(", ")}`,
+        `Resonance-recovered artifacts: ${rescued.map((record) => record.artifactName).join(", ") || "none"}`,
         `Run trace: ${JSON.stringify(runTrace)}`,
         `Ripple lens history: ${state.boardRun.ripple_lens_history.join(", ")}`,
         `Lens effects: ${JSON.stringify(state.boardRun.lens_effects)}`,
@@ -144,6 +147,7 @@ export function buildFinalStory(state: RippleGameState): FinalStoryResult {
         "Transform mechanics into story events; never recap dice, turns, inventory, or UI actions.",
         "Do not mention INTERVENTION chapters or imply that fiction is proof, prophecy, diagnosis, or command.",
         "Let collected, ignored, missed, and forced artifacts affect the fiction differently.",
+        "Treat resonance-recovered artifacts as returned memory, second chance, or recovered possibility without naming dice or game mechanics.",
         "Translate lens history into sensory recall, pressure, connection, contradiction, mercy, and consequence without naming dice or lenses.",
       ],
       output: story,
@@ -183,6 +187,7 @@ function buildTeodorScottFinalStory(state: RippleGameState): FinalStoryResult {
   const consequence = ranked(state.inventory.ignored).find((record) => record.artifactName !== primary.artifactName)
     ?? ranked(state.inventory.forced).find((record) => record.artifactName !== primary.artifactName);
   const missedEcho = ranked(state.inventory.missed)[0];
+  const rescued = ranked(state.inventory.collected.filter((record) => record.recovery === "resonance"))[0];
 
   const artifactPhrase = (record: ArtifactRecord) => {
     if (/^(AIFRED|INTERVENTION)\b/.test(record.artifactName)) return record.artifactName;
@@ -214,6 +219,9 @@ function buildTeodorScottFinalStory(state: RippleGameState): FinalStoryResult {
   const missedSentence = missedEcho
     ? `Somewhere past the hallway, the place where the ${artifactPhrase(missedEcho)} should have been remained open, an absence with its own weather.`
     : "The hallway beyond the room stayed dark, holding what the evening could not settle.";
+  const rescuedSentence = rescued
+    ? `The ${artifactPhrase(rescued)} had nearly passed out of reach, but the glass gave it back with its ordinary weight intact.`
+    : "";
   const branchTheme = state.boardRun.resolved_branch_pairs.some((pair) => pair.kind === "contradiction")
     ? "Opposed memories could share the room; neither excused what happened next."
     : state.boardRun.resolved_branch_pairs.some((pair) => pair.kind === "pressure")
@@ -227,7 +235,7 @@ function buildTeodorScottFinalStory(state: RippleGameState): FinalStoryResult {
   const story = [
     `Teodor was adopted before he could name the first door. Scott was the name given by his father, a name meant to make room rather than close one. The name Scott did not erase Teodor. Years later, when he signed a note at the edge of the table, both names remained visible in the wet ink.`,
     `His father mattered. His father died. The chair kept its scratches and the office kept its smell, refusing the polish that memory tried to give them. Music mattered because it could hold grief in time without turning grief into wisdom. What Scott did under pressure still belonged to him.`,
-    `${sceneOpenings[zone]} The ${artifactPhrase(primary)} lay beneath his hand, chosen as the center of the evening rather than evidence in a case. ${supportSentences.join(" ")} ${pressureSentence} ${missedSentence} ${branchTheme} ${contradiction ? "The room held both versions without letting either cancel the cost." : "The quieter version remained present without demanding the final word."} ${dominantLens ? lensFiction[dominantLens] : "The light shifted across the table and left every object answerable to its own shadow."}`,
+    `${sceneOpenings[zone]} The ${artifactPhrase(primary)} lay beneath his hand, chosen as the center of the evening rather than evidence in a case. ${supportSentences.join(" ")} ${rescuedSentence} ${pressureSentence} ${missedSentence} ${branchTheme} ${contradiction ? "The room held both versions without letting either cancel the cost." : "The quieter version remained present without demanding the final word."} ${dominantLens ? lensFiction[dominantLens] : "The light shifted across the table and left every object answerable to its own shadow."}`,
     `Kaegan mattered; he was a son with the right to answer, refuse, leave, and return, not the person assigned to save his father. Scott carried that fact into the kitchen rush, where timing and one calm voice showed how pressure moved between people. AIFRED began as an audio tool, a practical comparison between a current sound and a target. INTERVENTION became the archive, a place for loose pages that did not pretend arrangement was healing. Ripple became the name for the movement he noticed—not fate, proof, or ownership.`,
     accountability
       ? `Before morning, he named one harm without asking the naming to count as repair, then made one promise small enough for another person to test. Monument remained in the room as a warning: pain could become architecture and still fail the people asked to live inside it. The Last Glass generates a fictional variation, not a direct autobiography. It left him with the harder opening: what would this consequence build next?`
@@ -239,6 +247,7 @@ function buildTeodorScottFinalStory(state: RippleGameState): FinalStoryResult {
     space: record.spaceName,
     artifact: record.artifactName,
     layer: record.realityLayer,
+    recovery: record.recovery,
   }));
 
   return {
@@ -257,6 +266,7 @@ function buildTeodorScottFinalStory(state: RippleGameState): FinalStoryResult {
         `consequence_pressure: ${JSON.stringify(consequence ? storyArtifactData([consequence])[0] : null)}`,
         `missed_atmosphere: ${JSON.stringify(missedEcho ? storyArtifactData([missedEcho])[0] : null)}`,
         `collected_spaces: ${JSON.stringify(storyArtifactData(state.inventory.collected))}`,
+        `resonance_recoveries: ${JSON.stringify(storyArtifactData(state.inventory.collected.filter((record) => record.recovery === "resonance")))}`,
         `ignored_spaces: ${JSON.stringify(storyArtifactData(state.inventory.ignored))}`,
         `missed_spaces: ${JSON.stringify(storyArtifactData(state.inventory.missed))}`,
         `forced_spaces: ${JSON.stringify(storyArtifactData(state.inventory.forced))}`,
@@ -283,6 +293,7 @@ function buildTeodorScottFinalStory(state: RippleGameState): FinalStoryResult {
         "Transform collected, ignored, missed, forced, and branch resolution data into concrete scenes.",
         "Choose one primary scene anchor and blend no more than three support artifacts into that scene; do not list raw storySeed fragments.",
         "Turn ignored spaces into delayed pressure, forced spaces into unavoidable moments, and missed spaces into atmosphere, absence, or unresolved echo.",
+        "Turn resonance recoveries into returned memory, second chance, or recovered possibility without naming dice or mechanics.",
         "Translate lens history into fiction: sensory recall, returning pressure, linked rooms, alternate possibilities, mercy, or amplified consequence. Never name the die or lens mechanic.",
       ],
       output: story,

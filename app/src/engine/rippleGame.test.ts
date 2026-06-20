@@ -1,8 +1,11 @@
 import { describe, expect, it } from "vitest";
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { ResonanceChoice } from "../App";
 import { boardSpaces, liveBoard } from "../data/liveBoard";
 import { boardForCharacter, teodorScottBoard } from "../data/boards";
 import { buildRippleRiddlePrompt, influenceFor } from "./aiGlass";
-import { advanceWithRoll, collectArtifact, createRippleGame, ignoreArtifact, rollDice } from "./rippleGame";
+import { advanceWithRoll, collectArtifact, createRippleGame, ignoreArtifact, rescueMissedArtifact, rollDice, skipResonance } from "./rippleGame";
 import { humanizeBranchGroup, humanizeFinalResponse } from "./runLabels";
 import type { DiceRoll } from "./gameTypes";
 
@@ -100,6 +103,92 @@ describe("canonical Ripple loop", () => {
     expect("extraTurnsEarned" in highRipple).toBe(false);
   });
 
+  it("turns matching dice into one recovery choice without granting or starting another turn", () => {
+    const initial = { ...createRippleGame({ modeId: "experimental", characterId: "mara" }), position: 9 };
+    const resonant = advanceWithRoll(initial, roll(5, 5));
+
+    expect(resonant.resonanceActive).toBe(true);
+    expect(resonant.turn).toBe(1);
+    expect(resonant.phase).toBe("awaiting-choice");
+    expect(resonant.pendingResonance?.candidates.map((artifact) => artifact.spaceName)).toEqual([
+      boardSpaces[10].name,
+      boardSpaces[11].name,
+      boardSpaces[12].name,
+      boardSpaces[13].name,
+    ]);
+    expect(resonant.boardRun.resonance_count).toBe(1);
+    expect("extraTurnPending" in resonant).toBe(false);
+    expect("extraTurnsEarned" in resonant).toBe(false);
+    expect(collectArtifact(resonant)).toBe(resonant);
+  });
+
+  it("recovers one current-move artifact from missed into collected without duplication", () => {
+    const initial = { ...createRippleGame({ modeId: "vague", characterId: "mara" }), position: 9 };
+    const resonant = advanceWithRoll(initial, roll(5, 5));
+    const candidate = resonant.pendingResonance?.candidates[1];
+    expect(candidate).toBeDefined();
+
+    const rescued = rescueMissedArtifact(resonant, candidate!.id);
+    const recovered = rescued.inventory.collected.find((artifact) => artifact.spaceId === candidate!.spaceId);
+
+    expect(rescued.pendingResonance).toBeUndefined();
+    expect(recovered).toMatchObject({ state: "collected", recovery: "resonance", recoveryNote: "Rescued by resonance" });
+    expect(rescued.inventory.missed.some((artifact) => artifact.spaceId === candidate!.spaceId)).toBe(false);
+    expect(rescued.boardRun.spaces_missed).not.toContain(12);
+    expect(rescued.boardRun.spaces_collected).toContain(12);
+    expect(rescued.boardRun.rescued_artifacts).toEqual([12]);
+    expect(rescueMissedArtifact(rescued, resonant.pendingResonance!.candidates[0].id)).toBe(rescued);
+    expect(collectArtifact(rescued).phase).toBe("playing");
+  });
+
+  it("offers no recovery when matching dice pass no newly missed spaces", () => {
+    const initial = createRippleGame({ modeId: "mystery", characterId: "dev" });
+    const resonant = advanceWithRoll(initial, roll(1, 1));
+
+    expect(resonant.resonanceActive).toBe(true);
+    expect(resonant.pendingResonance).toBeUndefined();
+    expect(resonant.inventory.missed).toHaveLength(0);
+    expect(resonant.boardRun.resonance_count).toBe(1);
+  });
+
+  it("keeps resonance candidates scoped to newly missed spaces from the current move", () => {
+    const initial = createRippleGame({ modeId: "experimental", characterId: "mara" });
+    const firstOffer = advanceWithRoll(initial, roll(4, 2));
+    const afterFirst = collectArtifact(firstOffer);
+    const secondOffer = advanceWithRoll(afterFirst, roll(3, 3));
+
+    expect(firstOffer.inventory.missed.map((artifact) => artifact.spaceId)).not.toHaveLength(0);
+    expect(secondOffer.pendingResonance?.candidates.map((artifact) => artifact.turn)).toEqual([2, 2]);
+    expect(secondOffer.pendingResonance?.candidates.every((artifact) =>
+      !firstOffer.inventory.missed.some((old) => old.spaceId === artifact.spaceId),
+    )).toBe(true);
+  });
+
+  it("can skip resonance and then resolve the landed artifact normally", () => {
+    const resonant = advanceWithRoll(createRippleGame({ modeId: "vague", characterId: "mara" }), roll(4, 4));
+    const skipped = skipResonance(resonant);
+
+    expect(skipped.pendingResonance).toBeUndefined();
+    expect(skipped.boardRun.skipped_resonance_opportunities).toBe(1);
+    expect(skipped.turns[0].resonanceSkipped).toBe(true);
+    expect(collectArtifact(skipped).phase).toBe("playing");
+  });
+
+  it("shows only oracle artifact names for Mystery resonance choices", () => {
+    const resonant = advanceWithRoll(createRippleGame({ modeId: "mystery", characterId: "mara" }), roll(4, 4));
+    const candidate = resonant.pendingResonance!.candidates[0];
+    const markup = renderToStaticMarkup(createElement(ResonanceChoice, {
+      game: resonant,
+      onRescue: () => undefined,
+      onSkip: () => undefined,
+    }));
+
+    expect(markup).toContain(candidate.artifactName);
+    expect(markup).not.toContain(candidate.spaceName);
+    expect(markup).not.toContain("Space 2");
+    expect(markup).not.toContain("Missed → Collected");
+  });
+
   it("keeps center-glass output within two to eight words", () => {
     const state = createRippleGame({ modeId: "mystery", characterId: "dev" });
     const prompt = buildRippleRiddlePrompt(state, boardSpaces[3], roll(1, 5));
@@ -156,6 +245,22 @@ describe("canonical Ripple loop", () => {
     expect(complete.finalStory?.story).toContain("ordinary kindness");
     expect(complete.finalStory?.prompt.user).toContain("Ripple lens history: Intervention");
     expect(complete.finalStory?.prompt.constraints.join(" ")).toContain("never recap dice");
+  });
+
+  it("keeps Last Glass resolution intact after a resonance recovery", () => {
+    const nearEnd = {
+      ...createRippleGame({ modeId: "experimental", characterId: "maren" }),
+      position: boardSpaces.length - 4,
+    };
+    const atLastGlass = advanceWithRoll(nearEnd, roll(3, 3));
+    const candidate = atLastGlass.pendingResonance!.candidates[0];
+    const recovered = rescueMissedArtifact(atLastGlass, candidate.id);
+    const complete = collectArtifact(recovered);
+
+    expect(complete.phase).toBe("complete");
+    expect(complete.finalStory?.story).toContain("had nearly passed out of reach, but the glass gave it back");
+    expect(complete.finalStory?.story).not.toMatch(/rolled doubles|because the player/i);
+    expect(complete.finalStory?.prompt.user).toContain(`Resonance-recovered artifacts: ${candidate.artifactName}`);
   });
 
   it("clamps Teodor / Scott movement to Last Glass and resolves branches by mode", () => {

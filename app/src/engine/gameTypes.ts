@@ -143,6 +143,8 @@ export interface ArtifactRecord {
   storySeed?: string;
   meaning?: string;
   consequence?: string;
+  recovery?: "resonance";
+  recoveryNote?: string;
 }
 
 export interface TurnRecord {
@@ -154,11 +156,19 @@ export interface TurnRecord {
   glassFragment: string;
   decision?: "collect" | "ignore";
   forcedSpaceId?: string;
+  resonance: boolean;
+  rescuedArtifactSpaceId?: string;
+  resonanceSkipped?: boolean;
 }
 
 export interface PendingChoice {
   artifact: ArtifactRecord;
   glassPrompt: GlassPrompt;
+}
+
+export interface PendingResonance {
+  turn: number;
+  candidates: ArtifactRecord[];
 }
 
 export interface FinalStoryResult {
@@ -201,6 +211,9 @@ export interface LifeBoardRunState {
   echo_links: EchoLink[];
   amplified_spaces: number[];
   intervention_turns_used: number;
+  resonance_count: number;
+  rescued_artifacts: number[];
+  skipped_resonance_opportunities: number;
   spaces_landed: number[];
   spaces_collected: number[];
   spaces_ignored: number[];
@@ -218,7 +231,7 @@ export interface LifeBoardRunState {
 }
 
 export interface RippleGameState {
-  version: 4;
+  version: 5;
   boardId: string;
   phase: GamePhase;
   modeId: GameModeId;
@@ -226,7 +239,9 @@ export interface RippleGameState {
   position: number;
   turn: number;
   lastRoll?: DiceRoll;
+  resonanceActive: boolean;
   pendingChoice?: PendingChoice;
+  pendingResonance?: PendingResonance;
   inventory: Record<ArtifactState, ArtifactRecord[]>;
   turns: TurnRecord[];
   boardRun: LifeBoardRunState;

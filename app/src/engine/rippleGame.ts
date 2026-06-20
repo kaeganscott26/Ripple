@@ -48,6 +48,9 @@ function initialBoardRun(setup: RippleGameSetup, board: PlayableBoard): LifeBoar
     echo_links: [],
     amplified_spaces: [],
     intervention_turns_used: 0,
+    resonance_count: 0,
+    rescued_artifacts: [],
+    skipped_resonance_opportunities: 0,
     spaces_landed: [],
     spaces_collected: [],
     spaces_ignored: [],
@@ -68,13 +71,14 @@ function initialBoardRun(setup: RippleGameSetup, board: PlayableBoard): LifeBoar
 export function createRippleGame(setup: RippleGameSetup): RippleGameState {
   const board = boardForCharacter(setup.characterId);
   const initial: RippleGameState = {
-    version: 4,
+    version: 5,
     boardId: board.id,
     phase: "playing",
     modeId: setup.modeId,
     characterId: setup.characterId,
     position: 0,
     turn: 0,
+    resonanceActive: false,
     inventory: { missed: [], collected: [], ignored: [], forced: [] },
     turns: [],
     boardRun: initialBoardRun(setup, board),
@@ -342,6 +346,7 @@ export function advanceWithRoll(state: RippleGameState, suppliedRoll?: DiceRoll)
   const missed = crossedPositions.map((position) =>
     artifactRecord({ ...state, turn }, board, position, "missed", asLifeSpace(board, position)?.missedMeaning ?? "Passed beyond the glass."),
   );
+  const resonanceActive = roll.movementDie === roll.rippleDie;
   const offered = artifactRecord({ ...state, turn }, board, to, "collected", prompt.output);
   const landedRun = applyLens(board, state.boardRun, roll, to + 1, turn);
   const boardRun = updateDerivedRun(board, {
@@ -351,6 +356,7 @@ export function advanceWithRoll(state: RippleGameState, suppliedRoll?: DiceRoll)
     dice_history: [...state.boardRun.dice_history, roll],
     spaces_landed: unique([...state.boardRun.spaces_landed, to + 1]),
     spaces_missed: unique([...state.boardRun.spaces_missed, ...crossedPositions.map((position) => position + 1)]),
+    resonance_count: state.boardRun.resonance_count + (resonanceActive ? 1 : 0),
     last_glass_reached: to === board.totalSpaces - 1,
   });
 
@@ -360,10 +366,64 @@ export function advanceWithRoll(state: RippleGameState, suppliedRoll?: DiceRoll)
     position: to,
     turn,
     lastRoll: roll,
+    resonanceActive,
     pendingChoice: { artifact: offered, glassPrompt: prompt },
+    pendingResonance: resonanceActive && missed.length > 0 ? { turn, candidates: missed } : undefined,
     inventory: { ...state.inventory, missed: [...state.inventory.missed, ...missed] },
     boardRun,
-    turns: [...state.turns, { turn, from, to, roll, spaceId: board.spaces[to].id, glassFragment: prompt.output }],
+    turns: [...state.turns, { turn, from, to, roll, spaceId: board.spaces[to].id, glassFragment: prompt.output, resonance: resonanceActive }],
+  };
+}
+
+export function rescueMissedArtifact(state: RippleGameState, artifactId: string): RippleGameState {
+  const opportunity = state.pendingResonance;
+  if (state.phase !== "awaiting-choice" || !opportunity || opportunity.turn !== state.turn) return state;
+  const candidate = opportunity.candidates.find((artifact) => artifact.id === artifactId);
+  if (!candidate) return state;
+  const board = boardForCharacter(state.characterId);
+  const number = board.spaces.findIndex((space) => space.id === candidate.spaceId) + 1;
+  if (number < 1) return state;
+  const rescued: ArtifactRecord = {
+    ...candidate,
+    id: `${candidate.id}-resonance`,
+    state: "collected",
+    recovery: "resonance",
+    recoveryNote: "Rescued by resonance",
+    meaning: asLifeSpace(board, number - 1)?.collectMeaning ?? candidate.meaning,
+  };
+  const boardRun = updateDerivedRun(board, {
+    ...state.boardRun,
+    spaces_missed: state.boardRun.spaces_missed.filter((space) => space !== number),
+    spaces_collected: unique([...state.boardRun.spaces_collected, number]),
+    rescued_artifacts: unique([...state.boardRun.rescued_artifacts, number]),
+  });
+  return {
+    ...state,
+    pendingResonance: undefined,
+    inventory: {
+      ...state.inventory,
+      missed: state.inventory.missed.filter((artifact) => artifact.id !== candidate.id),
+      collected: [...state.inventory.collected, rescued],
+    },
+    boardRun,
+    turns: state.turns.map((turn, index) => index === state.turns.length - 1
+      ? { ...turn, rescuedArtifactSpaceId: candidate.spaceId }
+      : turn),
+  };
+}
+
+export function skipResonance(state: RippleGameState): RippleGameState {
+  if (state.phase !== "awaiting-choice" || !state.pendingResonance || state.pendingResonance.turn !== state.turn) return state;
+  return {
+    ...state,
+    pendingResonance: undefined,
+    boardRun: {
+      ...state.boardRun,
+      skipped_resonance_opportunities: state.boardRun.skipped_resonance_opportunities + 1,
+    },
+    turns: state.turns.map((turn, index) => index === state.turns.length - 1
+      ? { ...turn, resonanceSkipped: true }
+      : turn),
   };
 }
 
@@ -376,7 +436,7 @@ function completeIfNeeded(state: RippleGameState): RippleGameState {
 }
 
 export function collectArtifact(state: RippleGameState): RippleGameState {
-  if (state.phase !== "awaiting-choice" || !state.pendingChoice) return state;
+  if (state.phase !== "awaiting-choice" || !state.pendingChoice || state.pendingResonance) return state;
   const board = boardForCharacter(state.characterId);
   const collected = { ...state.pendingChoice.artifact, state: "collected" as const };
   const number = state.position + 1;
@@ -392,7 +452,7 @@ export function collectArtifact(state: RippleGameState): RippleGameState {
 }
 
 export function ignoreArtifact(state: RippleGameState): RippleGameState {
-  if (state.phase !== "awaiting-choice" || !state.pendingChoice) return state;
+  if (state.phase !== "awaiting-choice" || !state.pendingChoice || state.pendingResonance) return state;
   const board = boardForCharacter(state.characterId);
   if (state.position === board.totalSpaces - 1) return collectArtifact(state);
   const ignored = { ...state.pendingChoice.artifact, state: "ignored" as const, meaning: asLifeSpace(board, state.position)?.ignoreMeaning };

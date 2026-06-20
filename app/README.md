@@ -1,13 +1,13 @@
 # Ripple: Canonical Board Loop
 
-Ripple is a local, fictional symbolic board game. The current game selects one of five characters, rolls three dice, moves across a finite board, and asks the player to collect or ignore a short artifact offered by the center glass.
+Ripple is a local, fictional symbolic board game. The current game selects one of five characters, rolls two dice, moves across a finite board, and asks the player to collect or ignore a short artifact offered by the center glass.
 
 ## Game loop
 
 1. Select Mystery, Vague, or Experimental / Master mode.
 2. Select Mara, Jamal, Maren, Dev, or Teodor / Scott.
-3. Roll three dice. The first two move; the third influences the glass output. Doubles earn an extra turn.
-4. Crossed spaces enter the missed ledger. The landing offers one artifact.
+3. Roll a Movement Die and a Ripple Die. The Movement Die moves the piece; the Ripple Die influences the glass output.
+4. Crossed spaces enter the missed ledger. When the dice match, resonance can recover one artifact missed during that move. Doubles never grant another turn.
 5. Collect the artifact, or ignore it and move back one space to receive that space's forced artifact and consequence.
 6. Reach the final space and collect its offer to generate a complete fictional story from the run.
 
@@ -29,7 +29,7 @@ The playable board does not load INTERVENTION chapters or use chapter scenes as 
 - `src/engine/rippleGame.ts`: dice, movement, choice, rollback, ledgers, and completion.
 - `src/engine/aiGlass.ts`: riddle and final-story prompt contracts plus local outputs.
 
-Runs persist in browser `localStorage` under `ripple-canonical-run-v1`.
+Runs persist in browser `localStorage` under `ripple-canonical-run-v5`.
 
 ## Local use
 
